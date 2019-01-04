@@ -159,7 +159,7 @@
 
 ##### 1.4.2 向服务器接口 POST 参数 #####
 
-假使此时使用的接口地址是：<http://api.dev.jyxuangu.com> 
+假使此时使用的接口地址是：<http://api.yourname.com> 
 
 使用常规的 POST 提交方式提交如下两个参数：
 
@@ -340,7 +340,7 @@
     "msg": "上传成功",
     "data": {
         "file_id": "25",
-        "image_url": "http://files.hunshijian.com/images/images/20180717/5b4dd766b9507.jpg",
+        "image_url": "http://files.yourname.com/images/images/20180717/5b4dd766b9507.jpg",
         "relative_image_url": "/images/images/20180717/5b4dd766b9507.jpg"
     }
 }
@@ -384,9 +384,9 @@
     "data": {
         "token": "d557BlYBUlYDCVIDVQYHXlVbAVUDDgZaAVcBA1NUP1cCCwcOVglWXwAwUw",
         "userid": 1,
-        "mobile": "18575202691",
+        "mobile": "18575202692",
         "headimg": "",
-        "nickname": "185****2691",
+        "nickname": "185****2692",
         "reg_time": "2018-06-29 18:56:48"
     }
 }
@@ -601,10 +601,10 @@
     "code": 200,
     "msg": "信息获取成功",
     "data": {
-        "mobile": "18575202691",
+        "mobile": "18575202692",
         "open_id": "960a3d82f110f8b54ea4a88f8bc9f615",
-        "nickname": "185****2691",
-        "headimg": "http://files.hunshijian.com/images/voucher/20180720/5b51355904a5c.jpg",
+        "nickname": "185****2692",
+        "headimg": "http://files.yourname.com/images/voucher/20180720/5b51355904a5c.jpg",
         "intro": "",
         "c_time": "2018-06-29 18:56:48"
     }
