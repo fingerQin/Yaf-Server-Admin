@@ -1,0 +1,11 @@
+@charset "utf-8";
+/*共用样式*/
+html,body,ul,li,dd,dl,dt{margin:0px; padding:0px}
+body{font-family:'微软雅黑'; font-size:12px;}
+ul,dl{list-style:none}
+.width{width:100%; float:left}
+.left{float:left}
+.right{float:right}
+.marign{margin:0 auto}
+a{text-decoration:none}
+a:hover{text-decoration:none}
