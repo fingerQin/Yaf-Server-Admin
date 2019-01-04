@@ -3,7 +3,7 @@
 
 > 以下是 Yaf-Server 的主要文档。在具体的项目目录的 docs 当中有具体的各种文档。
 
-## Yaf-Server 使用文档##
+## Yaf-Server 使用文档
 
 ### 1 前言
 
