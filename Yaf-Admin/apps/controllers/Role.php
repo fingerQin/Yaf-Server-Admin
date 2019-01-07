@@ -82,7 +82,7 @@ class RoleController extends \Common\controllers\Admin
     {
         if ($this->_request->isXmlHttpRequest()) {
             $roleid     = $this->getInt('roleid');
-            $arrMenuIds = $this->getArray('menuid');
+            $arrMenuIds = $this->getArray('menuid', []);
             Role::setPermission($this->adminId, $roleid, $arrMenuIds);
             $this->json(true, '设置成功');
         }

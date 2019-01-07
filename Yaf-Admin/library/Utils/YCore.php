@@ -68,7 +68,7 @@ class YCore
                   . "Error Line:{$errline}\n"
                   . "StackTrace:\n{$traceStack}";
         // [3] 根据不同的环境配置打日志。
-        YLog::log($trace, 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR);
+        YLog::log($trace, 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR, true);
         $request = new \Yaf_Request_Http();
         $isAjax  = $request->isXmlHttpRequest();
         if ($isAjax) {
@@ -123,7 +123,7 @@ class YCore
                       . "Error Message:{$errInfo['message']}\n"
                       . "Error File:{$errInfo['file']}\n"
                       . "Error Line:{$errInfo['line']}";
-            YLog::log($trace, 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR);
+            YLog::log($trace, 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR, true);
             // [3]
             $request = new \Yaf_Request_Http();
             $isAjax  = $request->isXmlHttpRequest();

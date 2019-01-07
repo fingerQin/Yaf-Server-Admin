@@ -171,6 +171,9 @@ class Role extends \Services\AbstractBase
      */
     public static function setPermission($adminId, $roleid, $arrMenuIds)
     {
+        if (self::isRootRole($roleid)) {
+            YCore::exception(STATUS_SERVER_ERROR, '超级管理员角色不需要设置');
+        }
         Db::beginTransaction();
         // [1] 角色判断。
         self::isExist($roleid);
@@ -187,6 +190,17 @@ class Role extends \Services\AbstractBase
             }
         }
         Db::commit();
+    }
+
+    /**
+     * 是否超级管理员角色。
+     *
+     * @param  int  $roleid  角色 ID。
+     * @return bool
+     */
+    public static function isRootRole($roleid)
+    {
+        return ($roleid == ROOT_ROLE_ID) ? true : false;
     }
 
     /**

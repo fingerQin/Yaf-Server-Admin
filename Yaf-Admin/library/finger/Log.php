@@ -54,14 +54,15 @@ class Log {
     /**
      * 写日志(只是暂存,不会直接写入)。
      *
-     * @param  string  $log      日志内容。
-     * @param  string  $logPath  日志保存路径。
+     * @param  string  $log           日志内容。
+     * @param  string  $logPath       日志保存路径。
+     * @param  bool    $isForceWrite  是否强制写入硬盘。默认值：false。设置为 true 则日志立即写入硬盘而不是等待析构函数回收再执行。
      *
      * @return void
      */
-    public function write($log, $logPath)
+    public function write($log, $logPath, $isForceWrite = false)
     {
-        if (PHP_SAPI == 'cli') { // Cli 模式立即写入硬盘。
+        if (PHP_SAPI == 'cli' || $isForceWrite) { // Cli 模式立即写入硬盘。
             file_put_contents($logPath, $log, FILE_APPEND);
         } else {
             $arrLogKey = md5($logPath);
