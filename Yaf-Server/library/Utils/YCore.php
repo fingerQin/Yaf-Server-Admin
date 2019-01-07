@@ -101,7 +101,7 @@ class YCore
                       . "Error File:{$errInfo['file']}\n"
                       . "Error Line:{$errInfo['line']}\n"
                       . "StackTrace:\n{$traceStack}";
-            YLog::log($trace, 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR);
+            YLog::log($trace, 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR, true);
             if (defined('IS_API')) {
                 header("Access-Control-Allow-Origin: *");
                 header('Content-type: application/json');

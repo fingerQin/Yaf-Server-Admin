@@ -58,14 +58,15 @@ class YLog
     /**
      * 写日志。
      * 
-     * @param  string|array  $logContent   日志内容。
-     * @param  string        $logDir       日志目录。如：bank
-     * @param  string        $logFilename  日志文件名称。如：bind。生成文件的时候会在 bind 后面接上日期。如:bind-20171121.log
-     * @param  string        $errLogType   日志类型。
+     * @param  string|array  $logContent    日志内容。
+     * @param  string        $logDir        日志目录。如：bank
+     * @param  string        $logFilename   日志文件名称。如：bind。生成文件的时候会在 bind 后面接上日期。如:bind-20171121.log
+     * @param  string        $errLogType    日志类型。
+     * @param  bool          $isForceWrite  是否强制写入硬盘。默认值：false。设置为 true 则日志立即写入硬盘而不是等待析构函数回收再执行。
      *
      * @return void
      */
-    public static function log($logContent, $logDir = '', $logFilename = '', $errLogType = self::LOG_TYPE_SERVICE_LOG) 
+    public static function log($logContent, $logDir = '', $logFilename = '', $errLogType = self::LOG_TYPE_SERVICE_LOG, $isForceWrite = false) 
     {
         $logContent = is_array($logContent) ? print_r($logContent, true) : $logContent;
         $time       = time();
@@ -85,6 +86,6 @@ class YLog
         $clientIP = YCore::ip();
         $logCtx   = "ErrorTime:{$logTime}\nServerIP:{$serverIP}\nClientIP:{$clientIP}\nErrorLog:{$logContent}\n\n";
         $logObj   = \finger\Log::getInstance();
-        $logObj->write($logCtx, $logPath);
+        $logObj->write($logCtx, $logPath, $isForceWrite);
     }
 }
