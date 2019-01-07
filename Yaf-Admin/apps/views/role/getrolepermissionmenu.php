@@ -72,6 +72,8 @@
 
 $(document).ready(function(){
 	$('#submitID').click(function () {
+		var submitBtn = $(this);
+		submitBtn.val('提交中...');
 		var fromData = $('#fromID').serialize();
 		$.ajax({
 			type: 'post',
@@ -79,6 +81,7 @@ $(document).ready(function(){
 			dataType:'json',
 			url: "{{'Role/setPermission'|url}}",
 			success: function(rsp) {
+				submitBtn.val('保存并提交');
 				if (rsp.code == 200) {
 					success(rsp.msg, 1);
 				} else {
