@@ -109,8 +109,8 @@ class Role extends \Services\AbstractBase
     public static function delete($roleid)
     {
         $roleInfo = self::isExist($roleid);
-        if ($roleInfo['is_default'] == AdminUser::STATUS_YES) {
-            YCore::exception(STATUS_SERVER_ERROR, '默认角色不能删除');
+        if ($roleInfo['is_default'] == AdminUser::STATUS_YES || $roleid == ROOT_ROLE_ID) {
+            YCore::exception(STATUS_SERVER_ERROR, '此角色不能删除!');
         }
         $AdminUserModel = new AdminUser();
         $adminCount     = $AdminUserModel->count([

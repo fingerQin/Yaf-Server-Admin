@@ -68,8 +68,8 @@ class AdminUser extends \Services\AbstractBase
      */
     public static function forbid($opAdminId, $adminId, $status)
     {
-        if ($adminId == 1) {
-            YCore::exception(STATUS_SERVER_ERROR, '超级管理员不能操作');
+        if ($adminId == ROOT_ADMIN_ID) {
+            YCore::exception(STATUS_SERVER_ERROR, '我是超级管理员您不能这样对我噢');
         }
         $AdminUserModel  = new AdminUserModel();
         $adminUserDetail = $AdminUserModel->fetchOne([], ['adminid' => $adminId]);
@@ -152,12 +152,16 @@ class AdminUser extends \Services\AbstractBase
     public static function edit($opAdminId, $adminId, $realname, $mobilephone, $roleid, $password = '')
     {
         // [1]
+        if ($adminId == ROOT_ADMIN_ID && $opAdminId != $adminId) {
+            YCore::exception(STATUS_SERVER_ERROR, '超级管理员账号只能 TA 自己编辑哟');
+        }
+        // [2]
         self::checkRealname($realname);
         self::checkMobilephone($mobilephone);
         self::isExistMobile($mobilephone, false, $adminId);
         (strlen($password) > 0) && self::checkPassword($password);
         Role::isExist($roleid);
-
+        // [3]
         $data = [
             'real_name' => $realname,
             'mobile'    => $mobilephone,
@@ -191,7 +195,7 @@ class AdminUser extends \Services\AbstractBase
      */
     public static function delete($opAdminId, $adminId)
     {
-        if ($adminId == 1) {
+        if ($adminId == ROOT_ADMIN_ID) {
             YCore::exception(STATUS_SERVER_ERROR, '超级管理员账号不能删除');
         }
         $data = [
