@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : 本地 MySQL
-Source Server Version : 50641
-Source Host           : localhost:3306
-Source Database       : test
+Source Server         : 腾讯云自用MySQL
+Source Server Version : 50636
+Source Host           : 193.112.101.85:3306
+Source Database       : yaf-server-admin
 
 Target Server Type    : MYSQL
-Target Server Version : 50641
+Target Server Version : 50636
 File Encoding         : 65001
 
-Date: 2019-01-04 17:17:09
+Date: 2019-01-07 15:24:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -127,7 +127,7 @@ INSERT INTO `finger_admin_menu` VALUES ('34', '更新角色', '31', 'Role', 'upd
 INSERT INTO `finger_admin_menu` VALUES ('35', '删除角色', '31', 'Role', 'delete', '', '0', '', '0', '', '0', '2017-08-03 16:10:00', '0', '2017-11-16 16:05:51');
 INSERT INTO `finger_admin_menu` VALUES ('36', '角色赋权', '31', 'Role', 'setPermission', '', '0', '', '0', '', '0', '2017-08-03 16:10:00', '0', '2017-11-16 16:05:51');
 INSERT INTO `finger_admin_menu` VALUES ('45', 'APP 版本&升级', '9', 'app', '', '', '0', '', '1', '', '0', '2017-08-17 09:26:26', '0', '2017-12-04 15:25:08');
-INSERT INTO `finger_admin_menu` VALUES ('46', 'APP 版本&升级', '45', 'app', 'list', '', '0', '', '1', '', '0', '2017-08-17 09:29:22', '0', '2017-11-16 16:05:51');
+INSERT INTO `finger_admin_menu` VALUES ('46', 'APP 版本&升级', '45', 'app', 'list', '', '0', '', '1', '<h3>\r\n	<strong>1）管理后台设置之后，可以在 API 的 system.init 接口体现出来。以及单独的 APP 升级接口。</strong>\r\n</h3>', '0', '2017-08-17 09:29:22', '0', '2019-01-07 10:58:30');
 INSERT INTO `finger_admin_menu` VALUES ('47', 'APP 版本添加', '45', 'app', 'add', '', '0', '', '0', '', '0', '2017-08-17 09:29:52', '0', '2017-11-16 16:05:51');
 INSERT INTO `finger_admin_menu` VALUES ('48', 'APP 版本编辑', '45', 'app', 'edit', '', '0', '', '0', '', '0', '2017-08-17 09:30:47', '0', '2017-11-16 16:05:51');
 INSERT INTO `finger_admin_menu` VALUES ('49', 'APP 版本删除', '45', 'app', 'delete', '', '0', '', '0', '', '0', '2017-08-17 09:31:23', '0', '2017-11-16 16:05:51');
@@ -184,14 +184,13 @@ CREATE TABLE `finger_admin_role` (
   `u_by` smallint(6) NOT NULL DEFAULT '0' COMMENT '修改人ID',
   `u_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`roleid`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='后台角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='后台角色表';
 
 -- ----------------------------
 -- Records of finger_admin_role
 -- ----------------------------
 INSERT INTO `finger_admin_role` VALUES ('1', '超级管理员', '0', '绝对的 Power', '1', '1', '1', '2018-07-09 15:16:29', '0', '2018-07-10 10:23:45');
-INSERT INTO `finger_admin_role` VALUES ('3', '测试角色', '0', 'dfsdfdsfsdf', '0', '1', '0', '2018-07-10 11:11:50', '0', '2018-07-10 11:11:50');
-INSERT INTO `finger_admin_role` VALUES ('4', 'sdfdsfsd', '0', 'fsd', '0', '2', '0', '2018-07-10 11:13:37', '0', '2018-07-10 11:13:39');
+INSERT INTO `finger_admin_role` VALUES ('2', '普通管理员', '0', '普通管理员', '0', '1', '0', '2019-01-07 14:25:47', '0', '2019-01-07 14:25:47');
 
 -- ----------------------------
 -- Table structure for finger_admin_role_priv
@@ -206,11 +205,50 @@ CREATE TABLE `finger_admin_role_priv` (
   `u_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
   KEY `idx_rid` (`roleid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台角色权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=341 DEFAULT CHARSET=utf8 COMMENT='后台角色权限表';
 
 -- ----------------------------
 -- Records of finger_admin_role_priv
 -- ----------------------------
+INSERT INTO `finger_admin_role_priv` VALUES ('302', '2', '1', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('303', '2', '2', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('304', '2', '3', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('305', '2', '4', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('306', '2', '5', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('307', '2', '6', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('308', '2', '7', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('309', '2', '8', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('310', '2', '25', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('311', '2', '26', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('312', '2', '27', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('313', '2', '28', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('314', '2', '29', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('315', '2', '30', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('316', '2', '85', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('317', '2', '31', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('318', '2', '32', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('319', '2', '33', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('320', '2', '35', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('321', '2', '55', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('322', '2', '56', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('323', '2', '57', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('324', '2', '60', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('325', '2', '61', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('326', '2', '63', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('327', '2', '76', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('328', '2', '77', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('329', '2', '78', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('330', '2', '79', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('331', '2', '80', '1', '2019-01-07 14:43:49', '2019-01-07 14:43:49');
+INSERT INTO `finger_admin_role_priv` VALUES ('332', '2', '81', '1', '2019-01-07 14:43:50', '2019-01-07 14:43:50');
+INSERT INTO `finger_admin_role_priv` VALUES ('333', '2', '82', '1', '2019-01-07 14:43:50', '2019-01-07 14:43:50');
+INSERT INTO `finger_admin_role_priv` VALUES ('334', '2', '83', '1', '2019-01-07 14:43:50', '2019-01-07 14:43:50');
+INSERT INTO `finger_admin_role_priv` VALUES ('335', '2', '84', '1', '2019-01-07 14:43:50', '2019-01-07 14:43:50');
+INSERT INTO `finger_admin_role_priv` VALUES ('336', '2', '9', '1', '2019-01-07 14:43:50', '2019-01-07 14:43:50');
+INSERT INTO `finger_admin_role_priv` VALUES ('337', '2', '45', '1', '2019-01-07 14:43:50', '2019-01-07 14:43:50');
+INSERT INTO `finger_admin_role_priv` VALUES ('338', '2', '46', '1', '2019-01-07 14:43:50', '2019-01-07 14:43:50');
+INSERT INTO `finger_admin_role_priv` VALUES ('339', '2', '47', '1', '2019-01-07 14:43:50', '2019-01-07 14:43:50');
+INSERT INTO `finger_admin_role_priv` VALUES ('340', '2', '48', '1', '2019-01-07 14:43:50', '2019-01-07 14:43:50');
 
 -- ----------------------------
 -- Table structure for finger_admin_user
@@ -236,7 +274,7 @@ CREATE TABLE `finger_admin_user` (
 -- ----------------------------
 -- Records of finger_admin_user
 -- ----------------------------
-INSERT INTO `finger_admin_user` VALUES ('1', 'administrator', '74ab1dfb68973a7b50b21d04dd0ee63a', '4lddvv', '13812345678', '1', '1', '1', '2018-07-07 16:01:56', '1', '2019-01-04 17:10:16');
+INSERT INTO `finger_admin_user` VALUES ('1', 'administrator', '74ab1dfb68973a7b50b21d04dd0ee63a', '4lddvv', '13812345678', '1', '1', '1', '2018-07-07 16:01:56', '1', '2019-01-07 11:54:07');
 
 -- ----------------------------
 -- Table structure for finger_api_auth
@@ -259,7 +297,7 @@ CREATE TABLE `finger_api_auth` (
 -- Records of finger_api_auth
 -- ----------------------------
 INSERT INTO `finger_api_auth` VALUES ('1', 'app', 'APP 测试', 'appid_test', '98040e3735acce4080a5b021de4f030f', '1', '2018-06-23 08:39:28', '2018-12-05 16:40:56');
-INSERT INTO `finger_api_auth` VALUES ('2', 'admin', '管理后台密钥', 'admin_api_call', '16b36c2c513de50126144bb8085260ba', '1', '2018-07-11 09:28:36', '2018-07-17 11:00:12');
+INSERT INTO `finger_api_auth` VALUES ('2', 'admin', '管理后台密钥（访问管理接口专用）', 'admin_api_call', '16b36c2c513de50126144bb8085260ba', '1', '2018-07-11 09:28:36', '2019-01-07 11:00:08');
 
 -- ----------------------------
 -- Table structure for finger_app_upgrade
@@ -378,11 +416,12 @@ CREATE TABLE `finger_files` (
   `u_time` datetime DEFAULT NULL COMMENT '更新时间',
   `c_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`file_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文件表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='文件表';
 
 -- ----------------------------
 -- Records of finger_files
 -- ----------------------------
+INSERT INTO `finger_files` VALUES ('1', 'http://yaf-server-admin.oss-cn-shenzhen.aliyuncs.com/images/voucher/20190107/5c32f8ec154b2.png', '1', '457095', '4d39264a792fd2dc3a0a236a2c4b7d13', '1', '1', '1', '2019-01-07 14:59:56', '2019-01-07 14:59:56');
 
 -- ----------------------------
 -- Table structure for finger_link
@@ -407,26 +446,6 @@ CREATE TABLE `finger_link` (
 
 -- ----------------------------
 -- Records of finger_link
--- ----------------------------
-
--- ----------------------------
--- Table structure for finger_log
--- ----------------------------
-DROP TABLE IF EXISTS `finger_log`;
-CREATE TABLE `finger_log` (
-  `logid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `userid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户 ID',
-  `log_type` enum('api_request_response','service_error','error','service_log','none') NOT NULL DEFAULT 'none' COMMENT '日志类型：',
-  `log_dir` varchar(50) NOT NULL DEFAULT '' COMMENT '目录名称。在写入日志时，我们定义的目录名称。',
-  `log_filename` varchar(50) NOT NULL DEFAULT '' COMMENT '文件名称。我们在写日志时，定义的文件名称。',
-  `log_time` datetime NOT NULL COMMENT '日志时间',
-  `log_data` text NOT NULL COMMENT '日志内容',
-  `c_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`logid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='日志表(应该尽量保留最近一个月，定期备份日志到专业的日志系统)';
-
--- ----------------------------
--- Records of finger_log
 -- ----------------------------
 
 -- ----------------------------
@@ -585,19 +604,22 @@ CREATE TABLE `finger_sms_tpl` (
   `send_key` varchar(30) NOT NULL DEFAULT '' COMMENT '短信模板KEY',
   `title` varchar(30) NOT NULL DEFAULT '' COMMENT '短信模板标题',
   `sms_body` varchar(100) NOT NULL DEFAULT '' COMMENT '短信模板内容',
+  `trigger_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '触发类型：1-用户触发(验证码)、2-系统触发（推送通知）',
   `c_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `u_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `op_id` int(11) NOT NULL DEFAULT '0' COMMENT '最后操作者ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_sk` (`send_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='短信模板配置表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='短信模板配置表';
 
 -- ----------------------------
 -- Records of finger_sms_tpl
 -- ----------------------------
-INSERT INTO `finger_sms_tpl` VALUES ('1', 'USER_REGISTER_CODE', '注册验证码', '【Yaf-Server】验证码：%CODE%，您正在注册IT访谈，请您10分钟内完成验证，客服不会向您索取验证码，切勿告知他人。', '2018-06-24 22:47:53', '2019-01-04 17:04:44', '1');
-INSERT INTO `finger_sms_tpl` VALUES ('2', 'USER_LOGIN_CODE', '登录验证码', '【Yaf-Server】验证码：%CODE%，您正在登录IT访谈，请您10分钟内完成验证，客服不会向您索取验证码，切勿告知他人。', '2018-06-24 22:49:06', '2019-01-04 17:04:53', '1');
-INSERT INTO `finger_sms_tpl` VALUES ('3', 'ADMIN_LOGIN_CODE', '管理后台登录验证码', '【Yaf-Server】验证码：%CODE%，您正在登录IT访谈管理后台，请您10分钟内完成验证。', '2018-07-30 15:20:11', '2019-01-04 17:05:13', '1');
+INSERT INTO `finger_sms_tpl` VALUES ('1', 'USER_REGISTER_CODE', '注册验证码', '验证码：%CODE%，您正在注册账号，请您10分钟内完成验证，客服不会向您索取验证码，切勿告知他人。【Yaf-Server-Admin】', '1', '2018-06-24 22:47:53', '2019-01-07 10:47:22', '1');
+INSERT INTO `finger_sms_tpl` VALUES ('2', 'USER_LOGIN_CODE', '登录验证码', '验证码：%CODE%，您正在登录账号，请您10分钟内完成验证，客服不会向您索取验证码，切勿告知他人。【Yaf-Server-Admin】', '1', '2018-06-24 22:49:06', '2019-01-07 10:47:29', '1');
+INSERT INTO `finger_sms_tpl` VALUES ('3', 'ADMIN_LOGIN_CODE', '管理后台登录验证码', '验证码：%CODE%，请您10分钟内完成验证。【混时间】', '1', '2018-07-30 15:20:11', '2018-09-29 11:34:23', '1');
+INSERT INTO `finger_sms_tpl` VALUES ('4', 'USER_FIND_PWD', '找回密码验证码', '验证码：%CODE%，您正在找回密码，请您10分钟内完成验证，客服不会向您索取验证码，切勿告知他人。【Yaf-Server-Admin】', '1', '2018-08-15 09:59:42', '2019-01-07 10:47:32', '0');
+INSERT INTO `finger_sms_tpl` VALUES ('5', 'EXCEPTION_LOGIN', '登录登录', '您的账号%MOBILE%刚刚在异地登录。请确认是否是本人操作。如果不是本人登录，请及时修改密码。【Yaf-Server-Admin】', '2', '2018-09-14 09:15:33', '2019-01-07 10:47:35', '0');
 
 -- ----------------------------
 -- Table structure for finger_user
