@@ -53,7 +53,9 @@ class Producer extends \Services\Event\AbstractBase
             YCore::exception(STATUS_SERVER_ERROR, '系统繁忙,请稍候重试');
         }
         // [4] 写入 Redis 队列。
-        $message['event_id'] = $id;
+        $message['event_id']    = $id;
+        $message['retry_count'] = 0; // 重试次数。用于队列重试时使用。
+        $message['last_time']   = 0; // 最后重试的时间。0 代表还未重试
         $redis  = YCache::getRedisClient();
         $status = $redis->lPush(self::EVENT_QUEUE_KEY, json_encode($message, JSON_UNESCAPED_UNICODE));
         if ($status === false) {

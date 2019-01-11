@@ -9,8 +9,8 @@ namespace Services\Event\Sub;
 
 use Utils\YLog;
 use Utils\YCache;
-use Models\Event;
 use Utils\YCore;
+use Models\Event;
 
 abstract class AbstractBase extends \Services\Event\AbstractBase
 {
@@ -19,10 +19,16 @@ abstract class AbstractBase extends \Services\Event\AbstractBase
      * 
      * -- 注意
      * -- 1) 该方法只能由 PHP CLI 模式调用执行。
-     * -- 2) 执行该方法之前不要有任何的 Redis 连接操作(调用 YLog::log 写日志会自动打开 Redis)。
+     * -- 2) 执行该方法之前不要有任何的 Redis 连接操作。
      * -- 3) 如果是单进程运行该方法可以忽略第 2 点。如果是多进程运行，必须保证第二点。因为，Redis 阻塞只能由多个 Redis 连接操作。
+     *
+     * @param  string  $code        事件 CODE。
+     * @param  int     $retryCount  失败重试次数。只有服务器报错才会重试。如果是提示卡券不存在这种错误则不会。
+     * @param  int     $interval    重试间隔时间。单位(秒)。
+     *
+     * @return void
      */
-    public static function launch($code)
+    public static function launch($code, $retryCount = 0, $interval = 0)
     {
         // [1]
         $redis            = YCache::getRedisClient();
@@ -57,7 +63,12 @@ abstract class AbstractBase extends \Services\Event\AbstractBase
                     } else {
                         // [3] 调用具体的业务来处理这个消息。
                         try {
-                            static::runService($arrEventVal);
+                            if ($arrEventVal['retry_count'] == 0 || (time() - $arrEventVal['last_time'] > $interval)) {
+                                static::runService($arrEventVal);
+                            } else {
+                                usleep(100000); // 0.1 秒。如果队列里面只剩一条错误的待处理的。如果不加以暂停处理会造成 CPU 负载 100。
+                                continue;
+                            }
                             $updata = [
                                 'status' => Event::STATUS_SUCCESS,
                                 'u_time' => date('Y-m-d H:i:s', time())
@@ -76,8 +87,12 @@ abstract class AbstractBase extends \Services\Event\AbstractBase
                                     'error_msg'  => $e->getMessage()
                                 ];
                                 $EventModel->update($updata, ['id' => $arrEventVal['event_id']]);
-                                $redis->lRem($eventQueueIngKey, $strEventVal, 1);
+                            } else if ($retryCount > 0 && $arrEventVal['retry_count'] <= $retryCount) {
+                                $arrEventVal['retry_count'] += 1;
+                                $arrEventVal['last_time']    = time();
+                                $redis->lPush($eventQueueKey, json_encode($arrEventVal, JSON_UNESCAPED_UNICODE));
                             }
+                            $redis->lRem($eventQueueIngKey, $strEventVal, 1);
                             $log = [
                                 'value' => $strEventVal,
                                 'code'  => $e->getCode(),
