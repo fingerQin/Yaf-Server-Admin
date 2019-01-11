@@ -63,7 +63,7 @@ abstract class AbstractBase extends \Services\Event\AbstractBase
                     } else {
                         // [3] 调用具体的业务来处理这个消息。
                         try {
-                            if ($arrEventVal['retry_count'] == 0 || (time() - $arrEventVal['last_time'] > $interval)) {
+                            if ($arrEventVal['retry_count'] == 0 || (time() - $arrEventVal['last_time'] >= $interval)) {
                                 static::runService($arrEventVal);
                             } else {
                                 usleep(100000); // 0.1 秒。如果队列里面只剩一条错误的待处理的。如果不加以暂停处理会造成 CPU 负载 100。
