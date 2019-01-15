@@ -24,6 +24,6 @@ class DemoThread extends Thread
      */
     public function run($threadNum, $num)
     {
-        Login::launch(Event::CODE_LOGIN);
+        Login::launch(Event::CODE_LOGIN, 3, 3);
     }
 }

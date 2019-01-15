@@ -63,10 +63,15 @@ abstract class AbstractBase extends \Services\Event\AbstractBase
                     } else {
                         // [3] 调用具体的业务来处理这个消息。
                         try {
-                            if ($arrEventVal['retry_count'] == 0 || (time() - $arrEventVal['last_time'] >= $interval)) {
+                            $time     = time();
+                            $lastTime = $arrEventVal['last_time'];
+                            $diffTime = $time - $lastTime;
+                            if ($arrEventVal['retry_count'] == 0 || ($diffTime >= $interval)) {
                                 static::runService($arrEventVal);
                             } else {
-                                usleep(100000); // 0.1 秒。如果队列里面只剩一条错误的待处理的。如果不加以暂停处理会造成 CPU 负载 100。
+                                $redis->lPush($eventQueueKey, json_encode($arrEventVal, JSON_UNESCAPED_UNICODE));
+                                $redis->lRem($eventQueueIngKey, $strEventVal, 1);
+                                usleep(200000); // 0.2 秒。如果队列里面只剩一条错误的待处理的。如果不加以暂停处理会造成 CPU 负载 100。
                                 continue;
                             }
                             $updata = [
@@ -91,6 +96,14 @@ abstract class AbstractBase extends \Services\Event\AbstractBase
                                 $arrEventVal['retry_count'] += 1;
                                 $arrEventVal['last_time']    = time();
                                 $redis->lPush($eventQueueKey, json_encode($arrEventVal, JSON_UNESCAPED_UNICODE));
+                            } else { // 重试结束且依然失败。
+                                $updata = [
+                                    'status'     => Event::STATUS_FAIL,
+                                    'u_time'     => date('Y-m-d H:i:s', time()),
+                                    'error_code' => $e->getCode(),
+                                    'error_msg'  => $e->getMessage()
+                                ];
+                                $EventModel->update($updata, ['id' => $arrEventVal['event_id']]);
                             }
                             $redis->lRem($eventQueueIngKey, $strEventVal, 1);
                             $log = [
