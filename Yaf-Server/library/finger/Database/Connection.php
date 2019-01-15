@@ -201,6 +201,7 @@ class Connection
             }
         } catch (\Exception $e) {
             if ($isReconnect) {
+                YLog::log('reconnect', 'errors', 'mysql-ping');
                 $this->reconnect($dbOption);
                 return true;
             } else {
