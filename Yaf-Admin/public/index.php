@@ -10,6 +10,5 @@ define('MICROTIME', microtime());
 define('APP_PATH', dirname(dirname(__FILE__)));
 require(APP_PATH . '/config/constants.php');
 require(APP_PATH . '/vendor/autoload.php');
-error_reporting(0);
 $app = new \Yaf_Application(APP_PATH . '/config/config.ini', 'conf');
 $app->bootstrap()->run();
