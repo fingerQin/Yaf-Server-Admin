@@ -49,7 +49,7 @@ class Consumer extends \Services\Event\AbstractBase
                     $pong = $redis->ping();
                     if ($pong != '+PONG') {
                         YLog::log('Redis ping failure!postion:dispatcher', 'redis', 'ping');
-                        YCore::exception(500, 'Redis ping failure!');
+                        YCore::exception(STATUS_ERROR, 'Redis ping failure!');
                     }
                     usleep(10000);
                 }

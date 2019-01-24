@@ -94,7 +94,7 @@ class SessionHandler implements \SessionHandlerInterface {
         try {
             $sth->execute();
         } catch (\Exception $e) {
-            YCore::exception(-1, "\finger\session\mysql\SessionHandler::gc method is wrong");
+            YCore::exception(STATUS_ERROR, "\finger\session\mysql\SessionHandler::gc method is wrong");
         }
         return true;
     }

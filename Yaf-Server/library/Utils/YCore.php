@@ -15,10 +15,10 @@ class YCore
     /**
      * 抛出异常。
      * 
-     * @param  int      $errCode            错误编号。
-     * @param  string   $errMsg             错误信息。
-     * @param  string   $classNameAndMethod 出错位置执行的类与方法。当使用 try cacth 捕获异常时将捕获的异常信息传入。
-     * @param  string   $args               出错位置传入方法的参数。当使用 try cacth 捕获异常时将捕获的异常信息传入。
+     * @param  int            $errCode             错误编号。
+     * @param  string|array   $errMsg              错误信息。
+     * @param  string         $classNameAndMethod  出错位置执行的类与方法。当使用 try cacth 捕获异常时将捕获的异常信息传入。
+     * @param  string         $args                出错位置传入方法的参数。当使用 try cacth 捕获异常时将捕获的异常信息传入。
      * @throws \finger\ServiceException
      */
     public static function exception($errCode, $errMsg, $classNameAndMethod = '', $args = [])
@@ -55,14 +55,19 @@ class YCore
         // [2] 根据环境控制错误信息输出。
         $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
         $clientIP = YCore::ip();
-        $trace    = "PHP Error:{$errno}\n"
-                  . "ServerIP:{$serverIP}\n"
-                  . "ClientIP:{$clientIP}\n"
-                  . "Error Message:{$errstr}\n"
-                  . "Error File:{$errfile}\n"
-                  . "Error Line:{$errline}\n"
-                  . "StackTrace:\n{$traceStack}";
-        self::exception(STATUS_ERROR, $trace);
+
+        $logData = [
+            'Type'       => 'set_error_handler',
+            'ServerIP'   => $serverIP,
+            'ClientIP'   => $clientIP,
+            'ErrorFile'  => $errfile,
+            'ErrorLine'  => $errline,
+            'ErrorMsg'   => $errstr,
+            'ErrorNo'    => $errno, 
+            'stackTrace' => $traceStack
+        ];
+
+        self::exception(STATUS_ERROR, $logData);
         exit(0);
     }
 
@@ -94,29 +99,34 @@ class YCore
             $appDebug = self::appconfig('app.debug');
             $request  = new \Yaf_Request_Http();
             $isCli    = $request->isCli();
-            $trace    = "PHP Error:{$errInfo['type']}\n"
-                      . "ServerIP:{$serverIP}\n"
-                      . "ClientIP:{$clientIP}\n"
-                      . "Error Message:{$errInfo['message']}\n"
-                      . "Error File:{$errInfo['file']}\n"
-                      . "Error Line:{$errInfo['line']}\n"
-                      . "StackTrace:\n{$traceStack}";
-            YLog::log($trace, 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR, true);
+
+            $logData = [
+                'Type'       => 'register_shutdown_function',
+                'ServerIP'   => $serverIP,
+                'ClientIP'   => $clientIP,
+                'ErrorFile'  => $errInfo['file'],
+                'ErrorLine'  => $errInfo['line'],
+                'ErrorMsg'   => $errInfo['message'],
+                'ErrorNo'    => $errInfo['type'], 
+                'stackTrace' => $traceStack
+            ];
+
+            YLog::log($logData, 'errors', 'log', $isForceWrite = true);
             if (defined('IS_API')) {
                 header("Access-Control-Allow-Origin: *");
                 header('Content-type: application/json');
                 $data = [
                     'code' => STATUS_ERROR,
-                    'msg'  => $appDebug ? $trace : '服务器繁忙,请稍候重试'
+                    'msg'  => $appDebug ? print_r($logData, true) : '服务器繁忙,请稍候重试'
                 ];
                 YLog::writeApiResponseLog($data);
                 echo json_encode($data, JSON_UNESCAPED_UNICODE);
             } else if ($isCli) {
                 $datetime = date('Y-m-d H:i:s', time());
-                echo $datetime . "\n" . $trace;
+                echo $datetime . "\n" . print_r($logData, true);
             } else {
                 if ($appDebug) {
-                    echo $trace;
+                    echo print_r($logData, true);
                 } else {
                     header('HTTP/1.1 500 Internal Server Error');
                 }

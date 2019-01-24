@@ -115,7 +115,7 @@ class Address extends \Services\AbstractBase
         }
         $addressCount = self::getUserAddressCount($userid);
         if ($addressCount >= USER_ADDRESS_MAX_COUNT) {
-            YCore::exception(503, "最多允许创建" . USER_ADDRESS_MAX_COUNT . "个收货地址");
+            YCore::exception(STATUS_SERVER_ERROR, "最多允许创建" . USER_ADDRESS_MAX_COUNT . "个收货地址");
         }
         $data = [
             'realname'   => $realname,

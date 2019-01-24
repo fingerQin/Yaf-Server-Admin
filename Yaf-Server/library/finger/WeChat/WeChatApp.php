@@ -82,7 +82,7 @@ class WeChatApp {
      */
     public function createUserGroup($name) {
         if (strlen($name) === 0) {
-            YCore::exception(-1, '分组名称不能为空');
+            YCore::exception(STATUS_ERROR, '分组名称不能为空');
         }
         $access_token = $this->getAccessToken();
         $url = "https://api.weixin.qq.com/cgi-bin/groups/create?access_token={$access_token}";
@@ -398,14 +398,14 @@ class WeChatApp {
         $errno = curl_errno($ch);
         curl_close($ch);
         if ($errno != 0) {
-            YCore::exception(-1, 'CURL请求失败');
+            YCore::exception(STATUS_ERROR, 'CURL请求失败');
         }
         if ($response === FALSE) {
-            YCore::exception(-1, 'CURL请求失败');
+            YCore::exception(STATUS_ERROR, 'CURL请求失败');
         }
         $result = json_decode($response, true);
         if (isset($result['errcode']) && $result['errcode'] > 0) {
-            YCore::exception(-1, $result['errmsg']);
+            YCore::exception(STATUS_ERROR, $result['errmsg']);
         }
         return $result;
     }

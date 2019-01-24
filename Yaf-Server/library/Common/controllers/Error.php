@@ -42,14 +42,18 @@ class Error extends \Common\controllers\Common
             if (YCore::appconfig('app.debug')) { // 调试模式会输出具体的错误。
                 $errMsg = ($errCode != STATUS_ERROR) ? $errMsg : $exception->__toString();
             }
-            YLog::log($exception->__toString(), 'serviceErr', 'log', YLog::LOG_TYPE_SERVICE_ERROR);
+            if ($errCode == STATUS_ERROR) {
+                YLog::log($exception->log(), 'errors', 'log');
+            } else {
+                YLog::log($exception->log(), 'serviceErr', 'log');
+            }
         } else {
             $errCode = STATUS_ERROR;
             $errMsg  = $this->errMsgTpl[$errCode];
             if (YCore::appconfig('app.debug')) { // 调试模式会输出具体的错误。
                 $errMsg = $exception->__toString();
             }
-            YLog::log($exception->__toString(), 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR);
+            YLog::log($exception->__toString(), 'errors', 'log');
         }
 
         // [2] 根据是不同的请求类型响应不的数据。
@@ -64,7 +68,7 @@ class Error extends \Common\controllers\Common
         } else if ($this->_request->isCli()) {
             echo "ErrorDate:" . date('Y-m-d H:i:s', time()) . "\n";
             echo "ErrorCode:{$errCode}\n";
-            echo "ErrorMsg:" . $exception->__toString();           
+            echo "ErrorMsg:" . $exception->__toString();
             $this->end();
         } else {
             $this->error("{$errMsg}", '', 0);

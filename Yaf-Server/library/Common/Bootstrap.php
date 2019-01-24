@@ -71,13 +71,5 @@ class Bootstrap extends \Yaf_Bootstrap_Abstract
      */
     public function _initAccessLog(\Yaf_Dispatcher $dispatcher)
     {
-        $request    = $dispatcher->getRequest();
-        $ip         = YCore::ip();
-        $url        = YUrl::getUrl();
-        $postParams = $request->getPost();
-        // 因为 API 已经记录了访问日志。这里不再记录。
-        // if (PHP_SAPI != 'cli') { // CLI 模式不记录访问日志。
-        //     YLog::log(['ip' => $ip, 'url' => $url, 'params' => $postParams], 'accessLog', 'log');
-        // }
     }
 }

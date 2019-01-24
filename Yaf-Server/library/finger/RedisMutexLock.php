@@ -36,7 +36,7 @@ class RedisMutexLock
     public static function lock($key, $timeout = 0, $lockSecond = 20, $sleep = 100000)
     {
         if (strlen($key) === 0) {
-            YCore::exception(500, '缓存KEY没有设置');
+            YCore::exception(STATUS_ERROR, '缓存KEY没有设置');
         }
         $start = self::getMicroTime();
         $redis = self::getRedis();
@@ -63,7 +63,7 @@ class RedisMutexLock
     public static function release($key)
     {
         if (strlen($key) === 0) {
-            YCore::exception(500, '缓存KEY没有设置');
+            YCore::exception(STATUS_ERROR, '缓存KEY没有设置');
         }
         $redis = self::getRedis();
         $redis->del("Lock:{$key}");

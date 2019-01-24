@@ -118,7 +118,7 @@ abstract class AbstractBase extends \Services\Event\AbstractBase
                     $pong = $redis->ping();
                     if ($pong != '+PONG') {
                         YLog::log('Redis ping failure!', 'redis', 'ping');
-                        YCore::exception(500, 'Redis ping failure!');
+                        YCore::exception(STATUS_ERROR, 'Redis ping failure!');
                     }
                     $EventModel->ping();
                     usleep(100000);

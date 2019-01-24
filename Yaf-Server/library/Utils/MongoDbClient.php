@@ -67,6 +67,6 @@ class MongoDbClient
 
     private function __clone()
     {
-        YCore::exception(500, '不能克隆对象');
+        YCore::exception(STATUS_ERROR, '不能克隆对象');
     }
 }
