@@ -11,8 +11,8 @@ namespace finger;
 
 use Utils\YCore;
 
-class Log {
-
+class Log
+{
     /**
      * 当前对象实例。
      *

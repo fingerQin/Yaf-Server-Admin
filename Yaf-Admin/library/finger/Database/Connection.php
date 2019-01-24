@@ -185,7 +185,7 @@ class Connection
             $dbOption = $this->dbOption;
         }
         if (!$this->dbConnection) {
-            YCore::exception(-1, '请正确连接数据库');
+            YCore::exception(STATUS_ERROR, '请正确连接数据库');
         }
         try {
             $info = $this->dbConnection->getAttribute(\PDO::ATTR_SERVER_INFO);
@@ -201,6 +201,7 @@ class Connection
             }
         } catch (\Exception $e) {
             if ($isReconnect) {
+                YLog::log('reconnect', 'errors', 'mysql-ping');
                 $this->reconnect($dbOption);
                 return true;
             } else {
@@ -257,7 +258,7 @@ class Connection
      */
     protected function openTransactionFailed()
     {
-        YCore::exception(-1, 'Open transaction failure');
+        YCore::exception(STATUS_ERROR, 'Open transaction failure');
     }
 
     /**
@@ -266,7 +267,7 @@ class Connection
      */
     protected function commitTransactionFailed()
     {
-        YCore::exception(-1, 'Transaction commit failure');
+        YCore::exception(STATUS_ERROR, 'Transaction commit failure');
     }
 
     /**
@@ -275,7 +276,7 @@ class Connection
      */
     protected function rollbackTransactionFailed()
     {
-        YCore::exception(-1, 'Transaction rollback failed');
+        YCore::exception(STATUS_ERROR, 'Transaction rollback failed');
     }
 
     /**
@@ -327,7 +328,7 @@ class Connection
     public function __destruct()
     {
         if (YCore::appconfig('app.debug')) {
-            YLog::log($this->runSqlRecords, 'sql', 'log', YLog::LOG_TYPE_NONE);
+            YLog::log($this->runSqlRecords, 'sql', 'log');
         }
     }
 }

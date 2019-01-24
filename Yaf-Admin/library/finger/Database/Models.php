@@ -332,7 +332,7 @@ class Models
     {
         $this->checkTableName();
         if (empty($data)) {
-            YCore::exception(-1, "Insert the data parameter can't be empty", false);
+            YCore::exception(STATUS_ERROR, "Insert the data parameter can't be empty", false);
         }
         $this->checkInsertTime($data, 'insert');
         $columnCondition = '';
@@ -389,7 +389,7 @@ class Models
         $this->checkTableName();
         $this->checkWhere($where);
         if (empty($data)) {
-            YCore::exception(-1, 'Update the data parameter can\'t be empty');
+            YCore::exception(STATUS_ERROR, 'Update the data parameter can\'t be empty');
         }
         $this->checkInsertTime($data, 'update');
         // [2] SET 条件生成。
@@ -511,20 +511,20 @@ class Models
         }
         foreach ($arrWhere as $field => $item) {
             if (!is_string($field)) {
-                YCore::exception(-1, "The keys of the where clause for corresponding values ({$field}) is not a string type");
+                YCore::exception(STATUS_ERROR, "The keys of the where clause for corresponding values ({$field}) is not a string type");
             }
             if (is_string($item) || is_numeric($item)) {
                 $where .= " AND `{$field}` = :{$field} ";
                 $params[":{$field}"] = $item;
             } else if (is_array($item)) {
                 if (empty($item)) {
-                    YCore::exception(-1, "The keys of the where clause for corresponding values ({$field}) is not a array type");
+                    YCore::exception(STATUS_ERROR, "The keys of the where clause for corresponding values ({$field}) is not a array type");
                 }
                 if (!isset($item[0])) {
-                    YCore::exception(-1, "The field {$field} is not set conditions for operation symbols");
+                    YCore::exception(STATUS_ERROR, "The field {$field} is not set conditions for operation symbols");
                 }
                 if (!is_string($item[0]) && !is_numeric($item[0])) {
-                    YCore::exception(-1, "The field {$field} must be a string type");
+                    YCore::exception(STATUS_ERROR, "The field {$field} must be a string type");
                 }
                 $ops = trim(strtolower($item[0]));
                 switch ($ops) {
@@ -537,10 +537,10 @@ class Models
                     case '<>'   :
                     case 'like' :
                         if (!isset($item[1])) {
-                            YCore::exception(-1, "The field {$field} is not set conditions for value");
+                            YCore::exception(STATUS_ERROR, "The field {$field} is not set conditions for value");
                         }
                         if (!is_string($item[1]) && !is_numeric($item[1])) {
-                            YCore::exception(-1, "The field {$field} must be a string type");
+                            YCore::exception(STATUS_ERROR, "The field {$field} must be a string type");
                         }
                         $where .= " AND `{$field}` {$ops} :{$field} ";
                         $params[":{$field}"] = $item[1];
@@ -548,10 +548,10 @@ class Models
                     case 'in' :
                     case 'not in' :
                         if (!isset($item[1])) {
-                            YCore::exception(-1, "The field {$field} is not set conditions for value");
+                            YCore::exception(STATUS_ERROR, "The field {$field} is not set conditions for value");
                         }
                         if (!is_array($item[1])) {
-                            YCore::exception(-1, "The field {$field} must be a array type");
+                            YCore::exception(STATUS_ERROR, "The field {$field} must be a array type");
                         }
                         if (empty($item[1])) {
                             continue;
@@ -566,26 +566,26 @@ class Models
                         break;
                     case 'between':
                         if (!isset($item[1])) {
-                            YCore::exception(-1, "The field {$field} is not set conditions for value");
+                            YCore::exception(STATUS_ERROR, "The field {$field} is not set conditions for value");
                         }
                         if (!is_array($item[1])) {
-                            YCore::exception(-1, "The field {$field} must be a array type");
+                            YCore::exception(STATUS_ERROR, "The field {$field} must be a array type");
                         }
                         if (empty($item[1])) {
-                            YCore::exception(-1, "This field's({$field}) between scope values must be set");
+                            YCore::exception(STATUS_ERROR, "This field's({$field}) between scope values must be set");
                         }
                         if (!isset($item[1][0])) {
-                            YCore::exception(-1, "The between left value of this field({$field}) must be set");
+                            YCore::exception(STATUS_ERROR, "The between left value of this field({$field}) must be set");
                         }
                         if (!isset($item[1][1])) {
-                            YCore::exception(-1, "The between right value of this field({$field}) must be set");
+                            YCore::exception(STATUS_ERROR, "The between right value of this field({$field}) must be set");
                         }
                         $where .= " AND `{$field}` BETWEEN :{$field}_0 AND :{$field}_1 ";
                         $params[":{$field}_0"] = $item[1][0];
                         $params[":{$field}_1"] = $item[1][1];
                         break;
                     default :
-                        YCore::exception(-1, "{$ops} operator does not exist");
+                        YCore::exception(STATUS_ERROR, "{$ops} operator does not exist");
                         break;
                 }
             }
@@ -656,7 +656,7 @@ class Models
     protected function checkTableName()
     {
         if (!is_string($this->tableName) || strlen($this->tableName) === 0) {
-            YCore::exception(-1, 'The tableName parameters is wrong');
+            YCore::exception(STATUS_ERROR, 'The tableName parameters is wrong');
         }
         return true;
     }
@@ -669,7 +669,7 @@ class Models
     protected function checkOrderBy($orderBy)
     {
         if (!is_string($orderBy)) {
-            YCore::exception(-1, 'The orderBy parameters is wrong');
+            YCore::exception(STATUS_ERROR, 'The orderBy parameters is wrong');
         }
         return true;
     }
@@ -682,7 +682,7 @@ class Models
     protected function checkWhere(array $where)
     {
         if (empty($where)) {
-            YCore::exception(-1, 'The where parameters is wrong');
+            YCore::exception(STATUS_ERROR, 'The where parameters is wrong');
         }
         return true;
     }
@@ -695,7 +695,7 @@ class Models
     protected function checkLimit($limit)
     {
         if (!is_numeric($limit)) {
-            YCore::exception(-1, 'The limit parameter is wrong');
+            YCore::exception(STATUS_ERROR, 'The limit parameter is wrong');
         }
         return true;
     }
@@ -708,7 +708,7 @@ class Models
     protected function checkGroupBy($groupBy)
     {
         if (!is_string($groupBy)) {
-            YCore::exception(-1, 'The groupBy parameter is wrong');
+            YCore::exception(STATUS_ERROR, 'The groupBy parameter is wrong');
         }
         return true;
     }
@@ -720,7 +720,7 @@ class Models
     protected function checkStatement()
     {
         if (empty($this->stmt)) {
-            YCore::exception(-1, 'The PDO statement not instantiate');
+            YCore::exception(STATUS_ERROR, 'The PDO statement not instantiate');
         }
         return true;
     }

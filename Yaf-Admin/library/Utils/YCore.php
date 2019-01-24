@@ -59,6 +59,7 @@ class YCore
         // [2] 根据环境控制错误信息输出。
         $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
         $clientIP = YCore::ip();
+
         $appDebug = self::appconfig('app.debug');
         $trace    = "PHP Error:{$errno}\n"
                   . "ServerIP:{$serverIP}\n"
@@ -67,8 +68,19 @@ class YCore
                   . "Error File:{$errfile}\n"
                   . "Error Line:{$errline}\n"
                   . "StackTrace:\n{$traceStack}";
+
+        $logData = [
+            'Type'       => 'set_error_handler',
+            'ServerIP'   => $serverIP,
+            'ClientIP'   => $clientIP,
+            'ErrorFile'  => $errfile,
+            'ErrorLine'  => $errline,
+            'ErrorMsg'   => $errstr,
+            'ErrorNo'    => $errno, 
+            'stackTrace' => $traceStack
+        ];
         // [3] 根据不同的环境配置打日志。
-        YLog::log($trace, 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR, true);
+        YLog::log($logData, 'errors', 'log', true);
         $request = new \Yaf_Request_Http();
         $isAjax  = $request->isXmlHttpRequest();
         if ($isAjax) {
@@ -113,6 +125,7 @@ class YCore
                     $traceStack .= "#{$debug['file']} line {$debug['line']}\n";
                 }
             }
+
             // [2] 根据环境配置输出不同错误信息。
             $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
             $clientIP = YCore::ip();
@@ -123,7 +136,18 @@ class YCore
                       . "Error Message:{$errInfo['message']}\n"
                       . "Error File:{$errInfo['file']}\n"
                       . "Error Line:{$errInfo['line']}";
-            YLog::log($trace, 'errors', 'log', YLog::LOG_TYPE_SYSTEM_ERROR, true);
+
+            $logData = [
+                'Type'       => 'register_shutdown_function',
+                'ServerIP'   => $serverIP,
+                'ClientIP'   => $clientIP,
+                'ErrorFile'  => $errInfo['file'],
+                'ErrorLine'  => $errInfo['line'],
+                'ErrorMsg'   => $errInfo['message'],
+                'ErrorNo'    => $errInfo['type'], 
+                'stackTrace' => $traceStack
+            ];
+            YLog::log($logData, 'errors', 'log', true);
             // [3]
             $request = new \Yaf_Request_Http();
             $isAjax  = $request->isXmlHttpRequest();
