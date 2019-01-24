@@ -9,10 +9,13 @@
 
 namespace finger;
 
+use Utils\YCore;
+
 class ServiceException extends \Exception
 {
     protected $classNameAndMethod = '';
     protected $methodArgs         = [];
+    protected $log                = [];
 
     /**
      * 构造方法。
@@ -26,7 +29,12 @@ class ServiceException extends \Exception
     public function __construct($message, $code = 0, $classNameAndMethod = '', $args = [], Exception $previous = null)
     {
         $code = intval($code);
-        parent::__construct($message, $code, $previous);
+        if (is_array($message)) {
+            $this->log = $message;
+            parent::__construct($message['stackTrace'], $code, $previous);
+        } else {
+            parent::__construct($message, $code, $previous);
+        }
         $this->classNameAndMethod = $classNameAndMethod;
         $this->methodArgs         = $args;
     }
@@ -59,5 +67,36 @@ class ServiceException extends \Exception
     public function getArgs()
     {
         return $this->methodArgs;
+    }
+
+    /**
+     * 获取日志数据格式。
+     *
+     * @return void
+     */
+    public function log()
+    {
+        if (!empty($this->log)) {
+            $this->log['ErrorCode'] = $this->code;
+            $this->log['Method']    = $this->classNameAndMethod;
+            $this->log['Params']    = $this->methodArgs;
+            return $this->log;
+        } else {
+            $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
+            $clientIP = YCore::ip();
+            return [
+                'Type'       => 'ServiceException',
+                'ErrorCode'  => $this->code,
+                'ServerIP'   => $serverIP,
+                'ClientIP'   => $clientIP,
+                'Method'     => $this->classNameAndMethod,
+                'Params'     => $this->methodArgs,
+                'ErrorFile'  => '',
+                'ErrorLine'  => '',
+                'ErrorMsg'   => $this->message,
+                'ErrorNo'    => 0, 
+                'stackTrace' => $this->getTraceAsString()
+            ];
+        }
     }
 }
