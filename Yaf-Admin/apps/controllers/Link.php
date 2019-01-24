@@ -46,7 +46,7 @@ class LinkController extends \Common\controllers\Admin
         }
         $list = Category::list(0, 2);
         if (empty($list)) {
-            YCore::exception(-1, '请立即创建友情链接分类');
+            YCore::exception(STATUS_ERROR, '请立即创建友情链接分类');
         }
         $filesDomainName = YUrl::getFilesDomainName();
         $this->assign('cat_list', $list);
@@ -73,7 +73,7 @@ class LinkController extends \Common\controllers\Admin
         $list   = Category::list(0, 2);
         $this->assign('detail', $detail);
         if (empty($list)) {
-            YCore::exception(-1, '请立即创建友情链接分类');
+            YCore::exception(STATUS_ERROR, '请立即创建友情链接分类');
         }
         $filesDomainName = YUrl::getFilesDomainName();
         $this->assign('cat_list', $list);

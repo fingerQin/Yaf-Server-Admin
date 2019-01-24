@@ -73,7 +73,7 @@ class YForm
     public static function select($name, array $data, $selectedValue = null, $className = '', $idName = '', $isOutput = true)
     {
         if (empty($data)) {
-            YCore::exception(- 1, '下拉数据不能为空');
+            YCore::exception(STATUS_ERROR, '下拉数据不能为空');
         }
         $className    = (strlen($className) > 0) ? " class=\"{$className}\"" : '';
         $idName       = (strlen($idName) > 0) ? " id=\"{$idName}\"" : '';

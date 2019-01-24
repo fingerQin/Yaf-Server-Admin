@@ -117,7 +117,7 @@ class YUrl
             $query .= "{$controllerName}/";
         }
         if (strlen($actionName) === 0) {
-            YCore::exception(-1, 'actionName error');
+            YCore::exception(STATUS_ERROR, 'actionName error');
         }
         $query .= $actionName;
         if ($params) {

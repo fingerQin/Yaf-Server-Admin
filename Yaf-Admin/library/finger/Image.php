@@ -71,7 +71,7 @@ class Image
                 $class = 'Imagick';
                 break;
             default :
-                YCore::exception(-1, '不支持的图片处理库类型');
+                YCore::exception(STATUS_ERROR, '不支持的图片处理库类型');
         }
 
         /* 引入处理库，实例化图片处理对象 */
