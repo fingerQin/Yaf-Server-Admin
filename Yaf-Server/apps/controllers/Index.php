@@ -27,11 +27,12 @@ class IndexController extends \Common\controllers\Api
         ];
         // [3]
         $apiObj = Factory::factory($params);
-        $result = $apiObj->renderJson();
-        // [4]
+        $result = $apiObj->getResult();
+        // [4] 记录响应日志。
         \Utils\YLog::writeApiResponseLog($result);
-        echo $result;
-        // [5]
+        // [5] 输出结果。
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
+        // [6]
         $this->end();
     }
 }

@@ -156,6 +156,16 @@ abstract class AbstractApi
     }
 
     /**
+     * 返回结果。
+     *
+     * @return array
+     */
+    public function getResult()
+    {
+        return $this->result;
+    }
+
+    /**
      * 返回接口结果。
      *
      * @return void
