@@ -10,6 +10,12 @@ namespace Utils;
 class YLog
 {
     /**
+     * 日志记录类型。
+     */
+    const LOG_WRITE_TYPE_RAW  = 'raw';  // 原生。
+    const LOG_WRITE_TYPE_JSON = 'json'; // JSON。
+
+    /**
      * 写日志。
      * 
      * @param  string|array  $logContent    日志内容。
@@ -45,7 +51,11 @@ class YLog
             \Utils\YDir::create($logPath);
             $logPath  = $logPath . $logfile . '.log';
         }
-        $logCtx = json_encode($logContent, JSON_UNESCAPED_UNICODE) . "\n\n";
+        if (YCore::appconfig('log.type') == self::LOG_WRITE_TYPE_JSON) {
+            $logCtx = json_encode($logContent, JSON_UNESCAPED_UNICODE) . "\n\n";
+        } else {
+            $logCtx = print_r($logContent, true) . "\n\n";
+        }
         $logObj = \finger\Log::getInstance();
         $logObj->write($logCtx, $logPath, $isForceWrite);
     }
