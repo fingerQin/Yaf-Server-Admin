@@ -20,7 +20,7 @@ class YLog
     public static function writeApiRequestLog($params)
     {
         ksort($params);
-        $GLOBALS['Yaf-Server-api'] = $params;
+        $GLOBALS['Server-api'] = $params;
     }
 
     /**
@@ -37,7 +37,7 @@ class YLog
             'request'  => $requestLog,
             'response' => $result
         ];
-        unset($GLOBALS['Yaf-Server-api']);
+        unset($GLOBALS['Server-api']);
         self::log($log, 'apis', 'log');
     }
 
