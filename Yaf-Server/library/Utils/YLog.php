@@ -12,6 +12,12 @@ use Models\Log;
 class YLog
 {
     /**
+     * 日志记录类型。
+     */
+    const LOG_WRITE_TYPE_RAW  = 'raw';  // 原生。
+    const LOG_WRITE_TYPE_JSON = 'json'; // JSON。
+
+    /**
      * 记录 API 接口请求日志。
      * 
      * @param  array  $params  请求参数。
@@ -65,7 +71,6 @@ class YLog
                 'content'   => $logContent
             ];
         }
-        
         $logfile = date('Ymd', $time);
         if (strlen($logDir) > 0 && strlen($logFilename) > 0) {
             $logDir   = trim($logDir, '/');
@@ -77,7 +82,11 @@ class YLog
             \Utils\YDir::create($logPath);
             $logPath  = $logPath . $logfile . '.log';
         }
-        $logCtx = json_encode($logContent, JSON_UNESCAPED_UNICODE) . "\n\n";
+        if (YCore::appconfig('log.type') == self::LOG_WRITE_TYPE_JSON) {
+            $logCtx = json_encode($logContent, JSON_UNESCAPED_UNICODE) . "\n\n";
+        } else {
+            $logCtx = print_r($logContent, true) . "\n\n";
+        }
         $logObj = \finger\Log::getInstance();
         $logObj->write($logCtx, $logPath, $isForceWrite);
     }
