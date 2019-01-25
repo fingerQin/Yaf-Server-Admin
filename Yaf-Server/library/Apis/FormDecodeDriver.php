@@ -38,8 +38,8 @@ class FormDecodeDriver
         ksort($params);
         $str = '';
         foreach ($params as $key => $value) {
-            if (is_string($value)) {
-                $str .= "{$key}{$value}"; // 提交的数组不计入签名运算。
+            if (!is_array($value)) {
+                $str .= "{$key}{$value}"; // 非数组的值才能进行签名。
             }
         }
         $str    = $str . $apiSecret;
