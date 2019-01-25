@@ -129,7 +129,7 @@ class AdminUser extends \Services\AbstractBase
             'roleid'      => $roleid,
             'user_status' => AdminUserModel::STATUS_YES,
             'c_by'        => $adminId,
-            'u_by'        => $adminId,
+            'u_by'        => $adminId
         ];
         $AdminUserModel = new AdminUserModel();
         $status         = $AdminUserModel->insert($data);
@@ -304,7 +304,10 @@ class AdminUser extends \Services\AbstractBase
     protected static function isExistMobile($mobilephone, $isNewCreate = false, $adminId = 0)
     {
         $AdminUserModel = new AdminUserModel();
-        $adminInfo      = $AdminUserModel->fetchOne([], ['mobile' => $mobilephone, 'user_status' => AdminUserModel::STATUS_YES]);
+        $adminInfo      = $AdminUserModel->fetchOne([], [
+            'mobile'      => $mobilephone, 
+            'user_status' => AdminUserModel::STATUS_YES
+        ]);
         if (!empty($adminInfo)) {
             if ($isNewCreate) {
                 if ($adminInfo['adminid'] != $adminId) {

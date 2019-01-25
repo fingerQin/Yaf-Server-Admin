@@ -8,9 +8,9 @@
 
 namespace Services\Power;
 
+use Utils\YCore;
 use finger\Validator;
 use finger\Database\Db;
-use Utils\YCore;
 use Models\AdminMenu;
 use Models\AdminRolePriv;
 
@@ -25,7 +25,7 @@ class Menu extends \Services\AbstractBase
      */
     public static function getRoleSubMenu($roleid, $parentid)
     {
-        if ($roleid == 1) { // 超级管理员验证角色权限。
+        if ($roleid == ROOT_ROLE_ID) { // 超级管理员验证角色权限。
             return self::getSubMenu($parentid);
         } else {
             $sql = 'SELECT b.* FROM finger_admin_role_priv AS a INNER JOIN finger_admin_menu AS b '
@@ -163,7 +163,7 @@ class Menu extends \Services\AbstractBase
      */
     public static function checkRoleHasMenu($roleid, $ctrl, $action)
     {
-        if ($roleid == 1) { // 超级管理员无敌权限。
+        if ($roleid == ROOT_ROLE_ID) { // 超级管理员无敌权限。
             return true;
         }
         $roleMenus = self::getRoleAllMenu($roleid);
@@ -404,7 +404,7 @@ class Menu extends \Services\AbstractBase
      */
     public static function checkMenuPower($roleid, $ctrlName, $actionName)
     {
-        if ($roleid == 1) {
+        if ($roleid == ROOT_ROLE_ID) {
             return true; // 超级管理员组拥有绝对的权限。
         }
         $AdminMenuModel = new AdminMenu();
