@@ -571,25 +571,24 @@ CREATE TABLE `finger_sms_sendlog` (
   `mobile` varchar(15) NOT NULL DEFAULT '' COMMENT '手机号码',
   `content` varchar(255) NOT NULL DEFAULT '' COMMENT '短信内容',
   `tpl_id` mediumint(9) NOT NULL DEFAULT '0' COMMENT '短信模板ID',
-  `r_code` varchar(50) NOT NULL DEFAULT '' COMMENT '回调code',
-  `r_desc` varchar(255) NOT NULL DEFAULT '' COMMENT '回调内容',
+  `error_msg` varchar(255) NOT NULL DEFAULT '' COMMENT '回调内容',
   `sms_status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：1-创建|2-发送成功|3-发送失败',
   `channel_id` mediumint(9) NOT NULL DEFAULT '0' COMMENT '短信通道标识',
-  `channel_title` varchar(255) NOT NULL DEFAULT '' COMMENT '通道名称',
-  `c_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `s_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '发送时间',
   `verify_code` varchar(10) NOT NULL DEFAULT '' COMMENT '验证码',
   `cksms` tinyint(4) NOT NULL DEFAULT '2' COMMENT '1已验证通过，2为未使用，3验证码已失效（验证大于等于3次）。',
   `sms_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1手机短信，2语音短信',
   `platform` tinyint(4) NOT NULL DEFAULT '0' COMMENT '平台类型设备(1-ios;2-android;3-wap;4-PC)',
   `ip` varchar(50) NOT NULL DEFAULT '' COMMENT 'IP地址',
-  `msg_id` varchar(15) NOT NULL DEFAULT '' COMMENT '第三方短信发送ID',
+  `c_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_t` (`mobile`),
   KEY `idx_smss` (`sms_status`),
   KEY `idx_ct` (`c_time`),
-  KEY `idx_st` (`s_time`)
+  KEY `idx_st` (`s_time`),
+  KEY `ip` (`ip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统短信日志';
+
 
 -- ----------------------------
 -- Records of finger_sms_sendlog
