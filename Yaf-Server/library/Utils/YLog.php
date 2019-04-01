@@ -7,8 +7,6 @@
 
 namespace Utils;
 
-use Models\Log;
-
 class YLog
 {
     /**
