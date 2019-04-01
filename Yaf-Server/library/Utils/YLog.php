@@ -83,7 +83,7 @@ class YLog
             $logPath  = $logPath . $logfile . '.log';
         }
         if (YCore::appconfig('log.type') == self::LOG_WRITE_TYPE_JSON) {
-            $logCtx = json_encode($logContent, JSON_UNESCAPED_UNICODE) . "\n\n";
+            $logCtx = json_encode($logContent, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) . "\n\n";
         } else {
             $logCtx = print_r($logContent, true) . "\n\n";
         }
