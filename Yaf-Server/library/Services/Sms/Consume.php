@@ -32,33 +32,16 @@ class Consume extends \Services\Sms\AbstractBase
         try {
             // [2] 因进程异常退出导致短信队列消费延迟。则不再进行第二次发送。
             $redis->delete($queueIng);
-            $channelConf     = [];
             $SmsSendLogModel = new SmsSendLog();
-            $switch          = YCore::appconfig('sms.is_send_sms');
+            $switch = YCore::appconfig('sms.is_send_sms');
             // [3]
             while (true) {
                 $str = $redis->bRPopLPush($queueKey, $queueIng, 60);
                 if (!empty($str)) {
                     $arrValue = json_decode($str, true);
                     try {
-                        // 项目配置文件当中 sms.switch 判断。
-                        if ($switch == 1) {
-                            // 防止修改表优先级无效，因此放到循环中
-                            $channelConf = self::getSmsChannelConf();
-                            self::sendRealSms($arrValue['mobile'], $arrValue['content'], $channelConf);
-                            YLog::log("sms::mobile::{$arrValue['mobile']}:{{$arrValue['id']}}:ok", 'sms', 'sys_send_consume');
-                        } else {
-                            YLog::log("sms:: 短信配置关闭状态,短信不会真实发送", 'sms', 'sys_send_consume');
-                        }
-                        // 更新短信日志
+                        self::send($switch, $arrValue['id'], $arrValue['mobile'], $arrValue['content']);
                         $redis->lRem($queueIng, $str, 1);
-                        $updata = [
-                            'error_msg'  => '发送成功',
-                            'sms_status' => SmsSendLog::SEND_STATUS_SENT,
-                            's_time'     => date('Y-m-d H:i:s', time()),
-                            'channel_id' => YInput::getInt($channelConf, 'channel_id', 0)
-                        ];
-                        $SmsSendLogModel->update($updata, ['id' => $arrValue['id']]);
                     } catch (\Throwable $e) {
                         $redis->lRem($queueIng, $str, 1);
                         $log = [
@@ -66,13 +49,9 @@ class Consume extends \Services\Sms\AbstractBase
                             'errmsg' => $e->getMessage()
                         ];
                         YLog::log($log, 'sms', 'error');
-                        $updata = [
-                            'error_msg'  => mb_substr($e->getMessage(), 0, 255, 'UTF-8'),
-                            'sms_status' => SmsSendLog::SEND_STATUS_FAILD,
-                            's_time'     => date('Y-m-d H:i:s', time()),
-                            'channel_id' => YInput::getInt($channelConf, 'channel_id', 0)
-                        ];
-                        $SmsSendLogModel->update($updata, ['id' => $arrValue['id']]);
+                        $errCode = $e->getCode();
+                        $errMsg = mb_substr($e->getMessage(), 0, 255, 'UTF-8');
+                        self::updateSendStatus($arrValue['id'], 0, $errCode, $errMsg, false);
                     }
                 } else {
                     $SmsSendLogModel->ping();
@@ -89,15 +68,67 @@ class Consume extends \Services\Sms\AbstractBase
             ];
             YLog::log($log, 'sms', 'error');
             if (!empty($arrValue)) {
-                $updateData = [
-                    'sms_status' => SmsSendLog::SEND_STATUS_FAILD,
-                    's_time'     => date('Y-m-d H:i:s'),
-                    'channel_id' => 0,
-                    'error_msg'  => mb_substr($errorMsg, 0, 255, 'UTF-8'),
-                ];
-                $SmsSendLogModel->update($updateData, ['id' => $arrValue['id']]);
+                $errCode = $e->getCode();
+                $errMsg = mb_substr($errorMsg, 0, 255, 'UTF-8');
+                self::updateSendStatus($arrValue['id'], 0, $errCode, $errMsg, false);
             }
             echo $errorMsg . "\n";
+        }
+    }
+
+    /**
+     * 发送短信。
+     *
+     * @param  int     $isSend   是否真实发送短信。
+     * @param  int     $id       短信记录 ID。
+     * @param  string  $mobile   手机号。
+     * @param  string  $content  短信内容。
+     *
+     * @return bool true-成功、false-失败。
+     */
+    protected static function send($isSend, $id, $mobile, $content)
+    {
+        try {
+            if ($isSend) {
+                // 防止修改表优先级无效，因此放到循环中
+                $channelConf = self::getSmsChannelConf();
+                self::sendRealSms($mobile, $content, $channelConf);
+                YLog::log("sms::mobile::{$mobile}:{$content}:ok", 'sms', 'sys_send_consume');
+            } else {
+                YLog::log("sms:: 短信配置关闭状态,短信不会真实发送", 'sms', 'sys_send_consume');
+            }
+            $channelId = YInput::getInt($channelConf, 'channel_id', 0);
+            self::updateSendStatus($id, $channelId, 0, '发送成功', true);
+            return true;
+        } catch (\Exception $e) {
+            self::updateSendStatus($id, $channelId, 0, '发送失败', false);
+            return false;
+        }
+    }
+
+    /**
+     * 更新短信发送状态。
+     *
+     * @param  int     $id         短信记录 ID。
+     * @param  int     $channelId  短信渠道 ID。
+     * @param  int     $errCode    错误码。
+     * @param  string  $errMsg     错误消息。
+     * @param  bool    $status     发送状态。
+     *
+     * @return void
+     */
+    protected static function updateSendStatus($id, $channelId, $errCode, $errMsg, $status)
+    {
+        $updata = [
+            'error_code' => $errCode,
+            'error_msg'  => $errMsg,
+            'sms_status' => $status ? SmsSendLog::SEND_STATUS_SENT : SmsSendLog::SEND_STATUS_FAILD,
+            's_time'     => date('Y-m-d H:i:s', time()),
+            'channel_id' => $channelId
+        ];
+        $affectRows = (new SmsSendLog())->update($updata, ['id' => $id]);
+        if ($affectRows == 0) {
+            YLog::log("短信记录更新失败:id->{$id}", 'sms', 'sms_log_table');
         }
     }
 

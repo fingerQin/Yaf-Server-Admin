@@ -28,7 +28,7 @@ class Sms extends \Services\Sms\AbstractBase
      *
      * @return void
      */
-    public static function send($mobile, $smsType, $sendIp = '', $platform, $replaceArr = [])
+    public static function send($mobile, $smsType, $sendIp = '', $platform = 0, $replaceArr = [])
     {
         // [1]
         $sendIp = (strlen($sendIp) > 0) ? $sendIp : YCore::ip();
@@ -46,9 +46,9 @@ class Sms extends \Services\Sms\AbstractBase
                 YCore::exception(STATUS_SERVER_ERROR, '您的手机号码暂时无法接收短信');
             }
         }
-        // [3] 开发机或内部手机号码验证码为 123456.
+        // [3] 开发机码验证码为 123456.
         $code = rand(100000, 999999);
-        if (YCore::appconfig('app.env') == 'dev' || $isInsideMobile) {
+        if (YCore::appconfig('app.env') == ENV_DEV) {
             $code = 123456;
         }
         // 获取发送模板
@@ -73,13 +73,13 @@ class Sms extends \Services\Sms\AbstractBase
             YLog::log($data, 'sms', 'error');
             YCore::exception(STATUS_SERVER_ERROR, '短信发送失败');
         }
-        $queueData = [
-            'mobile'  => $mobile,
-            'content' => $result['content'],
-            'id'      => $id
-        ];
-        if (!$isInsideMobile && YCore::appconfig('app.env')) { // 内部手机号码不发送短信。
+        if (YCore::appconfig('app.env') != ENV_DEV) {
             self::clearVerifyTimesKey($mobile, $smsType);
+            $queueData = [
+                'mobile'  => $mobile,
+                'content' => $result['content'],
+                'id'      => $id
+            ];
             Queue::pushSmsQueue($queueData);
         }
     }
@@ -119,13 +119,15 @@ class Sms extends \Services\Sms\AbstractBase
             YLog::log($data, 'sms', 'error');
             YCore::exception(STATUS_SERVER_ERROR, '短信发送失败');
         }
-        // 短信入队列服务
-        $queueData = [
-            'mobile'  => $mobile,
-            'content' => $result['content'],
-            'id'      => $id
-        ];
-        Queue::pushSmsQueue($queueData);
+        if (YCore::appconfig('app.env') != ENV_DEV) {
+            // 短信入队列服务
+            $queueData = [
+                'mobile'  => $mobile,
+                'content' => $result['content'],
+                'id'      => $id
+            ];
+            Queue::pushSmsQueue($queueData);
+        }
     }
 
     /**
