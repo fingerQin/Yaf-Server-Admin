@@ -49,8 +49,7 @@ class Consume extends \Services\Sms\AbstractBase
                             'errmsg' => $e->getMessage()
                         ];
                         YLog::log($log, 'sms', 'error');
-                        $errCode = $e->getCode();
-                        self::updateSendStatus($arrValue['id'], 0, $errCode, $e->getMessage(), false);
+                        self::updateSendStatus($arrValue['id'], 0, $e->getCode(), $e->getMessage(), false);
                     }
                 } else {
                     $SmsSendLogModel->ping();
@@ -67,8 +66,7 @@ class Consume extends \Services\Sms\AbstractBase
             ];
             YLog::log($log, 'sms', 'error');
             if (!empty($arrValue)) {
-                $errCode = $e->getCode();
-                self::updateSendStatus($arrValue['id'], 0, $errCode, $errMsg, false);
+                self::updateSendStatus($arrValue['id'], 0, $e->getCode(), $e->getMessage(), false);
             }
             echo $errorMsg . "\n";
         }
@@ -87,6 +85,8 @@ class Consume extends \Services\Sms\AbstractBase
     protected static function send($isSend, $id, $mobile, $content)
     {
         try {
+            $channelConf = [];
+            $channelId   = 0;
             if ($isSend) {
                 // 防止修改表优先级无效，因此放到循环中
                 $channelConf = self::getSmsChannelConf();
@@ -99,7 +99,7 @@ class Consume extends \Services\Sms\AbstractBase
             self::updateSendStatus($id, $channelId, 0, '发送成功', true);
             return true;
         } catch (\Exception $e) {
-            self::updateSendStatus($id, $channelId, 0, $e->getMessage(), false);
+            self::updateSendStatus($id, $channelId, $e->getCode(), $e->getMessage(), false);
             return false;
         }
     }
