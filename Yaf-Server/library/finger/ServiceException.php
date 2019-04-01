@@ -86,6 +86,7 @@ class ServiceException extends \Exception
             $clientIP = YCore::ip();
             return [
                 'Type'       => 'ServiceException',
+                'ErrorTime'  => date('Y-m-d H:i:s'),
                 'ErrorCode'  => $this->code,
                 'ServerIP'   => $serverIP,
                 'ClientIP'   => $clientIP,

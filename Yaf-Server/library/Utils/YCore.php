@@ -55,9 +55,13 @@ class YCore
         // [2] 根据环境控制错误信息输出。
         $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
         $clientIP = YCore::ip();
+        $appDebug = self::appconfig('app.debug');
+        $request  = new \Yaf_Request_Http();
+        $isCli    = $request->isCli();
 
         $logData = [
             'Type'       => 'set_error_handler',
+            'ErrorTime'  => date('Y-m-d H:i:s'),
             'ServerIP'   => $serverIP,
             'ClientIP'   => $clientIP,
             'ErrorFile'  => $errfile,
@@ -66,8 +70,27 @@ class YCore
             'ErrorNo'    => $errno, 
             'stackTrace' => $traceStack
         ];
-
-        self::exception(STATUS_ERROR, $logData);
+        ob_clean();
+        YLog::log($logData, 'errors', 'log', $isForceWrite = true);
+        if (defined('IS_API')) {
+            header("Access-Control-Allow-Origin: *");
+            header('Content-type: application/json');
+            $data = [
+                'code' => STATUS_ERROR,
+                'msg'  => $appDebug ? print_r($logData, true) : '服务器繁忙,请稍候重试'
+            ];
+            YLog::writeApiResponseLog($data);
+            echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        } else if ($isCli) {
+            $datetime = date('Y-m-d H:i:s', time());
+            echo $datetime . "\n" . print_r($logData, true);
+        } else {
+            if ($appDebug) {
+                echo print_r($logData, true);
+            } else {
+                header('HTTP/1.1 500 Internal Server Error');
+            }
+        }
         exit(0);
     }
 
@@ -101,6 +124,7 @@ class YCore
             $isCli    = $request->isCli();
 
             $logData = [
+                'ErrorTime'  => date('Y-m-d H:i:s'),
                 'Type'       => 'register_shutdown_function',
                 'ServerIP'   => $serverIP,
                 'ClientIP'   => $clientIP,
@@ -112,6 +136,7 @@ class YCore
             ];
 
             YLog::log($logData, 'errors', 'log', $isForceWrite = true);
+            ob_clean();
             if (defined('IS_API')) {
                 header("Access-Control-Allow-Origin: *");
                 header('Content-type: application/json');
