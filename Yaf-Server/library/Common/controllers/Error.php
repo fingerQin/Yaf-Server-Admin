@@ -63,7 +63,7 @@ class Error extends \Common\controllers\Common
                 'msg'  => $errMsg
             ];
             YLog::writeApiResponseLog($data);
-            echo json_encode($data, JSON_UNESCAPED_UNICODE);
+            echo json_encode($data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
             $this->end();
         } else if ($this->_request->isCli()) {
             echo "ErrorDate:" . date('Y-m-d H:i:s', time()) . "\n";
