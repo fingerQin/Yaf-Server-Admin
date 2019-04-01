@@ -7,9 +7,6 @@
 
 namespace Services\Event\Sub;
 
-use Utils\YLog;
-use Utils\YCache;
-
 class Register extends \Services\Event\Sub\AbstractBase
 {
     /**

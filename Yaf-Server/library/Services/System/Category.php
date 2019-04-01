@@ -7,7 +7,6 @@
 
 namespace Services\System;
 
-use finger\Database\Db;
 use Utils\YCore;
 use Models\Category as CategoryModel;
 
@@ -155,7 +154,8 @@ class Category extends \Services\AbstractBase
                 'status'   => CategoryModel::STATUS_YES,
                 'cat_type' => $catType
             ];
-            $columns       = ['cat_id', 'cat_name', 'parentid', 'lv', 'cat_code', 'cat_type', 'display', 'is_out_url', 'out_url', 'listorder', 'tpl_name'];
+            $columns       = ['cat_id', 'cat_name', 'parentid', 'lv', 'cat_code', 'cat_type', 
+                              'display', 'is_out_url', 'out_url', 'listorder', 'tpl_name'];
             $CategoryModel = new CategoryModel();
             $result        = $CategoryModel->fetchAll($columns, $where);
             \Yaf_Registry::set($cacheKey, $result);

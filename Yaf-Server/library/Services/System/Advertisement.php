@@ -38,7 +38,7 @@ class Advertisement extends \Services\AbstractBase
      *
      * @return void
      */
-    public static function list($posCode, $appV, $userid = 0)
+    public static function list($posCode, $appV = '', $userid = 0)
     {
         $AdPosModel  = new AdPosition();
         $adPosDetail = $AdPosModel->fetchOne([], ['pos_code' => $posCode, 'status' => AdPosition::STATUS_YES]);

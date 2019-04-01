@@ -7,9 +7,9 @@
 
 namespace Services\Event;
 
-use \Utils\YCore;
-use \Utils\YCache;
-use \Models\Event;
+use Utils\YCore;
+use Utils\YCache;
+use Models\Event;
 use finger\Validator;
 
 class Producer extends \Services\Event\AbstractBase

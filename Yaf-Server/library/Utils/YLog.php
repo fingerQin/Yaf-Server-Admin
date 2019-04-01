@@ -49,7 +49,7 @@ class YLog
 
     /**
      * 写日志。
-     * 
+     *
      * @param  string|array  $logContent    日志内容。
      * @param  string        $logDir        日志目录。如：bank
      * @param  string        $logFilename   日志文件名称。如：bind。生成文件的时候会在 bind 后面接上日期。如:bind-20171121.log

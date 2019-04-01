@@ -5,7 +5,6 @@
  * @date 2018-09-14
  */
 
-use Utils\YLog;
 use Services\Sms\Consume;
 
 class SmsController extends \Common\controllers\Cli

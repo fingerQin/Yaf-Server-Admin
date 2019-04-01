@@ -10,7 +10,6 @@ namespace Services\Event;
 use Utils\YCache;
 use Utils\YLog;
 use Utils\YCore;
-use Models\Event;
 
 class Consumer extends \Services\Event\AbstractBase
 {

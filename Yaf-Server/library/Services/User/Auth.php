@@ -15,10 +15,8 @@ use Models\User as UserModel;
 use finger\Validator;
 use Services\Sms\Sms;
 use Services\System\Push;
-use Services\System\Request;
 use Services\Gold\Gold;
 use Services\Event\Producer;
-
 
 class Auth extends \Services\AbstractBase
 {
@@ -53,9 +51,6 @@ class Auth extends \Services\AbstractBase
         }
         if ($userinfo['cur_status'] == UserModel::STATUS_LOCKED) {
             YCore::exception(STATUS_SERVER_ERROR, '您的账号被锁定!');
-        }
-        if ($userinfo['cur_status'] == UserModel::STATUS_FREEZE) {
-            YCore::exception(STATUS_SERVER_ERROR, '您的账号被冻结!');
         }
         if ($loginType == self::LOGIN_TYPE_SMS) {
             if (strlen($code) === 0) {
@@ -185,8 +180,7 @@ class Auth extends \Services\AbstractBase
             'nickname' => $nickname,
             'reg_time' => $datetime,
             'intro'    => '',
-            'open_id'  => $openid,
-            'gold'     => Gold::userGoldCount($userid)
+            'open_id'  => $openid
         ];
     }
 
@@ -249,7 +243,6 @@ class Auth extends \Services\AbstractBase
         $tokenParams = self::parseToken($token);
         $userid      = $tokenParams['userid'];
         $password    = $tokenParams['password'];
-        $loginTime   = $tokenParams['logintime'];
         $platform    = $tokenParams['platform'];
         // [3] 用户存在与否判断
         $userinfo = (new UserModel())->fetchOne([], ['userid' => $userid]);
@@ -261,9 +254,6 @@ class Auth extends \Services\AbstractBase
         }
         if ($userinfo['cur_status'] == UserModel::STATUS_LOCKED) {
             YCore::exception(STATUS_SERVER_ERROR, '您的账号被锁定!');
-        }
-        if ($userinfo['cur_status'] == UserModel::STATUS_FREEZE) {
-            YCore::exception(STATUS_SERVER_ERROR, '您的账号被冻结!');
         }
         // [4] token 是否赶出了超时时限
         $loginType     = self::isAppCall($platform) ? 1 : 0; // 1 APP 客户端登录、0 - 非 APP 客户端登录。
@@ -375,7 +365,7 @@ class Auth extends \Services\AbstractBase
     protected static function setAuthTokenLastAccessTime($userid, $authToken, $platform = 0)
     {
         $loginType = self::isAppCall($platform) ? 1 : 0;    // 1 APP 客户端登录、0 非 APP 客户端登录。
-        $cacheTime = $loginType ? 30 * 86400 : 86400;
+        $cacheTime = $loginType ? 30 * 86400 : 1800;
         $cacheKey  = "u_t_k:{$loginType}:{$userid}";        // 用户保存 auth_token 的缓存键。
         YCache::set($cacheKey, $authToken, $cacheTime);
     }

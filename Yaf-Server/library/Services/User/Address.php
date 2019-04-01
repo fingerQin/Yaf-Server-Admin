@@ -7,10 +7,10 @@
 
 namespace Services\User;
 
-use finger\Validator;
 use Utils\YCore;
 use Models\District;
 use Models\MallUserAddress;
+use finger\Validator;
 use finger\Database\Db;
 
 class Address extends \Services\AbstractBase
@@ -37,7 +37,7 @@ class Address extends \Services\AbstractBase
             'is_default'
         ];
         $AddressModel = new MallUserAddress();
-        $detail = $AddressModel->fetchOne([], $where);
+        $detail = $AddressModel->fetchOne($columns, $where);
         if (empty($detail)) {
             YCore::exception(STATUS_SERVER_ERROR, '收货地址不存在');
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * 跟信鸽 APP 推送相关的业务封装。
+ * 跟 APP 推送相关的业务封装。
  * 
  * @author fingerQin
  * @date 2018-06-29
@@ -9,8 +9,8 @@
 namespace Services\System;
 
 use Utils\YCore;
-use Models\PushDevice;
 use Utils\YCache;
+use Models\PushDevice;
 
 class Push extends \Services\AbstractBase
 {
@@ -42,8 +42,6 @@ class Push extends \Services\AbstractBase
         if (empty($device) || strlen($device['device_token']) === 0) { // 防止多次提交退出登录。
             return;
         }
-        $lastDeviceToken = $device['device_token'];
-        $lastDeviceType  = $device['device_type'];
         $data = [
             'device_token'      => '',
             'last_device_token' => $device['device_token'],
@@ -68,7 +66,6 @@ class Push extends \Services\AbstractBase
         }
         $MPushDevice = new PushDevice();
         $device      = $MPushDevice->fetchOne([], ['userid' => $userid]);
-        $datetime    = date('Y-m-d H:i:s', time());
         if (empty($device)) {
             $data = [
                 'userid'       => $userid,
