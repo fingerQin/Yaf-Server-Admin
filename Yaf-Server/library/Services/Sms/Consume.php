@@ -50,8 +50,7 @@ class Consume extends \Services\Sms\AbstractBase
                         ];
                         YLog::log($log, 'sms', 'error');
                         $errCode = $e->getCode();
-                        $errMsg = mb_substr($e->getMessage(), 0, 255, 'UTF-8');
-                        self::updateSendStatus($arrValue['id'], 0, $errCode, $errMsg, false);
+                        self::updateSendStatus($arrValue['id'], 0, $errCode, $e->getMessage(), false);
                     }
                 } else {
                     $SmsSendLogModel->ping();
@@ -69,7 +68,6 @@ class Consume extends \Services\Sms\AbstractBase
             YLog::log($log, 'sms', 'error');
             if (!empty($arrValue)) {
                 $errCode = $e->getCode();
-                $errMsg = mb_substr($errorMsg, 0, 255, 'UTF-8');
                 self::updateSendStatus($arrValue['id'], 0, $errCode, $errMsg, false);
             }
             echo $errorMsg . "\n";
@@ -101,7 +99,7 @@ class Consume extends \Services\Sms\AbstractBase
             self::updateSendStatus($id, $channelId, 0, '发送成功', true);
             return true;
         } catch (\Exception $e) {
-            self::updateSendStatus($id, $channelId, 0, '发送失败', false);
+            self::updateSendStatus($id, $channelId, 0, $e->getMessage(), false);
             return false;
         }
     }
@@ -121,7 +119,7 @@ class Consume extends \Services\Sms\AbstractBase
     {
         $updata = [
             'error_code' => $errCode,
-            'error_msg'  => $errMsg,
+            'error_msg'  => mb_substr($errMsg, 0, 255, 'UTF-8'),
             'sms_status' => $status ? SmsSendLog::SEND_STATUS_SENT : SmsSendLog::SEND_STATUS_FAILD,
             's_time'     => date('Y-m-d H:i:s', time()),
             'channel_id' => $channelId
