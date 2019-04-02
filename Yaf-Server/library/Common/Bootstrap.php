@@ -33,12 +33,9 @@ class Bootstrap extends \Yaf_Bootstrap_Abstract
 
     /**
      * 错误相关操作初始化。
-     * -- 1、开/关 PHP 错误。
-     * -- 2、接管 PHP 错误。
      */
     public function _initError()
     {
-        $config = \Yaf_Registry::get('config');
         ini_set('display_errors', 0);
         set_error_handler(['\Utils\YCore', 'errorHandler']);
         register_shutdown_function(['\Utils\YCore', 'registerShutdownFunction']);
