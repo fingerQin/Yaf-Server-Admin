@@ -39,7 +39,7 @@ yaf.use_spl_autoload = 1
 
 #### 2.2 Redis 扩展安装
 
-Redis 我们用来做系统缓存、Session 分布式存储、消息列表等功用。所以必须安装 Redis 扩展。我们安装最新稳定版本的 Redis 扩展即可。
+Redis 我们用来做系统缓存、Session 分布式存储、消息队列等功用。所以必须安装 Redis 扩展。我们安装最新稳定版本的 Redis 扩展即可。
 
 ```shell
 $ wget http://pecl.php.net/get/redis-4.1.0.tgz
@@ -57,27 +57,7 @@ extension = redis.so
 
 
 
-#### 2.3 MongoDB 扩展安装
-
-系统用 MongoDB 存储错误日志、埋点日志等。所以，必须安装 MongoDB 扩展。安装 MongoDB 扩展时请注意。一定要安装最新稳定版本。因为，低版本的不能兼容新版的 MongoDB 服务器。
-
-```ini
-$ wget http://pecl.php.net/get/mongodb-1.5.1.tgz
-$ tar zxvf mongodb-1.5.1.tgz
-$ cd mongodb-1.5.1
-$ phpize
-$ make && make install
-```
-
-然后，在 php.ini 配置文件末尾增加如下代码：
-
-```ini
-extension = mongodb.so
-```
-
-
-
-#### 2.4  event 扩展安装
+#### 2.3  event 扩展安装[可选]
 
 考虑到后续系统可能会使用诸如一些事件相关的函数或第三方扩展。如 `workerman` 。所以，我们推荐安装此扩展。
 
@@ -99,7 +79,7 @@ extension = event.so
 
 
 
-#### 2.5 其他扩展
+#### 2.4 其他扩展
 
 在开发中，我们会使用到 PHP 内置的一些方法。而这些方法需要 PHP 内置扩展支持。有些内置扩展默认是关闭的。有些扩展安装的时候被关闭了。所以，我们在安装的时候要确保以下扩展是开启状态。
 
@@ -116,7 +96,7 @@ ctype
 
 
 
-### 3 nginx 配置
+### 3 Nginx 配置
 
 假设我们的相关信息如下：
 
@@ -195,7 +175,7 @@ $ chmod -R 0777 ./logs
 
 
 
-###6 Composer update###
+###6 Composer update
 
  
 

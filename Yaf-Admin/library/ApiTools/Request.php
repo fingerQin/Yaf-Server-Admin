@@ -86,7 +86,7 @@ class Request
             'curl_errno' => $curlErrno,
             'curl_error' => $curlError,
         ];
-        YLog::log($logData, 'apis', 'log', YLog::LOG_TYPE_API);
+        YLog::log($logData, 'apis', 'log');
         return $response;
     }
 

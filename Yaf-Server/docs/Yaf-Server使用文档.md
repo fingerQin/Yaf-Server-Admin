@@ -53,7 +53,7 @@ Yaf 框架文档：http://www.laruence.com/manual/index.html
 
 我们的基建项目采用了 PHP 7 才有的语法。所以，请使用 PHP 7.1 以上的版本。
 
-```
+```ini
 $ wget http://pecl.php.net/get/yaf-3.0.7.tgz
 $ tar zxvf yaf-3.0.7.tgz
 $ cd yaf-3.0.7
@@ -63,7 +63,7 @@ $ make && make install
 
 然后，在 php.ini 配置文件末尾增加如下代码行：
 
-```
+```ini
 extension = yaf.so
 yaf.use_spl_autoload = 1
 ```
@@ -84,14 +84,14 @@ yaf.use_spl_autoload = 1
 
 ```
 .
-├── apps						   应用目录
+├── apps						    应用目录
 │   ├── Bootstrap.php			 	项目启动文件。每次请求都会自动加载。
 │   ├── controllers					默认的模块（Index）的控制器目录。
 │   ├── modules					    自定义模块的控制器目录。			 
 │   └── views					    默认的模块（Index）的 View 层目录。
 ├── config						    应用配置目录。
-│   ├── config.ini					 应用配置文件。
-│   └── constants.php				 应用常量定义文件。所有的全局常量这里定义。
+│   ├── config.ini					应用配置文件。
+│   └── constants.php				应用常量定义文件。所有的全局常量这里定义。
 ├── docs							应用文档存放位置。
 │   └── Yaf-Server使用文档.md
 ├── library							自定义类库的目录。Model、Service、工具类。
@@ -122,7 +122,7 @@ yaf.use_spl_autoload = 1
 
 > 本小节我们对 Yaf 框架结合项目之后的生命周期进行讲解。
 
-##### ![](G:\codespace\myself\Yaf-Server\docs\images\yaf_sequence.png)
+##### ![](images\yaf_sequence.png)
 
 
 
@@ -149,7 +149,6 @@ define('MICROTIME', microtime());
 define('APP_PATH', dirname(dirname(__FILE__)));
 require(APP_PATH . '/vendor/autoload.php');
 require(APP_PATH . '/config/constants.php');
-error_reporting(0);
 $app = new \Yaf_Application(APP_PATH . '/config/config.ini', 'conf');
 $app->bootstrap()->run();
 ```
@@ -189,9 +188,9 @@ if (!-e $request_filename) {
 
 #### 4.5 配置文件
 
-`Yaf` 框架本身并未定死配置的目录位置。你可以放在任何位置。只需要在启动应用的时候将配置文件路径传递给它即可。而我们这套基建项目，将配置文件放在了 `apps/config/config.php` 。
+`Yaf` 框架本身并未定死配置的目录位置。你可以放在任何位置。只需要在启动应用的时候将配置文件路径传递给它即可。而我们这套基建项目，将配置文件放在了 `apps/config/config.ini`, 常量配置放在了 `apps/config/constants.php` 。
 
-在该文件当中我们定义了很多配置。然而只有了了几个配置是与 `Yaf` 框架相关的。本小节只介绍 `Yaf` 框架相关的几个配置。在其他小节再讲与 `Yaf` 框架不相关的配置。
+在该文件当中我们定义了很多配置。然而只有几个配置是与 `Yaf` 框架相关的。本小节只介绍 `Yaf` 框架相关的几个配置。在其他小节再讲与 `Yaf` 框架不相关的配置。
 
 **1) application.directory**
 
@@ -239,6 +238,8 @@ if (!-e $request_filename) {
 
 指定当前应用的运行环境。dev-开发环境、pre-预发布环境、beta-公测环境、pro-正式环境。我们在开发环境会关闭短信发送等操作。这个值非常有用。
 
+> 在 dev 环境，我们的短信默认都是 123456。并且，在 dev 环境，错误日志会通过接口的 msg 返回。其他环境显示具体的错误文字提示。
+
 **11）app.debug**
 
 设置为 true 时，则任何 PHP 抛出的错误，都会输出到客户端/浏览器。当然，必须 `error.display.errors` 设置为 1 的情况下。
@@ -281,7 +282,7 @@ if (!-e $request_filename) {
 
 自定义路由在应用启动文件 Bootstrap.php 中的 Bootstrap 类中方法内添加。
 
-```
+```php
 <?php
 
 class Bootstrap extends Yaf_Bootstrap_Abstract
@@ -294,62 +295,67 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
 }
 ```
 
+> 注：路由通常用于 URL 伪静态功能。在我们的 Yaf-Server 基建项目中，只会应用到 API 场景。所以，不需要重写。
+
 
 
 ### 6 日志
 
-日志是一个系统当中最重要的组成部分。它不仅可以分析用户的行为，也可以帮助我们排查问题。以及监控我们的系统健康状况。
+日志是一个系统当中最重要的组成部分。它不仅可以分析用户的行为，也可以帮助我们排查问题。以及记录我们的系统健康状况。
 
 #### 6.1 日志收集
 
-当我们在配置文件 `apps/config/config.php` 中将 `application.dispatcher.catchException` 设置为 1 时，整个应用中所有的异常都会交由对应模块下的 `ErrorController` 的 `errorAction ` 方法处理。那么，我们就可以在整个应用当中任何位置抛出异常。然后在 `errorAction` 方法当中记录日志。便于我们排查问题。
+当我们在配置文件 `apps/config/config.ini` 中将 `application.dispatcher.catchException` 设置为 1 时，整个应用中所有的异常都会交由对应模块下的 `ErrorController` 的 `errorAction ` 方法处理。那么，我们就可以在整个应用当中任何位置抛出异常。然后在 `errorAction` 方法当中记录日志。便于我们排查问题。
 
 由于默认的异常只会记录异常的堆栈路径。在具体位置运行的方法以及方法参数并不会提供。这就导致我们在排查重现问题的时候就非常的困难。于是，我在框架当中自定义了一个业务异常类：`ServiceException`。
 
 日志类似如下格式：
 
 ```
-ErrorTime:2018-07-04 15:35:04
-ErrorLog:Error Message: 您的APP太旧请升级! 
-Error Code: [503] 
-Class Name and Method: libs\apis\Factory::factory
-Method Params:
 Array
 (
-    [0] => Array
+    [Type] => ServiceException
+    [ErrorTime] => 2019-04-01 17:13:17
+    [ErrorCode] => 500
+    [ServerIP] => 192.168.28.227
+    [ClientIP] => 192.168.28.50
+    [Method] => Apis\Factory::factory
+    [Params] => Array
         (
-            [appid] => jinr_ios_app
-            [timestamp] => 1530689704906
-            [channel] => 360
-            [longitude] => 
-            [latitude] => 
-            [app_v] => 1.1.0
-            [type] => 2
-            [device_token] => d8c8579a53f16d479f5ab2b3860f107efe7214f09593d61b522c358332c721ce
-            [unique_id] => A614133B-4FE4-4380-A22B-FC3AC1EB2D76
-            [platform] => 1
-            [token] => 
-            [v] => 1.0.0
-            [method] => system.init
-            [oriJson] => {"appid":"jinr_ios_app","timestamp":"1530689704906","channel":"360","longitude":"","latitude":"","app_v":"1.1.0","type":2,"device_token":"d8c8579a53f16d479f5ab2b3860f107efe7214f09593d61b522c358332c721ce","unique_id":"A614133B-4FE4-4380-A22B-FC3AC1EB2D76","platform":"1","token":"","v":"1.0.0","method":"system.init"}
-            [sign] => 484FC4265CC1F21C206CFC18A0ACFA4E
-            [_userid] => 0
-            [_ip] => 61.141.64.186
-            [_datetime] => 2018-07-04 15:35:04
-        )
-)
+            [0] => Array
+                (
+                    [post] => Array
+                        (
+                        )
 
-Stack trace:
-#0 /home/wwwroot/xgfrontend/libs/apis/Factory.php(58): libs\Utils\YCore::exception(503, '\xE6\x82\xA8\xE7\x9A\x84APP\xE5\xA4\xAA\xE6\x97\xA7...')
-#1 /home/wwwroot/xgfrontend/wwwroot/api/application/index/Index.php(44): libs\apis\Factory::factory(Array)
-#2 [internal function]: app\index\Index->index()
-#3 /home/wwwroot/xgfrontend/thinkphp/library/think/App.php(223): ReflectionMethod->invokeArgs(Object(app\index\Index), Array)
-#4 /home/wwwroot/xgfrontend/thinkphp/library/think/App.php(388): think\App::invokeMethod(Array, Array)
-#5 /home/wwwroot/xgfrontend/thinkphp/library/think/App.php(129): think\App::module(Array, Array, NULL)
-#6 /home/wwwroot/xgfrontend/thinkphp/start.php(18): think\App::run()
-#7 /home/wwwroot/xgfrontend/wwwroot/api/index.php(33): require('/home/wwwroot/x...')
-#8 {main}
+                    [input] => 
+                )
+
+        )
+
+    [ErrorFile] => 
+    [ErrorLine] => 
+    [ErrorMsg] => method does not exist
+    [ErrorNo] => 0
+    [stackTrace] => #0 /data/web/myself/GitHub/Yaf-Server-Admin/Yaf-Server/library/Apis/Factory.php(37): Utils\YCore::exception(500, 'method does not...')
+#1 /data/web/myself/GitHub/Yaf-Server-Admin/Yaf-Server/apps/controllers/Index.php(29): Apis\Factory::factory(Array)
+#2 [internal function]: IndexController->indexAction()
+#3 /data/web/myself/GitHub/Yaf-Server-Admin/Yaf-Server/public/index.php(13): Yaf_Application->run()
+#4 {main}
+)
 ```
+
+
+
+当 `apps/config/config.ini` 中 `log.type` 为 `json` 时，日志格式如下：
+
+```
+{"Type":"ServiceException","ErrorTime":"2019-04-01 17:14:17","ErrorCode":500,"ServerIP":"192.168.28.227","ClientIP":"192.168.28.50","Method":"Apis\\Factory::factory","Params":[{"post":[],"input":""}],"ErrorFile":"","ErrorLine":"","ErrorMsg":"method does not exist","ErrorNo":0,"stackTrace":"#0 /data/web/myself/GitHub/Yaf-Server-Admin/Yaf-Server/library/Apis/Factory.php(37): Utils\\YCore::exception(500, 'method does not...')\n#1 /data/web/myself/GitHub/Yaf-Server-Admin/Yaf-Server/apps/controllers/Index.php(29): Apis\\Factory::factory(Array)\n#2 [internal function]: IndexController->indexAction()\n#3 /data/web/myself/GitHub/Yaf-Server-Admin/Yaf-Server/public/index.php(13): Yaf_Application->run()\n#4 {main}"}
+```
+
+> 之所以，这个位置存在 json 格式的日志，主要是为了后续对接到其他日志系统的时候
+
+
 
 通过如上示例日志，我们可以知道。我们记录了如下信息：
 
@@ -362,18 +368,22 @@ Stack trace:
 
 
 
+> 通常我们知道堆栈信息之后，基本可以定位到问题。但是，有时候很多问题是业务参数的问题所致的流程 BUG。此时，我们就需要知道错误时的参数。我们的日志改进之后，会记录错误时方法的参数。这样就能更好的定位问题。
+
+
+
 #### 6.2 日志存储
 
 通过 4.1 小节的目录结构，我们已经知道如下信息：
 
 ```
 ├── logs							日志存放目录。
-│   ├── accessLog					 应用被请求的日志存放这里。前期上线会写入日志。便于查看监控。
+│   ├── accessLog					应用被请求的日志存放这里。前期上线会写入日志。便于查看监控。
 │   ├── apis						API 被请求的日志存放这里。
-│   ├── serviceErr					 服务层（Services）中任何业务异常的日志存放这里。
+│   ├── serviceErr					服务层（Services）中任何业务异常的日志存放这里。
 │   ├── sms							短信日志存放目录。
 │   ├── sql							SQL 存放这里。开发环境需要。
-│   └── errors					     未知的 PHP 错误存放目录。如：Notice、Warning、Fatal。
+│   └── errors					    未知的 PHP 错误存放目录。如：Notice、Warning、Fatal。
 ```
 
 我们根据不同功能作用将日志按照了不同的目录进行了区分。并且，在目录下面的日志全部按照天为单位进行切割。
@@ -383,17 +393,55 @@ Stack trace:
 那么，我们要怎样才能实现将日志输出到自定义的目录呢？我们通过 `Utils\YLog::log()` 方法进行日志输出。具体的方法使用介绍请查看该方法的方法注释。
 
 ```php
-$ip         = YCore::ip();
-$url        = YUrl::getUrl();
+$ip  = YCore::ip();
+$url = YUrl::getUrl();
 $postParams = $request->getPost();
 YLog::log(['ip' => $ip, 'url' => $url, 'params' => $postParams], 'accessLog', 'log');
 ```
 
 
 
-#### 6.3 MongoDB 存储
+#### 6.3 系统常用日志
 
-我们每次调用 `Utils\YLog::log()` 方法的时候，都会向指定的 `Redis` 队列写入这些日志数据。然后，通过命令行`php cli.php Log/writeMongDb ` 启动常驻进程写入 `MongoDB`。
+由于我们 Yaf-Server 已经实现了常规的系统功能。所以，我们有一些固定的日志。
+
+**6.3.1 系统错误日志**
+
+所谓错误日志，指的是系统报错的日志。例如：请求超时、语法错误等。我们会把此类日志存放到 `logs/erros` 目录下。
+
+**6.3.2 API 接口请求/响应日志**
+
+因为 Yaf-Server 的目的之一是提供一套完整的 API 解决方案。所以，我们会记录 API 接口的请求以及接口响应的日志。这样是为了当用户端出现问题之后，能通过请求日志快速定位问题。同时，也可以通过请求日志做一些常规的数据分析。
+
+**6.3.3 业务错误日志**
+
+通过 `YCore::exception()` 抛出的异常被捕获之后记录的日志。统称为业务错误日志。因为，该抛出方式会调用 `ServiceException` 实现一些高级的信息记录。
+
+业务错误日志记录的位置：`logs/serviceErr` 。
+
+**6.3.4 数据库 SQL 日志**
+
+在开发环境，系统会记录sql 的执行记录。目录位于 `logs/sql` 。
+
+**6.3.5 其他日志**
+
+我们除了上面这些日志外，还会根据业务的需求记录一些其他日志。根据这些日志来进行业务的追踪。此时，我们可以通过如下方式记录日志。
+
+```php
+/**
+     * 写日志。
+     *
+     * @param  string|array  $logContent    日志内容。
+     * @param  string        $logDir        日志目录。如：bank
+     * @param  string        $logFilename   日志文件名称。如：bind。生成文件的时候会在 bind 后面接上日期。如:bind-20171121.log
+     * @param  bool          $isForceWrite  是否强制写入硬盘。默认值：false。设置为 true 则日志立即写入硬盘而不是等待析构函数回收再执行。
+     *
+     * @return void
+     */
+    public static function log($logContent, $logDir = '', $logFilename = '', $isForceWrite = false) {}
+```
+
+`YLog::log()` 静态方法使用起来非常简单。第一个参数是记录的日志内容。可以是字符串或数组。第二个参数是目录。第三个是日志文件的命名。最后一个参数主要用于日志立即写入文件的场景。比如命令行模式运行的常驻脚本。因为，默认情况下对象销毁的时候才记录日志。如果想马上看到日志写入文件。最后一位参数必须设置为 `true`。
 
 
 
@@ -403,7 +451,7 @@ YLog::log(['ip' => $ip, 'url' => $url, 'params' => $postParams], 'accessLog', 'l
 
 文档：http://www.laruence.com/manual/yaf.class.exception.html
 
-```
+```ini
 Yaf_exception
 Yaf_Exception_StartupError
 Yaf_Exception_RouterFailed
@@ -428,20 +476,36 @@ Yaf_Exception_TypeError
 ......
 /**
  * 错误相关操作初始化。
- * -- 1、开/关 PHP 错误。
- * -- 2、接管 PHP 错误。
  */
 public function _initError()
 {
-	$config = \Yaf_Registry::get('config');
-	ini_set('display_errors', $config->get('error.display.errors'));
-	set_error_handler(['\Utils\YCore', 'errorHandler']);
-	register_shutdown_function(['\Utils\YCore', 'registerShutdownFunction']);
+    ini_set('display_errors', 0);
+    set_error_handler(['\Utils\YCore', 'errorHandler']);
+    register_shutdown_function(['\Utils\YCore', 'registerShutdownFunction']);
 }
 ......
 ```
 
 通过以上代码，我们可以知道，在应用启动中，我们调用了 `set_error_handler`、`register_shutdown_function` 方法调用了 `\Utils\YCore::errorhandler` 和 `\Utils\YCore::registerShutdownFunction` 方法。以此来实现当 `PHP` 当中有任何错误的时候，调用 `YCore::exception` 方法抛出自定义异常。当然，直接调用该方法也可以抛出自定义异常。
+
+#### 7.3 抛出自定义异常
+
+我们定义了与业务相关的自定义异常 `ServiceException` 。当我们的业务没有按照预期进行的时候，可以直接抛出异常。
+
+用法：
+
+```php
+// use Utils\YCore;
+YCore::exception(STATUS_SERVER_ERROR, '您的密码不正确!');
+```
+
+#### 7.4 异常捕获
+
+Yaf-Server 除了语法级别或致使错误外，其他的异常或错误都会被 ErrorController::errorAction 处理。也就是说每个 modules 目录的 controllers 目录下必须要有一个 ErrorController。
+
+在 Yaf-Server 中，我们已经封装好了通用的处理方法。不建议修改。位置：`library/Common/controllers/Error.php`。大家可以研究研究。
+
+
 
 ### 8 数据库
 
@@ -597,8 +661,27 @@ if ($status) {
 ```
 
 > 注意：更新失败指的是数据库在执行 SQL 的时候，返回的受影响行数为 0 为依据判断。所以，有可能两次更新的数据一致导致失败。但是，由于我们每次更新都会自动更新创建时间和更新时间。所以，这种情况基本上不会存在。有一种情况一定要引起重视：当我们的关闭了更新时间自动更新的机制或表中并无更新字段，以及我们的程序属于高并发场景。那么，在同一秒中可能会出现更新时间是相同的情况。导致更新失败。
-
+>
 > 所以，写程序一定要以返回的值为 true 来进行程序是否正确为依据。除非明确知道这种情况可以忽略。
+
+**自增增减**
+
+我们有时候，会对某些字段进行自增自减。我们假设用户表当中有一个 money 字段代表金额。我们要自增 100。
+
+```php
+$UserModel = new \Models\User();
+$data   = [
+    'nickname' => 'fingerQin',
+    'money'	   => ['incr', 100] // 自减用 decr
+];
+$where  = ['userid' => 1];
+$status = $UserModel->update($data, $where);
+if ($status) {
+    // 更新成功
+} else {
+    // 更新失败。
+}
+```
 
 
 
@@ -623,7 +706,7 @@ if ($status) {
 
 ##### 8.3.4 查询数据
 
-1）查询单条记录。
+**1）查询单条记录。**
 
 ```php
 // [1] 指定一个条件。
@@ -654,7 +737,7 @@ $result = $UserModel->fetchOne($columns, $where, $orderBy, $groupBy, $isMaster =
 
 
 
-2）查询多多记录。
+**2）查询多多记录。**
 
 ```php
 // [1] 指定一个条件。
@@ -686,7 +769,7 @@ $result = $UserModel->fetchAll($columns, $where, 5, $orderBy, $groupBy, $isMaste
 
 
 
-3）统计记录条数
+**3）统计记录条数**
 
 ```php
 // [1] 查询。
@@ -701,7 +784,7 @@ $count = $UserModel->count($where, $isMaster = true);
 
 #### 8.4 原生 SQL 操作
 
-有时候我们可能并不想使用封装的方法来写代码。此时我们可以采用原生的 SQL 操作数据。在 `\library\finger\Database\Connection.php` 类中定义了一套跟原生操作相关的方法。
+有时候我们可能并不想使用封装的方法来写操作数据库。此时我们可以采用原生的 SQL 操作。在 `\library\finger\Database\Connection.php` 类中定义了一套跟原生操作相关的方法。
 
 ##### 8.4.1 查询数据
 
@@ -841,15 +924,15 @@ $where = [
 
 #### 8.7 联合查询 JOIN
 
-联合查询是我们在一个应用当中必不可少的部分。但是，咱们封装的 `DbBase` 不支持。所以，请使用原生的 `SQL` 吧。其实，我们也可以封装。只是不喜欢这种重量级的操作。原生的 `SQL` 更容易书写，不存在框架差异。任何框架我们都能用 SQL 直接操作。
+联合查询是我们在一个应用当中必不可少的部分。但是，咱们封装的 `Model` 不支持。所以，请使用原生的 `SQL` 吧。其实，我们也可以封装。只是不喜欢这种重量级的操作。原生的 `SQL` 更容易书写，不存在框架差异。任何框架我们都能用 SQL 直接操作。
 
 
 
 #### 8.8 SQL 执行记录
 
-我们的应用在执行过程中会将所有执行的 `SQL ` 记录下来。当然，除了正式环境会关闭 `SQL` 日志的记录外，在开发、预发布、公测都会正常记录。便于我们排查问题。
+我们的应用在执行过程中会将所有执行的 `SQL ` 记录下来。当然，必须将 `apps/config/config.ini`中的 `app.debug` 设置为 true 才会记录 `SQL` 日志。 通常正式环境 `app.debug` 会设置为 `false`。便于我们排查问题。
 
-日志记录位置：`根目录\logs\sql`
+日志记录位置：`logs/sql` 。
 
 
 
@@ -857,13 +940,13 @@ $where = [
 
 ##### 8.9.1 ping 命令使用
 
-一般在 Web 开发中，我们与 MySQL 服务器建立一个连接，然后在脚本执行结束会自动关闭。通常这个时间都会在几秒钟内。MySQL 与我们的 PHP 创建的链接并不会连接超时。因为，MySQL 服务器通过允许的最大连接空闲时间都在分十分钟或几十小时。而我们 PHP 允许的最大由 PHP 配置 `default_socket_timeout` 控制，默认也在 60 秒。
+一般在 Web 开发中，我们与 MySQL 服务器建立一个连接，然后在脚本执行结束会自动关闭。通常这个时间都会在几秒钟内。MySQL 与我们的 PHP 创建的链接并不会连接超时。因为，MySQL 服务器通过允许的最大连接空闲时间都在分十分钟或几十小时。而我们 PHP 允许的最大值由 PHP 配置 `default_socket_timeout` 控制，默认也在 60 秒。
 
 当我们要编写常驻后台运行的 PHP 脚本的时候，那么此时 60s 的时间肯定是不够的。最好是允许我们无限时间。所以，为了保证连接的 MySQL 不会出现超时，我们每次执行的时候进行了 ping()。ping() 服务器与当前 PHP 脚本的通道是否已经被服务器掐断了。
 
 **结论：在编写常驻进程业务的时候，记得每次执行操作之前使用 `finger\DbBase` 提供的 ping() 方法进行检测服务器链接。避免出现 timeout 错误而导致程序报错退出。同时要设置 PHP 配置文件 `default_socket_timeout` 为 -1 值。**
 
-```
+```php
 // ping 命令使用
 $dbConn = new \finger\Database\Connection('default'); // default 指定使用哪个数据库配置。
 $dbConn->ping(); // 检测当前连接是否有效，无效则直接重连。
@@ -873,15 +956,15 @@ $dbConn->ping(); // 检测当前连接是否有效，无效则直接重连。
 
 ##### 8.9.2 主从读写
 
-由于我们使用了阿里云的 RDS 数据库产品。本身它是自带主从集群的特性。 MySQL 主从是通过 binlog 日志进行数据同步。同步就一定会存在延迟。在一些特定环境，对实时环境要求极高的环境，这会导致刚插入的数据去查询的时候会导致数据取不到的情况。
+由于我们使用了阿里云的 RDS 数据库产品。本身它是自带主从集群的特性。 MySQL 主从是通过 binlog 日志进行数据同步。同步就一定会存在延迟。在一些特定环境，对实时环境要求极高的环境，这会导致刚插入的数据立即去查询的时候会导致数据取不到的情况。
 
-**结论：实时性要求极高的环境，请显示将查询指向主库读取。**
+**结论：实时性要求极高的环境，请强制将查询指向主库读取。**
 
 
 
 ##### 8.9.3  Model 目录规划
 
-我们在开发项目过程中通常是单库操作。如果在多库操作时。那么目录规划就显得有必要了。不然，两个库有同样的表名，在命名的时候就会产生冲突。让自己非常的纠结。建议在 Models 目录下每个库一个目录进行区分。
+我们在开发项目过程中通常是单库操作。如果在多库操作时。那么目录规划就显得有必要了。不然，两个库有同样的表名，在命名的时候就会产生冲突。让自己非常的纠结。建议在 Models 目录下每个库一个目录进行区分。默认的库直接放在 `models` 下面也可以。因为通常我们也只会有一个库。
 
 
 
@@ -893,7 +976,7 @@ $dbConn->ping(); // 检测当前连接是否有效，无效则直接重连。
 
 在我们的 `config.ini` 配置文件当中，我们有如下配置段：
 
-```
+```ini
 ; Redis 配置。
 redis.default.host  = 127.0.0.1
 redis.default.port  = 6379
@@ -966,6 +1049,8 @@ $val = YCache::decr("cache_key", 5);
 ```php
 $redis = YCache::getRedisClient();
 ```
+
+> 比如，当我们需要使用队列操作的相关 Redis 方法的时候。就可以通过获取 Redis 客户端连接进行队列操作。在我们的 Yaf-Server 当中，就会用到 Redis 这个方法来进行队列数据的消费。
 
 
 
@@ -1045,7 +1130,7 @@ if (!\finger\Validator::is_number_between($number, $start = 0, $end = 100)) {
 
 ### 11 文件上传
 
-文件上传可以说是任何一个互联网项目基本上必须的功能。我们的基建项目默认使用阿里云的 Oss 产品来存储我们的文件。
+文件上传可以说是任何一个互联网项目基本上必须的功能。我们的基建项目默认使用阿里云的 OSS 产品来存储我们的文件。
 
 #### 11.1 配置文件
 
@@ -1061,7 +1146,7 @@ oss.endpoint      = ******************
 oss.bucket        = ******************
 ```
 
-关于阿里云 Oss 不熟悉的地方，可以查看官方文档。
+关于阿里云 OSS 不熟悉的地方，可以查看阿里云官方的 OSS 文档。这里不做赘述。
 
 #### 11.2 上传图片
 
@@ -1074,13 +1159,13 @@ if ($re) {
 }
 ```
 
-当然，这还是非常的简陋。如果，想对文件大小，类型进行限制的话。`\finger\Upload` 类还提供了相关的方法或参数来加强这些判断。
+当然，这还是非常的简陋。如果，想对文件大小，类型进行限制的话。`\finger\Upload` 类还提供了相关的方法或参数来加强这些判断。可以直接查看这个类的参数方法。
 
 
 
 ### 12 API 接口
 
-因为 Yaf-Server 基建项目，主要的功能就是对 APP、活动、其他场景提供接口服务。所以，API 接口在基建项目的设计可以说是非常重要的一环。各位少年勿必认真阅读本小节。
+因为 Yaf-Server 基建项目，主要的功能就是对 APP、活动、其他场景提供接口服务。所以，API 接口在基建项目的设计可以说是非常重要的一环。各位少年务必认真阅读本小节。
 
 
 
@@ -1088,7 +1173,7 @@ if ($re) {
 
 Yaf-Server 基建项目的入口与我们的 API 入口不同。我们的 API 入口指的是项目当中 `Index模块/Index控制器/Index`动作。
 
-因为，我们在配置文件当中设置了默认的模块/控制器/动作都是 `Index`。所以，访问接口的时候，就不需要增加这些访问路径了。如：`https://api.phpjieshuo.com` 。
+因为，我们在配置文件当中设置了默认的模块/控制器/动作都是 `Index`。所以，访问接口的时候，就不需要增加这些访问路径了。就可以直接类似这样访问：`https://api.phpjieshuo.com` 。
 
 打开入口文件，我们可以看到方法中定义了一个 `IS_API` 常量。这是为了方便在其他位置能知道当前访问是来源于 API 接口。
 
@@ -1099,7 +1184,7 @@ header("Access-Control-Allow-Origin: *");
 header('Content-type: application/json');
 ```
 
-允许跨域访问我们的接口。这样只要拥有我们的接口密钥就可以在任何环境请求到我们的接口。同时我们返回的数据类型为 JSON。浏览器或客户端可以通过这个头能识别。在一些友好的工具里面，可以自动格式返回的数据显示。
+允许跨域访问我们的接口。这样只要拥有我们的接口密钥就可以在任何环境请求到我们的接口。同时我们返回的数据类型为 JSON。浏览器或客户端可以通过这个 header 头能识别。在一些友好的工具里面，可以自动格式返回的数据显示。
 
 接着我们获取接口的两个主要参数：`data` 与 `sign`。
 
@@ -1115,7 +1200,7 @@ header('Content-type: application/json');
 - `datetime`：请求时间。当入库的时候，我们可以查询指定时段的用户行为。也可以为以后的行为分析做支撑。
 - 接口数据。这是必须的日志。
 
-我们把接口请求日志记录到了 `logs/apis` 目录下，并按天进行日志分割。
+我们把接口请求日志记录到了 `logs/apis` 目录下，并按天进行日志分割。如果是每日访问量过大，可以按每小时分割。
 
 
 
@@ -1143,13 +1228,15 @@ header('Content-type: application/json');
 - 活动调用。
 - 管理后台调用。
 
-它们之间不能互相调用。即分配给 `APP` 的密钥不能调用活动的接口。从而达到越权的隔离。那么，我们系统是怎样区分的呢？
+它们之间不能互相调用。即分配给 `APP` 的密钥不能调用活动的接口。从而达到接口权限的隔离。那么，我们系统是怎样区分的呢？
 
-- 以 `activity` 开头的接口，全部为活动接口。如：`activity.system.send` 。
-- 以 `admin` 开头的接口，全部为管理后台专用接口。如：`admin.user.info` 。
-- 其他打头的接口全部为 APP 调用的接口。所以，不要用 `activity` 和 `admin` 定义 APP 调用的接口。
+> appid 参数区分：在固定参数当中有一个 appid 参数。该参数在数据库 `finger_api_auth` 表中对应一条记录。记录有一个接口类型的参数 `api_type`。通过该参数自动将参数划分到不同的命名空间。
+
+
 
 其次，我们分配给客户端/活动方/管理后台的密钥都会在 `finger_api_auth` 表中进行登记。当每次接口访问的时候，我们会进行两相对比。类别不对，则判定接口权限不足。
+
+> 注：开发环境不进行签名的验证。
 
 
 
@@ -1213,6 +1300,8 @@ class UserLoginApi extends AbstractApi
 
 最后，我们调用 `render` 方法完成了整个接口的调用。
 
+> 注：AbstractApi 类，是一个模板类。此处应用了设计模式：模板方法模式。再搭配工厂类，完成了两个 API 接口的架构设计。
+
 
 
 ##### 12.3.3 快捷方法
@@ -1235,7 +1324,7 @@ class UserLoginApi extends AbstractApi
 
 获取指定参数并验证参数是否为数组类型。如果不是则报错。
 
-> 注：以上四个快捷方法，都有第二个参数。当找不到指定值的时候，此参数被设置为不是 Null 值的时候，会返回该设置的值。
+> 注：以上四个快捷方法，都有第二个参数。当找不到指定值的时候，此参数被设置为不是 Null 值的时候，会返回该设置的值。所有参数必须使用这几个方法进行数据的获取。这样可以达到参数的初步验证。
 
 
 
@@ -1245,7 +1334,7 @@ class UserLoginApi extends AbstractApi
 
 但是，活动调用和管理后台调用的时候，我们可能就要对 IP 进行限制了。毕竟，给活动或管理后台提供的接口权限相比是很大的。
 
-目前，我们暂时不支持不同应用配置单独的 IP 白名单。如果真有其需求，后续很容易通过在应用表当中增加一个字段搞定。也可以支持 IP 段设置白名单。
+目前，我们暂时不支持不同应用配置单独的 IP 白名单。如果真有其需求，后续很容易通过在应用表当中增加一个字段搞定。
 
 在配置 config.ini 我们有如下配置指定了白名单 IP。
 
@@ -1279,7 +1368,7 @@ api.write_userids =
 
 2）有些接口跟版本号关联，以及需要登录状态等判断。
 
-使用如下：
+**使用示例如下：**
 
 ```php
 class SmsSendApi extends AbstractApi
@@ -1314,7 +1403,7 @@ class SmsSendApi extends AbstractApi
 
 - APP 调用的接口第一个前缀最好是模块相关的词。
 
-- 每个接口最后一个词必须是动词。如：user.edit、user.delete。
+- 每个接口最后一个词最好是动词。如：user.edit、user.delete。
 
 - 如果功能复杂，接口中间的词是子模块关联词。如：user.address.edit。
 
@@ -1330,10 +1419,10 @@ class SmsSendApi extends AbstractApi
 
 **2）更改对应的接口**
 
-如果旧接口不满足需求，可能会出现三种情况。
+如果旧接口不满足需求，可能会出现二种情况。
 
-- 需要增加新参数才能做精细的处理筛选或做记录。此时，返回的数据没有任何变化。或者变化的时候，客户端/触屏端/PC端/其他端无须操作即可自动更改。
-- 
+- 需要增加新参数才能做精细的处理筛选或做记录。此时，返回的数据没有任何变化。或者变化的时候，客户端/触屏端/PC端/其他端无须更改即可自动适应。
+- 接口不满足新需求同时也不满足旧接口需求。此时，**我们只需要把旧接口删除即可**。
 
 
 
@@ -1344,7 +1433,7 @@ class SmsSendApi extends AbstractApi
 
 
 
-### 13 命令行
+### 13 命令行运行
 
 命令行运行，是每个项目必不可少的功能。它通常运用在一些定时脚本或常驻进程业务。
 
@@ -1360,7 +1449,11 @@ class SmsSendApi extends AbstractApi
 - 解析路由参数。
 - 根据路由分发请求。
 
-> 注：为了安全，我们做了两件事情。一：限制所有命令行运行的程序只能映射到 Cli 模块。因为，命令行对应的模块都是处理一些业务复杂、权限较高、性能损耗较大的业务。二：限制 Cli 模块的所有请求，必须是通过 Cli 模块到达。可以在公共的 `Common\controllers\Cli` 类中看到相应的判断。
+> 注：为了安全，我们做了两件事情。
+>
+> 一：限制所有命令行运行的程序只能映射到 Cli 模块。因为，命令行对应的模块都是处理一些业务复杂、权限较高、性能损耗较大的业务。
+>
+> 二：限制 Cli 模块的所有请求，必须是通过 Cli 模块到达。可以在公共的 `Common\controllers\Cli` 类中看到相应的判断。
 
 
 
@@ -1376,18 +1469,19 @@ class SmsSendApi extends AbstractApi
 示例代码如下：
 
 ```php
+<?php
 use Utils\YLog;
 
-class LogController extends \common\controllers\Cli
+class SmsController extends \common\controllers\Cli
 {
-    public function writeMongoDbAction()
+    public function sendAction()
     {
-        YLog::writeMongo();
+        Consume::sendSms();
     }
 }
 ```
 
-这是一个将队列当中日志写入 MongoDb 的常驻进程。
+这是一个将队列当中待发送短信发送的常驻进程。
 
 
 
@@ -1396,10 +1490,10 @@ class LogController extends \common\controllers\Cli
  进入 `cli.php` 所在文件夹，执行如下命令：
 
 ```
-$ php cli.php Log/writeMongoDb
+$ php cli.php Sms/send
 ```
 
-注意：在一些安装了多个版本的 PHP 的服务器上，PHP 的命令的版本一定要与 Yaf 框架的版本对应。Log 代表执行 Cli 模块下的 LogController，`writeMongoDb` 代表 LogController 里面的 `writeMongoDbAction` 。
+注意：在一些安装了多个版本的 PHP 的服务器上，PHP 的命令的版本一定要与 Yaf 框架的版本对应。Sms 代表执行 Cli 模块下的 SmsController，`send` 代表 SmsController 里面的 `sendAction` 。
 
 
 
@@ -1417,7 +1511,11 @@ $ php cli.php Log/writeMongoDb
 
 ### 15 环境配置适配
 
-在日常开发中，我们经常会根据不同的环境（本地、开发、预 发、公测、正式）之间来回切换调试或部署服务器。此时针对不同环境的配置适配就显得尤为重要。在本项目当中，我们通过在根目录下创建 `.env` 文件来进行环境的适配。比如，我们此时在本地开发调试代码。此时，我们的数据库、Redis 等配置肯定与线上是不一样的。但是，又不可直接对配置文件 `/config/config.ini` 进行修改。我们可以把想修改的部分配置在 `.env` 文件当中进行差异化配置。正式环境时，删除 `.env`  文件即可。
+在日常开发中，我们经常会根据不同的环境（本地、开发、预发、公测、正式）之间来回切换调试或部署服务器。此时针对不同环境的配置适配就显得尤为重要。
+
+在本项目当中，我们通过在根目录下创建 `.env` 文件来进行环境的适配。比如，我们此时在本地开发调试代码。此时，我们的数据库、Redis 等配置肯定与线上是不一样的。但是，又不可直接对配置文件 `/config/config.ini` 进行修改。我们可以把想修改的部分配置在 `.env` 文件当中进行差异化配置。
+
+正式环境时，删除 `.env`  文件即可。正式环境的配置直接写入 `apps/config/config.ini` 文件即可。
 
 差异化配置文件的主要实现均由 `YCore::appconfig()` 方法实现。
 
@@ -1447,6 +1545,246 @@ redis.default.index = 4
 
 
 通常，我们不需要提交该文件。正式环境部署的时候直接删除该文件即可。
+
+
+
+### 16 锁
+
+在任何一个项目当中，锁的使用概率是非常之高的。特别是在分布式环境当中，对资源的并发控制。
+
+#### 16.1 MySQL 之 FOR UPDATE 锁
+
+比如，我们要扣减用户余额的时候。如果要扣减 100 元。通常我们的程序先判断取出用户的余额，判断余额是否大于等于 100 元。然后，UPDATE 的时候在 WHERE 条件里面增加一个大于等于 100 元的条件。
+
+如：
+
+```sql
+$sql = 'UPDATE user_cash SET money = money - 100 WHERE money >= 100 AND userid = 1';
+```
+
+当有多个非查询操作时，我们要开启事务。通常如此的余额扣减不会造成任何的问题。即使在并发的时候。
+
+但是，我们在进行扣减的时候，实际会把扣减前后的余额写入到订单记录中。这样才能给用户展示相应的流水变化。那么，如此的操作在并发的时一定会出现问题。
+
+因为，我们在操作之前会取出用户的余额值。假使此时有两个请求同时进来扣减 100 元，用户的余额是 1000 元。但是，由于并发这两个请求拿到的数据都是 1000 元。此时在执行更新的时候两个请求都能正常对用户的余额正常扣减成功。并且，此时的余额也会变成 800 元。但是，我们在写入订单的时候，两个的扣减前余额都会变成 1000 元，扣减后的值都会变成 900 元。这明显是不合理的。
+
+
+
+由于并发的问题。我们只需要在上面的 SQL 上加上  `FOR UPDATE` 再按照读取并扣减的方式操作。就一定不会产生这个问题了。仅仅只需要在 SQL 上增加 `FOR UPDATE`。不用做其他任何修改。 
+
+```sql
+$sql = 'UPDATE user_cash SET money = money - 100 WHERE money >= 100 AND userid = 1 FOR　　UPDATE';
+```
+
+` FOR UPDATE`  会对这个条件的记录全部加上读写锁。通常的锁仅仅只是对写进行锁。而它不同，同时会对读也加锁。这个锁只有在 显示或隐示的事务提前之后才会释放。否则，该锁会一直持有到数据库设定的最大的锁超时时间才释放。
+
+
+
+#### 16.2 Redis 分布式锁
+
+上面小节是对数据库级别的锁的应用。但是，在分布式环境，除了数据库级别的，还存在更高级别的资源并发问题。比如，常见的重复提交、库存（Redis 计数器）扣减。那么，我们就需要一个更高级别的锁。通常我们会配合数据库级别的 `FOR UPDATE` 锁一起完成一个重要的业务操作。
+
+##### 16.2.1 获取锁/加锁
+
+我们在 Yaf-Server 中，已经基于 Redis 封装了一个分页式锁。如下：
+
+```php
+<?php
+use finger\RedisMutexLock;
+
+$lockKey = "lock_userid_1"
+$status  = RedisMutexLock::lock($lockKey, 3);
+if ($status) {
+    // 成功获取锁。
+} else {
+    // 获取锁失败。
+}
+```
+
+第一个参数代表锁的键。通过此键来区分锁的用途。
+
+第二个参数代表尝试获取锁的时间。因为，一旦锁被其他请求获取之后，我们可能希望等待 3 秒看看取得锁的请求是否能够释放。如果设置为 0，则锁被其他请求占有，则立即返回失败。
+
+
+
+##### 16.2.2 释放锁
+
+我们获取锁之后，程序处理完肯定需要主动释放锁。否则，默认的锁释放时间是 20 秒。那假如我们处理程序只花了 1 秒。但是，忘记释放锁。那么，该锁会一直等待 20 秒之后才会释放。对于资源的浪费和用户体验肯定是不合适的。
+
+```php
+<?php
+use finger\RedisMutexLock;
+
+$lockKey = "lock_userid_1"
+RedisMutexLock::release($lockKey);
+```
+
+> 关于锁的的封装可以查看源码：`library\finger\RedisMutexLock.php` 。
+
+
+
+### 17 多进程
+
+
+
+### 18 常用工具类
+
+任何应用都脱离不了一系列实用的工具。Yaf-Server 把一系列实用的方法按照功能进行了封装到不同的类。
+
+目前工具类包含：核心工具类、缓存操作类、Cookie 操作类、日期时间类、目录文件类、文件操作类、数据获取类、日志类、Excel 导入导出类、字符串操作类、URL 工具类等。
+
+以上所有的工具类全部在 `library\Utils` 目录下面。
+
+
+
+#### 18.1 缓存操作类 `YCache`
+
+在 9.2 小节，我们就已经用过了 YCache 类。这里不再多作介绍。
+
+
+
+#### 18.2 数据读取类 `YInput`
+
+有时候，我们要从各种结果数组里面读取数值。
+
+如：
+
+```php
+<?php
+$data = [
+    'userid' => 10000,
+    'mobile' => '13812345678'
+];
+$userid = isset($data['userid']) ? $data['userid'] : 0;
+```
+
+像上面的 `$data` 数组中，当 `userid` 不一定存在时，我们的代码书写就非常的丑陋。于是，我们就定义了一个专门与数组读取相关的操作类 `YInput`。
+
+**YInput 读取示例：**
+
+```php
+<?php
+use Utils\YInput;
+$data = [
+    'userid' => 10000,
+    'mobile' => '13812345678'
+];
+$userid = YInput::getInt($data, 'userid', 0);
+```
+
+我们在读取的时候，不仅进行了 `isset` 的判断。还进行了类型的验证。最终保证读取到的数值类型不会有异变。
+
+相应的方法有：
+
+```php
+// 取 Float
+YInput::getFloat()
+YInput::getString()
+YInput::getArray()
+```
+
+如果你在使用当中觉得还是太少了。可以自己在该工具类中增加。比如，可以定义如下：
+
+```
+YInput::getEmail()
+YInput::getMobile()
+YInput::getUrl()
+```
+
+后续，如果确实有必要。我们也会在这个里面扩展这些方法进去。
+
+
+
+#### 18.3 Cookie 操作类 `YCookie`
+
+虽然，我们这是一个 API 接口项目。不会涉及到 Cookie 的操作。但是，这是一个通用的工具类。并不影响实际的功能。
+
+使用示例：
+
+```php
+<?php
+use Utils\YCookie;
+YCookie::get('userid', 0); // 读取 Cookie 当中的 userid，如果不存在则返回 0。
+YCookie::set('userid', 1); // 设置 Cookie 当中的 userid 值为 1。
+YCookie::all(); // 读取 Cookie 当中所有的值。
+YCookie::delete('userid'); // 删除指定的 Cookie。
+YCookie::destroy(); // 清空 Cookie。
+```
+
+这个使用比较简单。这里就不展示讲解。
+
+
+
+#### 18.4 日期时间工具类 `YDate`
+
+我们经常会做一些日期时间的运算。比如，系统耗时、生肖、星座之类的。于是，就专门用封装了一个类归类这些方法。
+
+##### 18.4.1 时间戳格式化
+
+我们经常会把时间戳格式化成日期。比如：2019年04月04日 或 2019-04-04 或 2019/04/04。当然，这个方法我感觉也没有太必要。仅仅是封装之后可以统一修改比较方便。
+
+```php
+<?php
+use Utils\YDate;
+$timestamp = time();
+YDate::formatTimestamp($timestamp);
+```
+
+##### 18.4.2 系统执行时间耗时
+
+我们经常会验证一些代码的性能问题。于是，会统计输出一些时间耗时到日志。这个方法会从入口文件开始，到调用该方法位置的微秒耗时。
+
+```php
+<?php
+use Utils\YDate;
+
+YDate::getCostTime();
+```
+
+
+
+##### 18.4.3 多久之前
+
+我们在微信朋友圈经常会看到“2小时前”这样的字样。这个就是通过时间距离判断的。
+
+```php
+<?php
+use Utils\YDate;
+$date = '2019-01-01';
+YDate::howLongAgo($data); // 3个月前
+```
+
+
+
+##### 18.4.4 星座
+
+在这个八卦娱乐的时代。我们经常会讨论谁谁是什么星座。比如，处女座。通过一个人的生日，获取其属于啥星座。
+
+```php
+<?php
+use Utils\YDate;
+YDate::constellation(2, 3); // 2月3号的星座
+```
+
+
+
+##### 18.4.5 生肖
+
+在一些系统当中，会根据用户的生肖显示相应的提示信息或福利。所以，我们封装了一个方法来获取用户的生肖。
+
+```php
+<?php
+use Utils\YDate;
+YDate::animal(1988, 3); // 龙
+```
+
+
+
+未完待续
+
+
+
+
 
 
 

@@ -106,8 +106,8 @@ class YDate
     /**
      * 根据生日中的月份和日期来计算所属星座*
      *
-     * @param  int    $birthMonth
-     * @param  int    $birthDate
+     * @param  int  $birthMonth 月份。
+     * @param  int  $birthDate  号数。
      * @return string
      */
     public static function constellation($birthMonth, $birthDate)
@@ -143,8 +143,8 @@ class YDate
     /**
      * 根据生日中的年份来计算所属生肖
      *
-     * @param  int    $birthYear
-     * @param  int    $format    格式化形式。1-十二地支、2-十二生肖。
+     * @param  int  $birthYear  年份。
+     * @param  int  $format     格式化形式。1-十二地支、2-十二生肖。
      * @return string
      */
     public static function animal($birthYear, $format = 1)
