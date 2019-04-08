@@ -70,9 +70,9 @@ class YCore
             'ErrorNo'    => $errno, 
             'stackTrace' => $traceStack
         ];
-        ob_clean();
         YLog::log($logData, 'errors', 'log', $isForceWrite = true);
         if (defined('IS_API')) {
+            ob_clean();
             header("Access-Control-Allow-Origin: *");
             header('Content-type: application/json');
             $data = [
@@ -85,6 +85,7 @@ class YCore
             $datetime = date('Y-m-d H:i:s', time());
             echo $datetime . "\n" . print_r($logData, true);
         } else {
+            ob_clean();
             if ($appDebug) {
                 echo print_r($logData, true);
             } else {
@@ -136,8 +137,8 @@ class YCore
             ];
 
             YLog::log($logData, 'errors', 'log', $isForceWrite = true);
-            ob_clean();
             if (defined('IS_API')) {
+                ob_clean();
                 header("Access-Control-Allow-Origin: *");
                 header('Content-type: application/json');
                 $data = [
@@ -150,6 +151,7 @@ class YCore
                 $datetime = date('Y-m-d H:i:s', time());
                 echo $datetime . "\n" . print_r($logData, true);
             } else {
+                ob_clean();
                 if ($appDebug) {
                     echo print_r($logData, true);
                 } else {
@@ -239,26 +241,6 @@ class YCore
     }
 
     /**
-     * 转换字节数为其他单位
-     *
-     * @param  string  $filesize  字节大小
-     * @return string 返回大小
-     */
-    public static function sizecount($filesize)
-    {
-        if ($filesize >= 1073741824) {
-            $filesize = round($filesize / 1073741824 * 100) / 100 . ' GB';
-        } elseif ($filesize >= 1048576) {
-            $filesize = round($filesize / 1048576 * 100) / 100 . ' MB';
-        } elseif ($filesize >= 1024) {
-            $filesize = round($filesize / 1024 * 100) / 100 . ' KB';
-        } else {
-            $filesize = $filesize . ' Bytes';
-        }
-        return $filesize;
-    }
-
-    /**
      * 字符串加密、解密函数
      *
      * @param  string   $txt          字符串
@@ -298,8 +280,8 @@ class YCore
      * 
      * -- 在使用类似方法或 CURL 的时候。如果确定不使用 IPV6 解析，请关闭它。
      *
-     * @param  string $url     接口url地址
-     * @param  int    $timeout 超时时间
+     * @param  string  $url      接口url地址
+     * @param  int     $timeout  超时时间
      * @return string
      */
     public static function pc_file_get_contents($url, $timeout = 30)
@@ -330,22 +312,6 @@ class YCore
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         return preg_match('/[\d\.]{7,15}/', $ip, $matches) ? $matches[0] : '';
-    }
-
-    /**
-     * IE浏览器判断
-     * @return bool
-     */
-    public static function is_ie()
-    {
-        $useragent = strtolower($_SERVER['HTTP_USER_AGENT']);
-        if ((strpos($useragent, 'opera') !== false) || (strpos($useragent, 'konqueror') !== false)) {
-            return false;
-        }
-        if (strpos($useragent, 'msie ') !== false) {
-            return true;
-        }
-        return false;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Office 之 Excel、Word、Power Point操作。
+ * Office 之 Excel 操作。
  * @author fingerQin
  * @date 2018-06-27
  */
@@ -9,7 +9,7 @@ namespace Utils;
 
 use PHPExcel\Spreadsheet;
 
-class YOffice
+class YExcel
 {
     /**
      * 26个大写字母。
@@ -35,7 +35,14 @@ class YOffice
     public static function createExcel($headerTitle, $data, $savePath, $filename)
     {
         $objPHPExcel = new Spreadsheet();
-        $objPHPExcel->getProperties()->setCreator("winerQin")->setLastModifiedBy("winerQin")->setTitle($filename)->setSubject($filename)->setDescription($filename)->setKeywords()->setCategory();
+        $objPHPExcel->getProperties()
+                    ->setCreator("fingerQin")
+                    ->setLastModifiedBy("fingerQin")
+                    ->setTitle($filename)
+                    ->setSubject($filename)
+                    ->setDescription($filename)
+                    ->setKeywords()
+                    ->setCategory();
         $heaerOffset = 0; // 标题对应的字母。
         $alphaRepeat = 0; // 字母重复次数。0代表未重复。
         $yPosition   = 1; // Y轴数字。标题只能位于第一列。
@@ -61,7 +68,6 @@ class YOffice
                 }
                 $secondAlpha = self::$alpha[$heaerOffset]; // 每列组成如：A-Z,AA-ZZ。此值是第二位。
                 $firstAlpha  = ($alphaRepeat > 0) ? self::$alpha[$alphaRepeat - 1] : ''; // 此值是第一位。
-                $postion     = $heaerOffset + 1;
                 $ojbSheet->setCellValue("{$firstAlpha}{$secondAlpha}{$yPosition}", $cell);
                 $heaerOffset += 1;
             }
@@ -69,8 +75,8 @@ class YOffice
         }
         $objPHPExcel->setActiveSheetIndex(0);
         $objWriter = \PHPExcel\IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        $save_name = rtrim($savePath, '/\\') . DIRECTORY_SEPARATOR . $filename . '.xlsx';
-        $objWriter->save($save_name);
+        $saveName  = rtrim($savePath, '/\\') . DIRECTORY_SEPARATOR . $filename . '.xlsx';
+        $objWriter->save($saveName);
     }
 
     /**
@@ -84,7 +90,14 @@ class YOffice
     public static function excelExport($headerTitle, $data, $filename = '')
     {
         $objPHPExcel = new Spreadsheet();
-        $objPHPExcel->getProperties()->setCreator("winerQin")->setLastModifiedBy("winerQin")->setTitle($filename)->setSubject($filename)->setDescription($filename)->setKeywords()->setCategory();
+        $objPHPExcel->getProperties()
+                    ->setCreator("fingerQin")
+                    ->setLastModifiedBy("fingerQin")
+                    ->setTitle($filename)
+                    ->setSubject($filename)
+                    ->setDescription($filename)
+                    ->setKeywords()
+                    ->setCategory();
         $heaerOffset = 0; // 标题对应的字母。
         $alphaRepeat = 0; // 字母重复次数。0代表未重复。
         $yPosition   = 1; // Y轴数字。标题只能位于第一列。
@@ -110,7 +123,6 @@ class YOffice
                 }
                 $secondAlpha = self::$alpha[$heaerOffset]; // 每列组成如：A-Z,AA-ZZ。此值是第二位。
                 $firstAlpha  = ($alphaRepeat > 0) ? self::$alpha[$alphaRepeat - 1] : ''; // 此值是第一位。
-                $postion     = $heaerOffset + 1;
                 $ojbSheet->setCellValue("{$firstAlpha}{$secondAlpha}{$yPosition}", $cell);
                 $heaerOffset += 1;
             }
@@ -141,8 +153,8 @@ class YOffice
     public static function excelImport($filename)
     {
         $objPHPExcel   = \PHPExcel\IOFactory::load($filename);
-        $sheet         = $objPHPExcel->getSheet(0);                                     // 读取第一個工作表
-        $highestRow    = $sheet->getHighestRow();                                  // 取得总行数
+        $sheet         = $objPHPExcel->getSheet(0);                             // 读取第一個工作表
+        $highestRow    = $sheet->getHighestRow();                               // 取得总行数
         $highestColumm = $sheet->getHighestColumn();                            // 取得总列数
         $highestColumm = \PHPExcel\Cell::columnIndexFromString($highestColumm); // 字母列转换为数字列 如:AA变为27
         $result        = []; // 保存Excel表数据。
@@ -150,7 +162,7 @@ class YOffice
         for ($row = 1; $row <= $highestRow; $row++) { // 行数是以第1行开始
             $sheetRow = [];
             for ($column = 0; $column < $highestColumm; $column++) { // 列数是以第0列开始
-                $columnName = \PHPExcel\Cell::stringFromColumnIndex($column);
+                // $columnName = \PHPExcel\Cell::stringFromColumnIndex($column);
                 $sheetRow[] = $sheet->getCellByColumnAndRow($column, $row)->getValue();
             }
             $result[] = $sheetRow;
