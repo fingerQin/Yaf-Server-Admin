@@ -1,6 +1,6 @@
 [TOC]
 
-## Yaf-Server 使用文档##
+## Yaf-Server 使用文档
 
 ### 1 前言
 
@@ -1741,7 +1741,176 @@ root      1668  1640  0 14:58 pts/1    00:00:00 grep --color=auto thread
 
 ### 18 事件系统
 
+所谓事件指的是我们对系统当中一些操作的统称。比如，登录、注册、下单等。我们把这些指定的动作按照系统规定的格式封装之后，把事件消息 Push 到消息队列中。然后，根据不同事件触发不同的逻辑。
 
+如，当注册成功之后，我们给用户发送注册成功的短信以及赠送新手福利。每次登录的时候，我们判断是否是首次登录并赠送登录金币，如果发现是异地登录就发送短信提示或 APP 推送消息。
+
+事件系统，其核心采用了消息队列异步实现。因为，同步的情况下，当需求发生变更，业务代码也会同步变更。会给核心流程带来风险。其次，一些触发机制在时间响应上需要很久的时间。同步响应的时候会给用户体验带来不好的影响。所以，异步是最佳的解耦方案。
+
+#### 18.1 事件表
+
+事件通常是一系列重要的操作。我们通过数据库表来记录。同时，通过数据库表也能达到很好的重发带来的隐患。
+
+事件表 `finger_event` 结构如下：
+
+```sql
+CREATE TABLE `finger_event` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `code` char(10) NOT NULL COMMENT '事件编码',
+  `userid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `error_code` int(11) NOT NULL DEFAULT '0' COMMENT '错误码',
+  `error_msg` varchar(255) NOT NULL DEFAULT '' COMMENT '错误消息',
+  `status` tinyint(1) NOT NULL COMMENT '处理状态：0-待处理,1-已经处理,2-处理失败',
+  `data` varchar(500) NOT NULL COMMENT '事件内容',
+  `u_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `c_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='系统事件消息表';
+```
+
+不同的事件都有不同的事件编码，也有不同的处理状态。
+
+登录事情内容如下：
+
+```json
+{
+	"code": "login",
+	"userid": 1,
+	"mobile": "13812345678",
+	"platform": 1,
+	"app_v": "0.0.1",
+	"v": "1.0.0",
+	"login_time": "2019-04-08 15:01:01"
+}
+```
+
+在写入数据库成功之后，我们会将事件内容同时 Push 到消息队列当中。
+
+
+
+#### 18.2 事件记录
+
+在上面我们讲到，事件写入到事件表的时候，同时会 Push 到消息队列当中。Yaf-Server 基建项目目前是通过 Redis 的 List 结构来做消息队列。
+
+事件写入示例如下：
+
+```php
+<?php
+use Services\Event\Producer;
+
+$message = [
+    'code'       => 'login',
+    'userid'     => 10086,
+    'mobile'     => '13812345678',
+    'platform'   => 1,
+    'app_v'      => '1.0.0',
+    'v'          => '1.0.0',
+    'login_time' => '2019-04-08 15:01:01'
+];
+Producer::push($message);
+```
+
+在 `Services\Event` 目录下面，我们封装了一整套完整的事件生产与消费的功能。在 `Services\Event\Sub` 目录下定义了具体的事件处理细节。
+
+
+
+#### 18.3 事件消费
+
+当事件写入队列之后，我们接下来就去消费。之所以有事件编码，是因为在消费的时候，我们会根据事件编码找到对应的队列，然后从队列里面取出数据进行消费。
+
+比如，我们的登录事件的编码为 `login` 。那么，在 `Services\Event\Sub` 目录下定义一个 `Login` 类。以这样的方式来区分我们对应哪个事件的消息端。
+
+**Login 类代码如下：**
+
+```php
+<?php
+
+namespace Services\Event\Sub;
+
+class Login extends \Services\Event\Sub\AbstractBase
+{
+    /**
+     * 运行真实的业务。
+     * 
+     * -- 当遇到严重错误，需要退出运行的时候直接抛出异常。
+     * -- 如果仅仅是遇到诸如条件不满足某某规则则只记录日志即可。保证进程继续处理下一个。
+     * 
+     * @param array $event 事件数据。
+     *
+     * @return void
+     */
+    protected static function runService($event)
+    {
+        // 这里写具体的的消息消费逻辑。
+        // 通常这里仅仅调用 Services 里面封装的业务来运行即可。
+    }
+}
+```
+
+
+
+#### 18.4 启动事件消费程序
+
+事件生产端是随业务代码实时操作的。所以，这里只会存在事件的消费端启动。
+
+在 `Cli` 模块下，我们创建了一个 `Event.php` 。这个 `EventController`专门用来管理事件相关的启动。
+
+代码如下：
+
+```php
+<?php
+
+use Models\Event;
+use Services\Event\Consumer;
+use Services\Event\Sub\Login;
+use Services\Event\Sub\Register;
+
+class EventController extends \Common\controllers\Cli
+{
+    /**
+     * 事件分发常驻进程。
+     * 
+     * -- 启动方式：php cli.php event/dispatcher
+     *
+     */
+    public function dispatcherAction()
+    {
+        Consumer::dispatcher();
+    }
+
+    /**
+     * 注册事件消费常驻进程。
+     * 
+     * -- 启动方式：php cli.php event/register
+     *
+     */
+    public function registerAction()
+    {
+        Register::launch(Event::CODE_REGISTER);
+    }
+
+    /**
+     * 登录事件消费常驻进程。
+     * 
+     * -- 启动方式：php cli.php event/login
+     *
+     */
+    public function loginAction()
+    {
+        Login::launch(Event::CODE_LOGIN);
+    }
+}
+```
+
+为了提高事件的吞吐性能。事件写入之后，我们会根据事件编码分发了事件子队列当中。这样避免了不同事件消费同一个队列导致的消息出队性能。
+
+**事件消息异常重试：**
+
+```php
+Login::launch(Event::CODE_LOGIN, 2, 3);
+```
+
+`luanch` 方法的第二个参数定义了当消费不成功时，重试的次数。第三个参数是间隔多少秒重试一次。间隔时间不是一个绝对值。它只有一个作用，就是当第二次消费时两次间隔小于这个时间就继续等待。所以，并不是定时重试。
 
 
 

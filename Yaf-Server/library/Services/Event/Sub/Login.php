@@ -14,7 +14,6 @@ class Login extends \Services\Event\Sub\AbstractBase
      * 
      * -- 当遇到严重错误，需要退出运行的时候直接抛出异常。
      * -- 如果仅仅是遇到诸如条件不满足某某规则则只记录日志即可。保证进程继续处理下一个。
-     * -- 注：一定要防止事件被处理两次。
      * 
      * @param array $event 事件数据。
      *

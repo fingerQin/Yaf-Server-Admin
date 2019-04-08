@@ -5,9 +5,6 @@
  * @date 2018-09-13
  */
 
-use finger\RedisMutexLock;
-use finger\Database\Db;
-use Utils\YCache;
 use Models\Event;
 use Services\Event\Consumer;
 use Services\Event\Sub\Login;
