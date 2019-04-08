@@ -9,7 +9,7 @@ namespace Utils;
 
 use PHPExcel\Spreadsheet;
 
-class YOffice
+class YExcel
 {
     /**
      * 26个大写字母。
@@ -61,7 +61,6 @@ class YOffice
                 }
                 $secondAlpha = self::$alpha[$heaerOffset]; // 每列组成如：A-Z,AA-ZZ。此值是第二位。
                 $firstAlpha  = ($alphaRepeat > 0) ? self::$alpha[$alphaRepeat - 1] : ''; // 此值是第一位。
-                $postion     = $heaerOffset + 1;
                 $ojbSheet->setCellValue("{$firstAlpha}{$secondAlpha}{$yPosition}", $cell);
                 $heaerOffset += 1;
             }
@@ -110,7 +109,6 @@ class YOffice
                 }
                 $secondAlpha = self::$alpha[$heaerOffset]; // 每列组成如：A-Z,AA-ZZ。此值是第二位。
                 $firstAlpha  = ($alphaRepeat > 0) ? self::$alpha[$alphaRepeat - 1] : ''; // 此值是第一位。
-                $postion     = $heaerOffset + 1;
                 $ojbSheet->setCellValue("{$firstAlpha}{$secondAlpha}{$yPosition}", $cell);
                 $heaerOffset += 1;
             }
@@ -150,7 +148,7 @@ class YOffice
         for ($row = 1; $row <= $highestRow; $row++) { // 行数是以第1行开始
             $sheetRow = [];
             for ($column = 0; $column < $highestColumm; $column++) { // 列数是以第0列开始
-                $columnName = \PHPExcel\Cell::stringFromColumnIndex($column);
+                // $columnName = \PHPExcel\Cell::stringFromColumnIndex($column);
                 $sheetRow[] = $sheet->getCellByColumnAndRow($column, $row)->getValue();
             }
             $result[] = $sheetRow;

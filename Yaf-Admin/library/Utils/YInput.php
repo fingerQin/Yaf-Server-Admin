@@ -22,20 +22,20 @@ class YInput
     public static function getArray($data, $name, $defaultValue = null)
     {
         if (!is_array($data)) {
-            YCore::exception(STATUS_ERROR, '值为空');
+            YCore::exception(STATUS_SERVER_ERROR, '值为空');
         }
         if (!isset($data[$name])) {
             if (is_null($defaultValue)) {
-                YCore::exception(STATUS_ERROR, "{$name} cannot be empty");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} cannot be empty");
             } else if (!is_array($defaultValue)) {
-                YCore::exception(STATUS_ERROR, "{$name} of the default value is not a array");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} of the default value is not a array");
             } else {
                 return $defaultValue;
             }
         } else {
             $value = $data[$name];
             if (!is_array($value)) {
-                YCore::exception(STATUS_ERROR, "{$name} value is not a array");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} value is not a array");
             } else {
                 return $value;
             }
@@ -53,20 +53,20 @@ class YInput
     public static function getInt($data, $name, $defaultValue = null)
     {
         if (!is_array($data)) {
-            YCore::exception(STATUS_ERROR, '值为空');
+            YCore::exception(STATUS_SERVER_ERROR, '值为空');
         }
         if (!isset($data[$name])) {
             if (is_null($defaultValue)) {
-                YCore::exception(STATUS_ERROR, "{$name} cannot be empty");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} cannot be empty");
             } else if (!Validator::is_integer($defaultValue)) {
-                YCore::exception(STATUS_ERROR, "{$name} of the default value is not a integer");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} of the default value is not a integer");
             } else {
                 return $defaultValue;
             }
         } else {
             $value = $data[$name];
             if (!Validator::is_integer($value)) {
-                YCore::exception(STATUS_ERROR, "{$name} value is not a integer");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} value is not a integer");
             } else {
                 return $value;
             }
@@ -84,11 +84,11 @@ class YInput
     public static function getString($data, $name, $defaultValue = null)
     {
         if (!is_array($data)) {
-            YCore::exception(STATUS_ERROR, '值为空');
+            YCore::exception(STATUS_SERVER_ERROR, '值为空');
         }
         if (!isset($data[$name])) {
             if (is_null($defaultValue)) {
-                YCore::exception(STATUS_ERROR, "{$name} cannot be empty");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} cannot be empty");
             } else {
                 return $defaultValue;
             }
@@ -108,20 +108,20 @@ class YInput
     public static function getFloat($data, $name, $defaultValue = null)
     {
         if (!is_array($data)) {
-            YCore::exception(STATUS_ERROR, '值为空');
+            YCore::exception(STATUS_SERVER_ERROR, '值为空');
         }
         if (!isset($data[$name])) {
             if (is_null($defaultValue)) {
-                YCore::exception(STATUS_ERROR, "{$name} cannot be empty");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} cannot be empty");
             } else if (!Validator::is_float($defaultValue)) {
-                YCore::exception(STATUS_ERROR, "{$name} of the default value is not a float");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} of the default value is not a float");
             } else {
                 return $defaultValue;
             }
         } else {
             $value = $data[$name];
             if (!Validator::is_float($value)) {
-                YCore::exception(STATUS_ERROR, "{$name} value is not a float");
+                YCore::exception(STATUS_SERVER_ERROR, "{$name} value is not a float");
             } else {
                 return $value;
             }

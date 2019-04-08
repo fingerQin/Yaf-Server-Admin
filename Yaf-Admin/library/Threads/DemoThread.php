@@ -1,6 +1,5 @@
 <?php
 /**
- * 竞猜派奖程序。
  * @author fingerQin
  * @date 2017-09-16
  */
@@ -8,9 +7,8 @@
 namespace threads;
 
 use winer\Thread\Thread;
-use services\GuessService;
 
-class GuessThread extends Thread
+class DemoThread extends Thread
 {
     /**
      * 业务运行方法。
@@ -23,6 +21,7 @@ class GuessThread extends Thread
      */
     public function run($threadNum, $num)
     {
-        GuessService::sendPrize($threadNum, $num);
+        echo "ThreadNum:{$threadNum},num:{$num}";
+        sleep(3);
     }
 }

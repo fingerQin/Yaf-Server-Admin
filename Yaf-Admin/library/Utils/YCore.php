@@ -7,10 +7,7 @@
 
 namespace Utils;
 
-use finger\Validator;
 use Utils\YLog;
-use Services\core\ConfigService;
-use Services\core\DictService;
 
 class YCore
 {
@@ -71,6 +68,7 @@ class YCore
 
         $logData = [
             'Type'       => 'set_error_handler',
+            'ErrorTime'  => date('Y-m-d H:i:s'),
             'ServerIP'   => $serverIP,
             'ClientIP'   => $clientIP,
             'ErrorFile'  => $errfile,
@@ -139,6 +137,7 @@ class YCore
 
             $logData = [
                 'Type'       => 'register_shutdown_function',
+                'ErrorTime'  => date('Y-m-d H:i:s'),
                 'ServerIP'   => $serverIP,
                 'ClientIP'   => $clientIP,
                 'ErrorFile'  => $errInfo['file'],
@@ -252,26 +251,6 @@ class YCore
     }
 
     /**
-     * 转换字节数为其他单位
-     *
-     * @param  string  $filesize  字节大小
-     * @return string 返回大小
-     */
-    public static function sizecount($filesize)
-    {
-        if ($filesize >= 1073741824) {
-            $filesize = round($filesize / 1073741824 * 100) / 100 . ' GB';
-        } elseif ($filesize >= 1048576) {
-            $filesize = round($filesize / 1048576 * 100) / 100 . ' MB';
-        } elseif ($filesize >= 1024) {
-            $filesize = round($filesize / 1024 * 100) / 100 . ' KB';
-        } else {
-            $filesize = $filesize . ' Bytes';
-        }
-        return $filesize;
-    }
-
-    /**
      * 字符串加密、解密函数
      *
      * @param  string   $txt          字符串
@@ -341,22 +320,6 @@ class YCore
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         return preg_match('/[\d\.]{7,15}/', $ip, $matches) ? $matches[0] : '';
-    }
-
-    /**
-     * IE浏览器判断
-     * @return bool
-     */
-    public static function is_ie()
-    {
-        $useragent = strtolower($_SERVER['HTTP_USER_AGENT']);
-        if ((strpos($useragent, 'opera') !== false) || (strpos($useragent, 'konqueror') !== false)) {
-            return false;
-        }
-        if (strpos($useragent, 'msie ') !== false) {
-            return true;
-        }
-        return false;
     }
 
     /**
