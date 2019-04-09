@@ -228,7 +228,8 @@ class Address extends \Services\AbstractBase
     {
         $sql = 'SELECT a.addressid,a.realname,a.mobile,a.districtid,a.address,'
              . 'b.province_name,b.city_name,b.district_name,b.street_name '
-             . 'FROM mall_user_address AS a INNER JOIN finger_district AS b ON(a.districtid=b.districtid) '
+             . 'FROM finger_user_address AS a INNER JOIN '
+             . 'finger_district AS b ON(a.districtid=b.districtid) '
              . 'WHERE a.userid = :userid AND a.status = :status';
         $params = [
             ':userid' => $userid,
