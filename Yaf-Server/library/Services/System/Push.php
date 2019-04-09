@@ -47,7 +47,7 @@ class Push extends \Services\AbstractBase
             'last_device_token' => $device['device_token'],
             'last_device_type'  => $device['device_type'],
         ];
-        $MPushDevice->update($data, ['userid' => $userid]);
+        $MPushDevice->update($data, ['id' => $device['id']]);
     }
 
     /**
