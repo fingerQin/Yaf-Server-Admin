@@ -8,9 +8,8 @@
 
 namespace finger\cache\redis;
 
-use Utils\YCache;
-use finger\Validator;
 use Utils\YCore;
+use finger\Validator;
 
 class Cache
 {

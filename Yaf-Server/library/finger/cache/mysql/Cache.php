@@ -9,9 +9,8 @@
 
 namespace finger\cache\mysql;
 
-use finger\Database\Connection;
 use Utils\YCore;
-
+use finger\Database\Connection;
 
 class Cache
 {

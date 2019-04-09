@@ -9,8 +9,6 @@
 
 namespace finger;
 
-use Utils\YCore;
-
 class Log
 {
     /**

@@ -16,8 +16,8 @@
 
 namespace finger\session\mysql;
 
-class SessionHandler implements \SessionHandlerInterface {
-
+class SessionHandler implements \SessionHandlerInterface
+{
     /**
      * mysql对象。
      *

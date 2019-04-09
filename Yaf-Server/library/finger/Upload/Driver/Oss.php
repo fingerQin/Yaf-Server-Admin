@@ -8,7 +8,6 @@
 namespace finger\Upload\Driver;
 
 use Utils\YCore;
-use Utils\YLog;
 use finger\Alisdk\Oss\OssClient;
 use finger\Alisdk\Oss\Core\OssException;
 
