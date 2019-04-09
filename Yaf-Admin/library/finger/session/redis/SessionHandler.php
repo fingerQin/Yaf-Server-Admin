@@ -7,8 +7,6 @@
 
 namespace finger\session\redis;
 
-use Utils\YLog;
-
 class SessionHandler implements \SessionHandlerInterface
 {
     /**

@@ -10,8 +10,8 @@
 
 namespace Common\controllers;
 
-use finger\Validator;
 use Utils\YCore;
+use finger\Validator;
 
 class Common extends \Yaf_Controller_Abstract
 {

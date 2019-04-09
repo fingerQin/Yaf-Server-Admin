@@ -2,7 +2,7 @@
 
 namespace finger\Image\Driver;
 
-use \finger\Image;
+use finger\Image;
 
 class Gd {
 

@@ -7,9 +7,6 @@
 
 namespace finger\Database;
 
-use Utils\YLog;
-use Utils\YCore;
-
 class Db
 {
     /**

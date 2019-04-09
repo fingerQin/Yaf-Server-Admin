@@ -6,7 +6,6 @@
 
 namespace finger;
 
-use Utils\YCore;
 use Utils\YUrl;
 
 class Paginator
