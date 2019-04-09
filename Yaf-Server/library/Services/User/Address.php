@@ -9,7 +9,7 @@ namespace Services\User;
 
 use Utils\YCore;
 use Models\District;
-use Models\MallUserAddress;
+use Models\UserAddress;
 use finger\Validator;
 use finger\Database\Db;
 
@@ -36,7 +36,7 @@ class Address extends \Services\AbstractBase
             'district_id',
             'is_default'
         ];
-        $AddressModel = new MallUserAddress();
+        $AddressModel = new UserAddress();
         $detail = $AddressModel->fetchOne($columns, $where);
         if (empty($detail)) {
             YCore::exception(STATUS_SERVER_ERROR, '收货地址不存在');
@@ -57,9 +57,9 @@ class Address extends \Services\AbstractBase
         $where = [
             'userid'    => $userid,
             'addressid' => $addreddId,
-            'status'    => MallUserAddress::STATUS_YES
+            'status'    => UserAddress::STATUS_YES
         ];
-        $AddressModel = new MallUserAddress();
+        $AddressModel = new UserAddress();
         $addressInfo  = $AddressModel->fetchOne([], $where);
         if (empty($addressInfo)) {
             YCore::exception(STATUS_ERROR, '您选择的收货地址已经失效');
@@ -123,10 +123,10 @@ class Address extends \Services\AbstractBase
             'userid'     => $userid,
             'districtid' => $districtId,
             'address'    => $address,
-            'status'     => MallUserAddress::STATUS_YES,
+            'status'     => UserAddress::STATUS_YES,
             'c_time'     => date('Y-m-d H:i:s', time())
         ];
-        $UserAddressModel = new MallUserAddress();
+        $UserAddressModel = new UserAddress();
         $addressId        = $UserAddressModel->insert($data);
         if ($addressId == 0) {
             YCore::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
@@ -142,10 +142,10 @@ class Address extends \Services\AbstractBase
      */
     public static function getUserAddressCount($userid)
     {
-        $AddressModel = new MallUserAddress();
+        $AddressModel = new UserAddress();
         $where = [
             'userid' => $userid,
-            'status' => MallUserAddress::STATUS_YES
+            'status' => UserAddress::STATUS_YES
         ];
         return $AddressModel->count($where);
     }
@@ -176,12 +176,12 @@ class Address extends \Services\AbstractBase
             YCore::exception(STATUS_ERROR, '地址有误');
         }
         self::isExistUserAddress($addressId, $userid);
-        $UserAddressModel = new MallUserAddress();
+        $UserAddressModel = new UserAddress();
         $data = [
             'realname'   => $realname,
             'districtid' => $districtId,
             'mobile'     => $mobile,
-            'status'     => MallUserAddress::STATUS_YES,
+            'status'     => UserAddress::STATUS_YES,
             'u_time'     => date('Y-m-d H:i:s', time()),
             'address'    => $address
         ];
@@ -202,9 +202,9 @@ class Address extends \Services\AbstractBase
     public static function delete($userid, $addressId)
     {
         self::isExistUserAddress($addressId, $userid);
-        $UserAddressModel = new MallUserAddress();
+        $UserAddressModel = new UserAddress();
         $data = [
-            'status' => MallUserAddress::STATUS_DELETED,
+            'status' => UserAddress::STATUS_DELETED,
             'u_time' => date('Y-m-d H:i:s', time())
         ];
         $where = [
@@ -232,7 +232,7 @@ class Address extends \Services\AbstractBase
              . 'WHERE a.userid = :userid AND a.status = :status';
         $params = [
             ':userid' => $userid,
-            ':status' => MallUserAddress::STATUS_YES
+            ':status' => UserAddress::STATUS_YES
         ];
         return Db::all($sql, $params);
     }
@@ -247,13 +247,13 @@ class Address extends \Services\AbstractBase
     public static function setDefault($userid, $addressId)
     {
         self::isExistUserAddress($addressId, $userid);
-        $UserAddressModel = new MallUserAddress();
-        $UserAddressModel->update(['is_default' => MallUserAddress::DEFAULT_NO], [
+        $UserAddressModel = new UserAddress();
+        $UserAddressModel->update(['is_default' => UserAddress::DEFAULT_NO], [
             'userid' => $userid,
-            'status' => MallUserAddress::STATUS_YES
+            'status' => UserAddress::STATUS_YES
         ]);
         $data = [
-            'is_default' => MallUserAddress::DEFAULT_YES,
+            'is_default' => UserAddress::DEFAULT_YES,
             'u_time'     => date('Y-m-d H:i:s', time())
         ];
         $where = [
@@ -341,10 +341,10 @@ class Address extends \Services\AbstractBase
     {
         $where = [
             'addressid' => $addressId,
-            'status'    => MallUserAddress::STATUS_YES,
+            'status'    => UserAddress::STATUS_YES,
             'userid'    => $userid
         ];
-        $UserAddressModel = new MallUserAddress();
+        $UserAddressModel = new UserAddress();
         $addressInfo      = $UserAddressModel->fetchOne([], $where, '', '', true);
         if (empty($addressInfo)) {
             $errMsg = (strlen($errMsg) > 0) ? $errMsg : '收货地址不存在';

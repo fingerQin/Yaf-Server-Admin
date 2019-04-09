@@ -255,7 +255,7 @@ class Auth extends \Services\AbstractBase
         if ($userinfo['cur_status'] == UserModel::STATUS_LOCKED) {
             YCore::exception(STATUS_SERVER_ERROR, '您的账号被锁定!');
         }
-        // [4] token 是否赶出了超时时限
+        // [4] token 是否超出了超时时限
         $loginType     = self::isAppCall($platform) ? 1 : 0; // 1 APP 客户端登录、0 - 非 APP 客户端登录。
         $cacheKeyToken = "u_t_k:{$loginType}:{$userid}";
         $cacheToken    = YCache::get($cacheKeyToken);

@@ -1,6 +1,6 @@
 <?php
 /**
- * 系统首页接口。
+ * APP 首页接口。
  * 
  * @author fingerQin
  * @date 2018-08-31
@@ -9,7 +9,6 @@
 
 namespace Apis\app\v100\System;
 
-use Utils\YCore;
 use Apis\AbstractApi;
 use Services\User\Auth;
 use Services\System\Advertisement;

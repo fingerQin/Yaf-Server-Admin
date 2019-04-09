@@ -8,8 +8,6 @@
 
 namespace Services\User;
 
-use Services\Gold\Gold;
-
 class User extends \Services\AbstractBase
 {
     /**
@@ -24,8 +22,6 @@ class User extends \Services\AbstractBase
     {
         $columns   = 'mobile, open_id, nickname, headimg, intro, c_time AS reg_time';
         $UserModel = new \Models\User();
-        $detail    = $UserModel->fetchOne($columns, ['userid' => $userid]);
-        $detail['gold'] = Gold::userGoldCount($userid);
-        return $detail;
+        return $UserModel->fetchOne($columns, ['userid' => $userid]);
     }
 }

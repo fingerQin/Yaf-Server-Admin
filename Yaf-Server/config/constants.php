@@ -28,3 +28,6 @@ define('ENV_DEV', 'dev');   // 开发环境。
 define('ENV_PRE', 'pre');   // 预发布环境。
 define('ENV_BETA', 'beta'); // 公测环境。
 define('ENV_PRO', 'pro');   // 正式环境。
+
+
+define('USER_ADDRESS_MAX_COUNT', 5); // 用户地址最大数量。
