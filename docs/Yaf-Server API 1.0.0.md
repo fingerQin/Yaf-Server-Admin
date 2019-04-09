@@ -6,26 +6,26 @@
 
 #### 1.1 概述 ####
 
-​   本文档主要针对 Yaf-Server 基建项目多端使用参考。
+   本文档主要针对 `Yaf-Server` 基建项目多端使用参考。
 
-本文档使用 markdown 标记语言编写。推荐大家使用 typora 这款软件阅读或编写。
+本文档使用 `markdown` 标记语言编写。推荐大家使用 `typora` 这款软件阅读或编写。
 
 下载地址: https://www.typora.io/
 
 
 #### 1.2 API 调用地址 ####
 
-1. 开发环境 API 调用地址：
-2. 预发布环境 API 调用地址：
-3. 公测环境 API 调用地址：
-4. 正式环境 API 调用地址：
+1. 开发环境 `API` 调用地址：
+2. 预发布环境 `API` 调用地址：
+3. 公测环境 `API` 调用地址：
+4. 正式环境 `API` 调用地址：
 
 #### 1.3 交互协议 ####
 
 ##### 1.3.1 传递参数 #####
 
-1. 所有接口全部采用 POST 方式提交参数。不允许使用 GET 方式。
-2. 接口请求的参数必须为 UTF-8 编码。其他编码不保证结果的正确性。
+1. 所有接口全部采用 `POST` 方式提交参数。不允许使用 `GET` 方式。
+2. 接口请求的参数必须为 `UTF-8` 编码。其他编码不保证结果的正确性。
 3. 接口请求参数分为固定参数与业务参数两种。固定参数每次请求都必须提供。业务参数与具体的接口业务相关。 
 
 
@@ -604,12 +604,213 @@
         "mobile": "18575202692",
         "open_id": "960a3d82f110f8b54ea4a88f8bc9f615",
         "nickname": "185****2692",
-        "headimg": "http://files.yourname.com/images/voucher/20180720/5b51355904a5c.jpg",
+        "headimg": "http://xx.com/files/5b9a1b9e34193.png",
         "intro": "",
         "c_time": "2018-06-29 18:56:48"
     }
 }
 ```
+
+#### 2.13 系统广告接口[system.ads]
+
+> 请求参数
+
+| 参数  | 名称       | 必须 | 类型   | 说明                       |
+| ----- | ---------- | :--: | ------ | -------------------------- |
+| token | 会话 TOKEN |  是  | String | 有值就传，无值传空字符串   |
+| code  | 广告位编码 |  是  | String | 每个位置编码视业务系统而定 |
+
+> 返回参数
+
+| 参数         | 名称         | 类型    | 说明                                 |
+| ------------ | ------------ | ------- | ------------------------------------ |
+| ad_id        | 广告 ID      | Integer |                                      |
+| ad_name      | 广告名称     | String  | 轮播广告的文字，如果不需要可不使用。 |
+| ad_image_url | 广告图片地址 | String  |                                      |
+| ad_url       | 广告跳转地址 | String  | 跳转地址分为内链与外链。             |
+
+> 返回示例
+
+```json
+{
+    "code": 200,
+    "msg": "success",
+    "data": {
+        "list": [
+            {
+                "ad_id": 6,
+                "ad_name": "世界杯广告",
+                "ad_image_url": "http://xx.com/files/5b9a1b9e34193.png",
+                "ad_url": "http://www.baidu.com"
+            }
+        ]
+    }
+}
+```
+
+#### 2.14 友情链接接口[system.link]
+
+> 请求参数
+
+| 参数  | 名称       | 必须 | 类型   | 说明               |
+| ----- | ---------- | :--: | ------ | ------------------ |
+| token | 会话 TOKEN |  是  | String | 有则传，无传字符串 |
+
+> 返回参数
+
+| 参数            | 名称         | 类型    | 说明 |
+| --------------- | ------------ | ------- | ---- |
+| cat_id          | 分类 ID      | Integer |      |
+| cat_name        | 分类名称     | String  |      |
+| links           | 友情链接列表 | Object  |      |
+| links.link_name | 友链名称     | String  |      |
+| links.link_url  | 友链 URL     | String  |      |
+| links.image_url | 友链图片     | String  |      |
+
+> 返回示例
+
+```json
+{
+    "code": 200,
+    "msg": "success",
+    "data": {
+        "list": [
+            {
+                "cat_id": 7,
+                "cat_name": "搜索引擎",
+                "links": [
+                    {
+                        "link_name": "Google",
+                        "link_url": "https://www.google.com",
+                        "image_url": ""
+                    }
+                ]
+            }
+        ]
+    }
+}
+```
+
+#### 2.15 系统分类接口[system.category.list]
+
+> 请求参数
+
+| 参数     | 名称       | 必须 | 类型    | 说明                               |
+| -------- | ---------- | :--: | ------- | ---------------------------------- |
+| token    | 会话 TOKEN |  是  | String  | 有则传，无传字符串                 |
+| parentid | 父分类 ID  |  是  | Integer | 默认传 0                           |
+| cat_type | 分类类型   |  是  | Integer | 1-文章分类、2-友情链接、3-商品分类 |
+
+> 返回参数
+
+| 参数         | 名称       | 类型    | 说明       |
+| ------------ | ---------- | ------- | ---------- |
+| cat_id       | 分类 ID    | Integer |            |
+| cat_name     | 分类名称   | String  |            |
+| parentid     | 父分类 ID  | Integer |            |
+| cat_code     | 分类编码   | String  | 具有唯一性 |
+| sub          | 子分类列表 | Object  |            |
+| sub.cat_id   | 子分类  ID | Integer |            |
+| sub.cat_name | 子分类名称 | String  |            |
+| sub.parentid | 父分类 ID  | Integer |            |
+| sub.cat_code | 子分类编码 | String  | 具有唯一性 |
+
+> 返回示例
+
+```json
+{
+    "code": 200,
+    "msg": "Success",
+    "data": {
+        "0_1": {
+            "cat_id": 1,
+            "cat_name": "理财资讯",
+            "parentid": 0,
+            "cat_code": "100000000000000000000000000000",
+            "sub": {
+                "0_2": {
+                    "cat_id": 2,
+                    "cat_name": "基金",
+                    "parentid": 1,
+                    "cat_code": "100100000000000000000000000000",
+                    "sub": []
+                },
+                "0_3": {
+                    "cat_id": 3,
+                    "cat_name": "股票",
+                    "parentid": 1,
+                    "cat_code": "100101000000000000000000000000",
+                    "sub": []
+                }
+            }
+        },
+        "0_4": {
+            "cat_id": 4,
+            "cat_name": "体育新闻",
+            "parentid": 0,
+            "cat_code": "101000000000000000000000000000",
+            "sub": {
+                "0_5": {
+                    "cat_id": 5,
+                    "cat_name": "足球",
+                    "parentid": 4,
+                    "cat_code": "101100000000000000000000000000",
+                    "sub": []
+                },
+                "0_6": {
+                    "cat_id": 6,
+                    "cat_name": "篮球",
+                    "parentid": 4,
+                    "cat_code": "101101000000000000000000000000",
+                    "sub": []
+                }
+            }
+        }
+    }
+}
+```
+
+#### 2.16 系统首页接口[system.home]
+
+> 请求参数
+
+| 参数  | 名称       | 必须 | 类型   | 说明               |
+| ----- | ---------- | :--: | ------ | ------------------ |
+| token | 会话 TOKEN |  是  | String | 有则传，无传字符串 |
+
+> 返回参数
+
+| 参数             | 名称         | 类型    | 说明               |
+| ---------------- | ------------ | ------- | ------------------ |
+| ads              | 广告         | Object  |                    |
+| ads.ad_id        | 广告 ID      | Integer |                    |
+| ads.ad_name      | 广告名称     | String  |                    |
+| ads.ad_image_url | 广告图片 URL | String  |                    |
+| ads.ad_url       | 广告跳转 URL | String  | 地址区分内链与外链 |
+
+> 返回示例
+
+```json
+{
+    "code": 200,
+    "msg": "success",
+    "data": {
+        "ads": [
+            {
+                "ad_id": 6,
+                "ad_name": "世界杯广告",
+                "ad_image_url": "http://xxx.com/files/5b9a1b9e34193.png",
+                "ad_url": "http://www.baidu.com"
+            }
+        ]
+    }
+}
+```
+
+
+
+
+
 
 
 
