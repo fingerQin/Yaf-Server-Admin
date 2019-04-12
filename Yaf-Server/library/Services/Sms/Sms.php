@@ -73,7 +73,7 @@ class Sms extends \Services\Sms\AbstractBase
             YLog::log($data, 'sms', 'error');
             YCore::exception(STATUS_SERVER_ERROR, '短信发送失败');
         }
-        if (YCore::appconfig('app.env') == ENV_DEV) {
+        if (YCore::appconfig('app.env') != ENV_DEV) {
             self::clearVerifyTimesKey($mobile, $smsType);
             $queueData = [
                 'mobile'  => $mobile,
