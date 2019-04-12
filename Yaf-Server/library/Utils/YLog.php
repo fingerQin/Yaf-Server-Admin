@@ -68,6 +68,8 @@ class YLog
                 'ClientIP'  => $clientIP,
                 'content'   => $logContent
             ];
+        } else {
+            $logContent = array_merge(['ErrorTime' => $logTime], $logContent);
         }
         $logfile = date('Ymd', $time);
         if (strlen($logDir) > 0 && strlen($logFilename) > 0) {
