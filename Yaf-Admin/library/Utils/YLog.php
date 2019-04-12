@@ -38,8 +38,9 @@ class YLog
                 'ClientIP'  => $clientIP,
                 'content'   => $logContent
             ];
+        } else {
+            $logContent = array_merge(['ErrorTime' => $logTime], $logContent);
         }
-        
         $logfile = date('Ymd', $time);
         if (strlen($logDir) > 0 && strlen($logFilename) > 0) {
             $logDir   = trim($logDir, '/');
@@ -52,7 +53,7 @@ class YLog
             $logPath  = $logPath . $logfile . '.log';
         }
         if (YCore::appconfig('log.type') == self::LOG_WRITE_TYPE_JSON) {
-            $logCtx = json_encode($logContent, JSON_UNESCAPED_UNICODE) . "\n\n";
+            $logCtx = json_encode($logContent, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) . "\n\n";
         } else {
             $logCtx = print_r($logContent, true) . "\n\n";
         }
