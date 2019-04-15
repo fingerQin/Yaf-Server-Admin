@@ -16,7 +16,8 @@ class PageCache extends \Yaf_Plugin_Abstract
      * @param \Yaf_Request_Abstract $request
      * @param \Yaf_Response_Abstract $response
      */
-    public function routerStartup(\Yaf_Request_Abstract $request, \Yaf_Response_Abstract $response) {
+    public function routerStartup(\Yaf_Request_Abstract $request, \Yaf_Response_Abstract $response)
+    {
     }
 
     /**
@@ -25,7 +26,8 @@ class PageCache extends \Yaf_Plugin_Abstract
      * @param \Yaf_Request_Abstract $request
      * @param \Yaf_Response_Abstract $response
      */
-    public function routerShutdown(\Yaf_Request_Abstract $request, \Yaf_Response_Abstract $response) {
+    public function routerShutdown(\Yaf_Request_Abstract $request, \Yaf_Response_Abstract $response)
+    {
         $model_name      = $request->getModuleName();
         $action_name     = $request->getActionName();
         $controller_name = $request->getControllerName();
@@ -42,7 +44,8 @@ class PageCache extends \Yaf_Plugin_Abstract
      * @param \Yaf_Request_Abstract $request
      * @param \Yaf_Response_Abstract $response
      */
-    public function dispatchLoopShutdown(\Yaf_Request_Abstract $request, \Yaf_Response_Abstract $response) {
+    public function dispatchLoopShutdown(\Yaf_Request_Abstract $request, \Yaf_Response_Abstract $response)
+    {
         // $html_body = $response->getBody();
         // $ssdb = \Yaf_Registry::get('ssdb');
         // $ssdb->set('test', $html_body);
