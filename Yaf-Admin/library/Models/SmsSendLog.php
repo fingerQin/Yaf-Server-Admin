@@ -50,4 +50,15 @@ class SmsSendLog extends AbstractBase
      */
     const SMS_TYPE_TXT   = 1; // 文字短信。
     const SMS_TYPE_VOICE = 2; // 语音短信。
+
+    /**
+     * 发送状态字典。
+     *
+     * @var array
+     */
+    public static $statusDict = [
+        self::SEND_STATUS_CREATE => '待发送',
+        self::SEND_STATUS_SENT   => '已发送',
+        self::SEND_STATUS_FAILD  => '发送失败'
+    ];
 }

@@ -17,4 +17,20 @@ class SmsTpl extends AbstractBase
     protected $tableName = 'finger_sms_tpl';
 
     protected $primaryKey = 'id';
+
+    /**
+     * 短信模板触发类型。
+     */
+    const TRIGGER_TYPE_USER   = 1; // 用户触发。
+    const TRIGGER_TYPE_SYSTEM = 2; // 系统触发。
+
+    /**
+     * 短信模板触发类型字典。
+     *
+     * @var array
+     */
+    public static $triggerTypeDict = [
+        self::TRIGGER_TYPE_USER   => '用户触发',
+        self::TRIGGER_TYPE_SYSTEM => '系统触发'
+    ];
 }
