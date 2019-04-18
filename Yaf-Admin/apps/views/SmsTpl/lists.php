@@ -7,7 +7,7 @@
 				<h4>短信模板列表 <span href="javascript:void(0)" style="padding-left: 18px;cursor:pointer;" class="glyphicon glyphicon-refresh mainColor reload" >刷新</span></h4>
             </div>
             <div class="pull-right">
-				{{if 'SmsTpl'|access:'lists'}}
+				{{if 'SmsTpl'|access:'add'}}
 				<button type="button" class="btn btn-mystyle btn-sm" onclick="add();">添加模板</button>
 				{{/if}}
 				<button type="button" class="btn btn-mystyle btn-sm" onclick="helpDialog('SmsTpl', 'lists');">帮助</button>
