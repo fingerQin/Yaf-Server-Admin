@@ -27,7 +27,9 @@ abstract class AbstractBase extends \finger\Database\Models
      * 状态。
      */
     const STATUS_NO      = 0; // No
-    const STATUS_INVALID = 0; // 无效。
+    const STATUS_INVALID = 0; // 无效、隐藏。
     const STATUS_YES     = 1; // 正常。
     const STATUS_DELETED = 2; // 已删除。
+
+    
 }
