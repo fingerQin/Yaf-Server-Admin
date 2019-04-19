@@ -13,7 +13,6 @@ use finger\Validator;
 use finger\Database\Db;
 use Models\AdminRole;
 use Models\AdminUser;
-use Models\AdminMenu;
 use Models\AdminRolePriv;
 
 class Role extends \Services\AbstractBase

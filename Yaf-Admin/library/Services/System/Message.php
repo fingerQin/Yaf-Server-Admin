@@ -9,11 +9,11 @@ namespace Services\System;
 
 use Utils\YDate;
 use Utils\YCore;
+use Utils\YInput;
 use finger\Database\Db;
 use finger\Validator;
 use Models\User;
 use Models\Message as MessageModel;
-use Utils\YInput;
 
 class Message extends \Services\AbstractBase
 {

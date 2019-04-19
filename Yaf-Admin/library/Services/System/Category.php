@@ -7,10 +7,9 @@
 
 namespace Services\System;
 
-use finger\Database\Db;
 use Utils\YCore;
+use finger\Database\Db;
 use Models\News;
-use Models\Link;
 use Models\Category as CategoryModel;
 
 class Category extends \Services\AbstractBase

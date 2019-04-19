@@ -7,9 +7,9 @@
 
 namespace Services\System;
 
+use Utils\YCore;
 use finger\Validator;
 use finger\Database\Db;
-use Utils\YCore;
 use Models\ApiAuth as ApiAuthModel;
 
 class ApiAuth extends \Services\AbstractBase
