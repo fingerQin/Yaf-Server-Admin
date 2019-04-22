@@ -7,6 +7,8 @@
 
 namespace Services;
 
+use Utils\YCore;
+
 abstract class AbstractBase
 {
     /**
@@ -17,6 +19,13 @@ abstract class AbstractBase
     const PLATFORM_H5      = 3; // 手机触屏版。
     const PLATFORM_WEB     = 4; // PC WEB。
     const PLATFORM_ADMIN   = 5; // 管理后台。
+
+    /**
+     * 平台对应位值常量。
+     */
+    const PLATFORM_BIT_APP = 1; // APP。
+    const PLATFORM_BIT_M   = 2; // M 站。
+    const PLATFORM_BIT_PC  = 4; // PC。
 
     /**
      * 是否客户端访问。
@@ -31,6 +40,28 @@ abstract class AbstractBase
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * 终端(平台)对应的位运算值。
+     *
+     * @param  int  $platform  平台标识。
+     *
+     * @return int
+     */
+    public static function terminalBitVal($platform)
+    {
+        switch ($platform) {
+            case self::PLATFORM_IOS:
+            case self::PLATFORM_ANDROID:
+                return self::PLATFORM_BIT_APP;
+            case self::PLATFORM_H5:
+                return self::PLATFORM_BIT_M;
+            case self::PLATFORM_WEB:
+                return self::PLATFORM_BIT_PC;
+            default:
+                YCore::exception(STATUS_SERVER_ERROR, '所属平台值有误');
         }
     }
 

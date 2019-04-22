@@ -25,6 +25,6 @@ class UserAddressListApi extends AbstractApi
         $token    = $this->getString('token', '');
         $userinfo = Auth::checkAuth($token);
         $detail   = Address::all($userinfo['userid']);
-        $this->render(STATUS_SUCCESS, 'Success', $detail);
+        $this->render(STATUS_SUCCESS, 'success', $detail);
     }
 }

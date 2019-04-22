@@ -25,6 +25,6 @@ class UserDetailApi extends AbstractApi
         $token    = $this->getString('token', '');
         $userinfo = Auth::checkAuth($token);
         $detail   = User::detail($userinfo['userid']);
-        $this->render(STATUS_SUCCESS, '信息获取成功', $detail);
+        $this->render(STATUS_SUCCESS, 'success', $detail);
     }
 }
