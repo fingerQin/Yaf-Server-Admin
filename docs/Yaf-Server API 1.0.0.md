@@ -807,11 +807,200 @@
 }
 ```
 
+#### 2.17 系统公告列表[notice.list]
 
+> 请求参数
 
+| 参数  | 名称     | 必须 | 类型    | 说明                |
+| ----- | -------- | ---- | ------- | ------------------- |
+| token | 会话令牌 | 是   | String  | 有传，无传空字符串  |
+| page  | 页码     | 是   | Integer | 当前页码，默认 1 。 |
 
+> 返回参数
 
+| 参数          | 名称         | 类型    | 说明                     |
+| ------------- | ------------ | ------- | ------------------------ |
+| total         | 总记录条数   | Integer |                          |
+| page          | 当前页码     | Integer |                          |
+| count         | 当前分页条数 | Integer | 服务端按照多少条进行分页 |
+| isnext        | 是否有下一页 | Boolean |                          |
+| list          | 列表对象     | Object  |                          |
+| list.noticeid | 公告 ID      | Integer |                          |
+| list.title    | 公告标题     | String  |                          |
+| list.summary  | 公告摘要     | String  |                          |
+| list.c_time   | 公告发布时间 | String  |                          |
 
+> 返回示例
+
+```json
+{
+    "code": 200,
+    "msg": "success",
+    "data": {
+        "list": [
+            {
+                "noticeid": 2,
+                "title": "清明节假期公告",
+                "summary": "清明节将至，平台放假通知。",
+                "c_time": "2019-04-19 16:18:04"
+            },
+            {
+                "noticeid": 1,
+                "title": "五一放假安排",
+                "summary": "尊敬的各位用户，大家好。关于 5.1 节，平台放假时间如下。",
+                "c_time": "2019-04-19 10:22:08"
+            }
+        ],
+        "total": 2,
+        "page": 1,
+        "count": 20,
+        "isnext": false
+    }
+}
+```
+
+#### 2.18 公告详情[notice.detail]
+
+> 请求参数
+
+| 参数     | 名称           | 必须 | 类型    | 说明               |
+| -------- | -------------- | ---- | ------- | ------------------ |
+| token    | 会话令牌 TOKEN | 是   | String  | 有传，无传空字符串 |
+| noticeid | 公告 ID        | 是   | Integer |                    |
+
+> 返回参数
+
+| 参数     | 名称         | 类型    | 说明 |
+| :------- | ------------ | ------- | ---- |
+| noticeid | 公告 ID      | Integer |      |
+| title    | 公告标题     | String  |      |
+| summary  | 公告摘要     | String  |      |
+| body     | 公告内容     | String  |      |
+| c_time   | 公告发布时间 | String  |      |
+
+> 返回示例
+
+```json
+{
+    "code": 200,
+    "msg": "success",
+    "data": {
+        "noticeid": 1,
+        "title": "五一放假安排",
+        "summary": "尊敬的各位用户，大家好。关于 5.1 节，平台放假时间如下。",
+        "body": "尊敬的各位用户，大家好。关于 5.1 节，平台放假时间如下。",
+        "c_time": "2019-04-19 10:22:08"
+    }
+}
+```
+
+#### 2.19 用户公告未读数量接口[notice.unread.count]
+
+> 请求参数
+
+| 参数  | 名称           | 必须 | 类型   | 说明               |
+| ----- | -------------- | ---- | ------ | ------------------ |
+| token | 会话令牌 TOKEN | 是   | String | 有传，无传空字符串 |
+
+> 返回参数
+
+| 参数  | 名称         | 类型    | 说明 |
+| ----- | ------------ | ------- | ---- |
+| count | 未读公告数量 | Integer |      |
+
+> 返回示例
+
+```json
+{
+    "code": 200,
+    "msg": "success",
+    "data": {
+        "count": 0
+    }
+}
+```
+
+#### 2.20 系统消息列表接口[message.list]
+
+> 请求参数
+
+| 参数  | 名称           | 必须 | 类型    | 说明 |
+| ----- | -------------- | ---- | ------- | ---- |
+| token | 会话令牌 TOKEN | 是   | String  |      |
+| page  | 页码           | 是   | Integer |      |
+
+> 返回参数
+
+| 参数             | 名称            | 类型    | 说明                    |
+| ---------------- | --------------- | ------- | ----------------------- |
+| total            | 总记录条数      | Integer |                         |
+| page             | 当前页码        | Integer |                         |
+| count            | 每页分页条数    | Integer | 服务端按照此条数分页    |
+| isnext           | 是否有下一页    | Boolean |                         |
+| list             | 列表对象        | Object  |                         |
+| list.msgid       | 消息 ID         | Integer |                         |
+| list.msg_type    | 消息类型        | Integer | 1-系统、2-福利          |
+| list.type_ref_id | 消息类型关联 ID | Integer | 如福利消息，代表福利 ID |
+| list.is_read     | 是否已读        | Integer | 0-未读、1-未读          |
+| list.title       | 消息标题        | String  |                         |
+| list.content     | 消息内容        | String  |                         |
+| list.url         | 消息跳转 URL    | String  | 详情见 url 内外链文档   |
+| list.c_time      | 消息发布时间    | String  |                         |
+
+> 返回示例
+
+```json
+{
+    "code": 200,
+    "msg": "success",
+    "data": {
+        "list": [
+            {
+                "msgid": 2,
+                "msg_type": 1,
+                "type_ref_id": 0,
+                "is_read": 0,
+                "title": "恭喜您被选中为2019年锦鲤",
+                "content": "恭喜您被选中2019年锦鲤，我们会在3个工作日内与您联系~",
+                "url": "https://github.com/fingerQin",
+                "c_time": "2019-04-18 15:12:04"
+            },
+            {
+                "msgid": 1,
+                "msg_type": 1,
+                "type_ref_id": 0,
+                "is_read": 1,
+                "title": "五一劳动节福利",
+                "content": "五一劳动节福利内容",
+                "url": "https://www.exxx.com",
+                "c_time": "2019-04-18 11:32:03"
+            }
+        ],
+        "total": 2,
+        "page": 1,
+        "count": 20,
+        "isnext": false
+    }
+}
+```
+
+#### 2.21 系统消息已读状态设置接口[message.read.status]
+
+> 请求参数
+
+| 参数  | 名称           | 必须 | 类型    | 说明               |
+| ----- | -------------- | ---- | ------- | ------------------ |
+| token | 会话令牌 TOKEN | 是   | String  | 有传，无传空字符串 |
+| msgid | 系统消息 ID    | 是   | Integer |                    |
+
+> 返回示例
+
+```json
+{
+    "code": 200,
+    "msg": "设置成功"
+}
+```
 
 
 
