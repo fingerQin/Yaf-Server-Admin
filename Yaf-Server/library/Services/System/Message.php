@@ -8,8 +8,8 @@
 namespace Services\System;
 
 use Utils\YCore;
-use Models\Message as MessageModel;
 use finger\Database\Db;
+use Models\Message as MessageModel;
 
 class Message extends \Services\AbstractBase
 {
@@ -58,9 +58,9 @@ class Message extends \Services\AbstractBase
     public static function read($userid, $msgid)
     {
         $where = [
-            'userid'     => $userid,
-            'msgid'      => $msgid,
-            'cur_status' => MessageModel::STATUS_YES
+            'userid' => $userid,
+            'msgid'  => $msgid,
+            'status' => MessageModel::STATUS_YES
         ];
         $MessageModel = new MessageModel();
         $message = $MessageModel->fetchOne([], $where);
