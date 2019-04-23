@@ -10,7 +10,7 @@
 				{{if 'Admin'|access:'add'}}
 				<a type="button" class="btn btn-mystyle btn-sm" href="javascript:void(0);" onclick="add();">添加管理员</a>
 				{{/if}}
-				<button type="button" class="btn btn-mystyle btn-sm" onclick="helpDialog('admin', 'index');">帮助</button>
+				<button type="button" class="btn btn-mystyle btn-sm" onclick="helpDialog('Admin', 'index');">帮助</button>
 			</div>
 		</div>
 

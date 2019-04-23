@@ -16,7 +16,7 @@
 				{{if 'Config'|access:'ClearCache'}}
 				<button type="button" class="btn btn-mystyle btn-sm" onclick="clearCache();">清除配置缓存</button>
 				{{/if}}
-				<button type="button" class="btn btn-mystyle btn-sm" onclick="helpDialog('config', 'index');">帮助</button>
+				<button type="button" class="btn btn-mystyle btn-sm" onclick="helpDialog('Config', 'index');">帮助</button>
 			</div>
 		</div>
 		<div class="clearfix"></div>
