@@ -78,7 +78,7 @@ class Bootstrap extends \Yaf_Bootstrap_Abstract
      * --1、Yaf框架会根据特有的类名后缀(Model、Controller、Plugin)进行自动加载。为避免这种情况请不要以这样的名称结尾。
      * --2、 插件可能会用到缓存、数据库、配置等。所以，放到最后执行。
      *
-     * @param \\Yaf\Dispatcher $dispatcher
+     * @param \Yaf\Dispatcher $dispatcher
      */
     public function _initPlugin(\Yaf_Dispatcher $dispatcher)
     {

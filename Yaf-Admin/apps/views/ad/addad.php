@@ -64,7 +64,7 @@
 <script type="text/javascript">
 <!--
 
-var uploadUrl = '{{'Index/Upload'|url}}';
+var uploadUrl = '{{'Index/upload'|url}}';
 var baseJsUrl = '{{''|js}}';
 var filUrl    = '{{$files_domain_name}}';
 uploadImage(filUrl, baseJsUrl, 'previewImage', 'input_voucher', 120, 120, uploadUrl);

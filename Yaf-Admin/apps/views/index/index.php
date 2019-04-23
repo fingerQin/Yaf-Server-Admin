@@ -72,10 +72,10 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand mystyle-brand" href="{{'index/index'|url}}"><span class="glyphicon glyphicon-home"></span></a> </div>
+        <a class="navbar-brand mystyle-brand" href="{{'Index/index'|url}}"><span class="glyphicon glyphicon-home"></span></a> </div>
     <div class="collapse navbar-collapse ">
         <ul class="nav navbar-nav ">
-            <li class="li-border item_htli"><a class="mystyle-color" href="{{'index/index'|url}}">后台管理系统</a></li>
+            <li class="li-border item_htli"><a class="mystyle-color" href="{{'Index/index'|url}}">后台管理系统</a></li>
         </ul>
 
         <ul class="nav navbar-nav pull-right myLeft ">
@@ -101,7 +101,7 @@
         </div>
     </div>
     <div class="right-product view-product right-full">
-        <iframe name="right" id="external-frame" src="{{'index/right'|url}}" marginwidth=0 width="100%" height="98%" frameBorder=0 scrolling=yes>
+        <iframe name="right" id="external-frame" src="{{'Index/right'|url}}" marginwidth=0 width="100%" height="98%" frameBorder=0 scrolling=yes>
         </iframe>
     </div>
 </div>

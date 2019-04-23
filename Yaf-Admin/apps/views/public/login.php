@@ -66,12 +66,12 @@
             $.ajax({
                 type: 'post',
                 data:{'username':$('#username').val(),'password':$('#password').val(),'code':$('#sms_code').val()},
-                url: "{{'/Index/public/login'|url}}",
+                url: "{{'/Index/Public/login'|url}}",
                 dataType: 'json',
                 success: function(rsp) {
                     console.log(rsp);
                     if (rsp.code == 200) {
-                        success(rsp.msg, 1, '{{'/Index/index/index'|url}}');
+                        success(rsp.msg, 1, '{{'/Index/Index/index'|url}}');
                     } else {
                         fail(rsp.msg, 3);
                     }
@@ -90,7 +90,7 @@
             $.ajax({
                 type: 'post',
                 data: {'username':username},
-                url: "{{'/Index/public/getSms'|url}}",
+                url: "{{'/Index/Public/getSms'|url}}",
                 dataType: 'json',
                 success: function(rsp){
                     if(rsp.code == 200){
