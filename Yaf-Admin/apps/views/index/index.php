@@ -80,13 +80,13 @@
 
         <ul class="nav navbar-nav pull-right myLeft ">
             {{foreach $top_menu as $menu}}
-                <li class="li-border nav-right {{if $menu.menuid == 1}} nav-active {{/if}}"><a href="javascript:void(0)" class="topClick " rel="{{'index/left'|url}}?menu_id={{$menu.menuid}}&{{$menu.ext_param}}" class="mystyle-color">{{$menu.menu_name}}</a></li>
+                <li class="li-border nav-right {{if $menu.menuid == 1}} nav-active {{/if}}"><a href="javascript:void(0)" class="topClick " rel="{{'Index/left'|url}}?menu_id={{$menu.menuid}}&{{$menu.ext_param}}" class="mystyle-color">{{$menu.menu_name}}</a></li>
             {{/foreach}}
         </ul>
         <ul class="nav navbar-nav pull-right nav-top-r">
             <li class="dropdown li-border"><a href="#" class="dropdown-toggle mystyle-color" data-toggle="dropdown">{{$mobilephone}}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="{{'admin/editPwd'|url}}" target="right">修改密码</a></li>
+                    <li><a href="{{'Admin/editPwd'|url}}" target="right">修改密码</a></li>
                     <li class="divider"></li>
                     <li><a href="javascript:void(0)" id="logout">退出登录</a></li>
                 </ul>
