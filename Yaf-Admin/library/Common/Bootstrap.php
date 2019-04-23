@@ -9,9 +9,7 @@
 
 namespace Common;
 
-use Utils\YUrl;
 use Utils\YCore;
-use Utils\YLog;
 use Utils\YCache;
 
 /**
@@ -84,7 +82,7 @@ class Bootstrap extends \Yaf_Bootstrap_Abstract
      */
     public function _initPlugin(\Yaf_Dispatcher $dispatcher)
     {
-        // $plugin = new \Common\plugins\ResourceGC();
-        // $dispatcher->registerPlugin($plugin);
+        $plugin = new \Common\plugins\Router();
+        $dispatcher->registerPlugin($plugin);
     }
 }
