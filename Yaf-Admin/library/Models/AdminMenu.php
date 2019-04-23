@@ -14,7 +14,7 @@ class AdminMenu extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_admin_menu';
+    protected $tableName  = 'finger_admin_menu';
 
     protected $primaryKey = 'menuid';
 

@@ -14,6 +14,7 @@ use Utils\YCore;
 use Utils\YUrl;
 use Utils\YLog;
 use Services\Power\Auth;
+use Services\System\OperationLog;
 
 class Admin extends Common
 {
@@ -91,17 +92,16 @@ class Admin extends Common
     private function writeAccessLog($adminid, $realname, $mobile, $ctrlName, $actionName)
     {
         $log = [
-            'adminid'    => $adminid,
-            'realname'   => $realname,
             'mobile'     => $mobile,
-            'ctrlName'   => $ctrlName,
-            'actionName' => $actionName,
-            'ip'         => YCore::ip(),
             'url'        => YUrl::getUrl(),
             'isAjax'     => $this->_request->isXmlHttpRequest() ? 1 : 0,
             'isPost'     => $this->_request->isPost() ? 1 : 0,
             'params'     => $this->_request->getPost()
         ];
-        YLog::log($log, 'accessLog', 'log');
+        $ip = YCore::ip();
+        if (strtolower($ctrlName) != 'public') {
+            OperationLog::add($adminid, $realname, $ip, $ctrlName, $actionName, $log);
+        }
+        // YLog::log($log, 'accessLog', 'log');
     }
 }

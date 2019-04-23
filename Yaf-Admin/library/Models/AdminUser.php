@@ -14,7 +14,7 @@ class AdminUser extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_admin_user';
+    protected $tableName  = 'finger_admin_user';
 
     protected $primaryKey = 'adminid';
 }

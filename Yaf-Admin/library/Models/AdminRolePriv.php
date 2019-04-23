@@ -14,7 +14,7 @@ class AdminRolePriv extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_admin_role_priv';
+    protected $tableName  = 'finger_admin_role_priv';
 
     protected $primaryKey = 'id';
 
