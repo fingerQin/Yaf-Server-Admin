@@ -46,6 +46,15 @@
 										{{/foreach}} 
 										id="{{$ss_m.menuid}}" parentid="{{$ss_m.parentid}}" name="menuid[]" type="checkbox" size="3" value="{{$ss_m.menuid}}">&nbsp;{{$ss_m.menu_name}}
 									</label>
+									{{foreach $ss_m.sub as $sssub}}
+									<label class="cc">
+										<input 
+										{{foreach $priv_menus as $ii}}
+										{{if $ii == $sssub.menuid}}checked="checked"{{/if}} 
+										{{/foreach}} 
+										id="{{$sssub.menuid}}" parentid="{{$sssub.parentid}}" name="menuid[]" type="checkbox" size="3" value="{{$sssub.menuid}}">&nbsp;{{$sssub.menu_name}}
+									</label>
+									{{/foreach}}
 								{{/foreach}}
 								</div>
 							</div>

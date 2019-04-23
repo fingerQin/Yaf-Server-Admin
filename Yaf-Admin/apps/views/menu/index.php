@@ -109,6 +109,33 @@
 								{{/if}}
 							</td>
 							</tr>
+							{{foreach $ss_m.sub as $sssub}}
+							<tr>
+							<td align='center'>
+								<input name='listorders[{{$sssub.menuid}}]' type='text' size='3' value='{{$sssub.listorder}}' class='text-center input-text-c'>
+							</td>
+							<td align='center'>{{$sssub.menuid}}</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ {{$sssub.menu_name}}</td>
+							<td>{{$sssub.c}}/{{$sssub.a}}</td>
+							<td align='center'>{{if $sssub.is_display}}显示{{else}}隐藏{{/if}}</td>
+							<td align='center'>{{$sssub.u_time}}</td>
+							<td align='center'>{{$sssub.c_time}}</td>
+							<td align='center'>
+								{{if 'Menu'|access:'add'}}
+								<a href="javascript:void(0);" onclick="add({{$sssub.menuid}});">添加子菜单</a>
+								| 
+								{{/if}}
+								{{if 'Menu'|access:'edit'}}
+								<a href="javascript:void(0);" onclick="edit({{$sssub.menuid}}, '{{$sssub.menu_name}}');">修改</a>
+								| 
+								{{/if}}
+								{{if 'Menu'|access:'delete'}}
+								<a href="javascript:void(0)" class="deleteMenu" rel="{{$sssub.menuid}}">删除</a>
+								{{/if}}
+							</td>
+							</tr>
+							{{/foreach}}
 							{{/foreach}}
 							{{/foreach}}
 						{{/foreach}}
