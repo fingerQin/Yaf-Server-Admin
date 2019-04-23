@@ -128,7 +128,7 @@ function deleteDialog(dialog_id, request_url, title) {
  */
 function helpDialog(ctrlName, actionName)
 {
-	page_url = '/Index/index/gethelp?c=' + ctrlName + '&a=' + actionName;
+	page_url = '/Index/Index/gethelp?c=' + ctrlName + '&a=' + actionName;
 	layer.open({
 		id: 'helpDialogId',
 		type: 2,
