@@ -72,6 +72,7 @@ class Luosimao
         if ($response === FALSE) {
             YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
+        YLog::log(['mobile' => $mobile, 'message' => $message, 'response' => $response], 'sms', 'lousimao');
         $result = json_decode($response, TRUE);
         if (!is_array($result)) {
             YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
