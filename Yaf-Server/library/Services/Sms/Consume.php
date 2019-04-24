@@ -34,6 +34,7 @@ class Consume extends \Services\Sms\AbstractBase
             $redis->delete($queueIng);
             $SmsSendLogModel = new SmsSendLog();
             $switch = YCore::appconfig('sms.is_send_sms');
+            $str    = '';
             // [3]
             while (true) {
                 $str = $redis->bRPopLPush($queueKey, $queueIng, 60);
@@ -57,7 +58,10 @@ class Consume extends \Services\Sms\AbstractBase
                 }
             }
         } catch (\Throwable $e) {
-            $redis->lRem($queueIng, $str, 1); // 短信发送失败将不再发送。将失败信息写入即可。
+            if ($str) {
+                // 短信发送失败将不再发送。将失败信息写入即可。
+                $redis->lRem($queueIng, $str, 1);
+            }
             // 错误日志
             $errorMsg = "sms::error:Exception Message:" . $e->getMessage();
             $log = [
