@@ -8,7 +8,6 @@
 namespace Services\User;
 
 use finger\Validator;
-use finger\Database\Db;
 use Utils\YString;
 use Utils\YCore;
 use Models\User;

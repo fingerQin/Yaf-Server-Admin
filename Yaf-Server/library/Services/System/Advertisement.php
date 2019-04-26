@@ -15,6 +15,13 @@ use finger\Database\Db;
 class Advertisement extends \Services\AbstractBase
 {
     /**
+     * 最大数量。
+     * 
+     * -- 当广告设置里面的数量大于此值，则返回此值数量的广告。
+     */
+    const MAX_COUNT = 50;
+
+    /**
      * 获取单个广告。
      *
      * @param  string  $posCode  广告位置。
@@ -25,7 +32,7 @@ class Advertisement extends \Services\AbstractBase
      */
     public static function single($posCode, $appV = '', $userid = 0)
     {
-        $list = self::list($posCode);
+        $list = self::list($posCode, $appV, $userid);
         return $list ? $list[0] : YCore::getNullObject();
     }
 
@@ -45,6 +52,7 @@ class Advertisement extends \Services\AbstractBase
         if (empty($adPosDetail)) {
             YCore::exception(STATUS_SERVER_ERROR, '该广告不存在或已经下线');
         }
+        $count = $adPosDetail['pos_ad_count'] > self::MAX_COUNT ? MAX_COUNT : $adPosDetail['pos_ad_count'];
         $sql = 'SELECT ad_id,ad_name,ad_image_url,ad_url FROM finger_ad '
              . 'WHERE pos_id = :pos_id AND status = :status AND display = :display '
              . 'ORDER BY listorder ASC, ad_id DESC LIMIT :count';
@@ -52,7 +60,7 @@ class Advertisement extends \Services\AbstractBase
             ':pos_id'  => $adPosDetail['pos_id'],
             ':status'  => Ad::STATUS_YES,
             ':display' => Ad::STATUS_YES,
-            ':count'   => $adPosDetail['pos_ad_count']
+            ':count'   => $count
         ];
         return Db::all($sql, $params);
     }
