@@ -90,12 +90,12 @@
 
 <script type="text/javascript">
 function add() {
-	postDialog('addNotice', '{{'Notice/add'|url}}', '添加公告', 550, 400);
+	postDialog('addNotice', '{{'Notice/add'|url}}', '添加公告', 750, 700);
 }
 function edit(id, name) {
 	var title = '修改『' + name + '』';
 	var page_url = "{{'Notice/edit'|url}}?noticeid="+id;
-	postDialog('editNotice', page_url, title, 550, 400);
+	postDialog('editNotice', page_url, title, 800, 700);
 }
 /**
  * 弹出一个更新操作的对话框。

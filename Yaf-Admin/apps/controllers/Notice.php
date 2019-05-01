@@ -5,9 +5,9 @@
  * @date 2018-07-10
  */
 
-use Utils\YCore;
 use finger\Paginator;
 use Services\System\Notice;
+use Services\System\Upload;
 
 class NoticeController extends \Common\controllers\Admin
 {
@@ -73,5 +73,25 @@ class NoticeController extends \Common\controllers\Admin
         $detail   = Notice::detail($noticeid);
         $this->assign('detail', $detail);
         $this->assign('terminal', \Models\Notice::$terminalDict);
+    }
+
+    /**
+     * 图片文件上传。
+     */
+    public function uploadAction()
+    {
+        header("Access-Control-Allow-Origin: *");
+        try {
+            $uploadType = $this->getString('dir', 'image');
+            if ($uploadType == 'file') {
+                $result = Upload::uploadOtherFile(1, $this->adminId, 'files', 10, 'imgFile');
+            } else { // 图片。
+                $result = Upload::uploadImage(1, $this->adminId, 'news', 2, 'imgFile');
+            }
+            echo json_encode(['error' => 0, 'url' => $result['image_url']]);
+        } catch (\Exception $e) {
+            echo json_encode(['error' => 1, 'message' => $e->getMessage()]);
+        }
+        $this->end();
     }
 }

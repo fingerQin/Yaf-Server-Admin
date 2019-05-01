@@ -90,9 +90,7 @@ class Notice extends \Services\AbstractBase
             'terminal' => $terminal
         ];
         Validator::valido($data, $rules);
-        if (array_key_exists($terminal, NoticeModel::$terminalDict)) {
-            YCore::exception(STATUS_SERVER_ERROR, '所属终端值有误');
-        }
+        self::checkTerminal($terminal);
         $datetime = date('Y-m-d H:i:s', time());
         $data['terminal']   = self::sumTerminal($terminal);
         $data['cur_status'] = NoticeModel::STATUS_YES;
@@ -134,9 +132,7 @@ class Notice extends \Services\AbstractBase
             'terminal' => $terminal
         ];
         Validator::valido($data, $rules);
-        if (array_key_exists($terminal, NoticeModel::$terminalDict)) {
-            YCore::exception(STATUS_SERVER_ERROR, '所属终端值有误');
-        }
+        self::checkTerminal($terminal);
         $NoticeModel = new NoticeModel();
         $notice = $NoticeModel->fetchOne([], ['noticeid' => $noticeid]);
         if (empty($notice) || $notice['cur_status'] == NoticeModel::STATUS_DELETED) {
@@ -149,6 +145,29 @@ class Notice extends \Services\AbstractBase
         $status = $NoticeModel->update($data, ['noticeid' => $noticeid]);
         if (!$status) {
             YCore::exception(STATUS_SERVER_ERROR, '更新失败');
+        }
+    }
+
+    /**
+     * 检查表单提交的终端值。
+     *
+     * @param  string  $terminal  终端值。格式：1,2,4。
+     *
+     * @return void
+     */
+    protected static function checkTerminal($terminal)
+    {
+        if (strlen($terminal) == 0) {
+            YCore::exception(STATUS_SERVER_ERROR, '终端值未设置');
+        }
+        $arrTerminal = explode(',', $terminal);
+        foreach ($arrTerminal as $t) {
+            if (!is_numeric($t)) {
+                YCore::exception(STATUS_SERVER_ERROR, '终端值格式不正确');
+            }
+            if (!array_key_exists($t, NoticeModel::$terminalDict)) {
+                YCore::exception(STATUS_SERVER_ERROR, '所属终端值有误');
+            }
         }
     }
 
