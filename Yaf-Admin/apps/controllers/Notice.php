@@ -45,11 +45,13 @@ class NoticeController extends \Common\controllers\Admin
     public function addAction()
     {
         if ($this->_request->isXmlHttpRequest()) {
-            $title    = $this->getString('title', '');
-            $summary  = $this->getString('summary', '');
-            $body     = $this->getString('body', '');
-            $terminal = $this->getString('terminal', '');
-            Notice::add($this->adminId, $title, $summary, $body, $terminal);
+            $title         = $this->getString('title', '');
+            $summary       = $this->getString('summary', '');
+            $body          = $this->getString('body', '');
+            $terminal      = $this->getString('terminal', '');
+            $isDialog      = $this->getInt('is_dialog', 0);
+            $dialogEndTime = $this->getString('dialog_end_time', '');
+            Notice::add($this->adminId, $title, $summary, $body, $terminal, $isDialog, $dialogEndTime);
             $this->json(true, '添加成功');
         }
         $this->assign('terminal', \Models\Notice::$terminalDict);
@@ -61,12 +63,14 @@ class NoticeController extends \Common\controllers\Admin
     public function editAction()
     {
         if ($this->_request->isXmlHttpRequest()) {
-            $noticeid = $this->getInt('noticeid');
-            $title    = $this->getString('title', '');
-            $summary  = $this->getString('summary', '');
-            $body     = $this->getString('body', '');
-            $terminal = $this->getString('terminal', '');
-            Notice::edit($this->adminId, $noticeid, $title, $summary, $body, $terminal);
+            $noticeid      = $this->getInt('noticeid');
+            $title         = $this->getString('title', '');
+            $summary       = $this->getString('summary', '');
+            $body          = $this->getString('body', '');
+            $terminal      = $this->getString('terminal', '');
+            $isDialog      = $this->getInt('is_dialog', 0);
+            $dialogEndTime = $this->getString('dialog_end_time', '');
+            Notice::edit($this->adminId, $noticeid, $title, $summary, $body, $terminal, $isDialog, $dialogEndTime);
             $this->json(true, '更新成功');
         }
         $noticeid = $this->getInt('noticeid');

@@ -67,27 +67,33 @@ class Notice extends \Services\AbstractBase
     /**
      * 添加公告。
      *
-     * @param  int     $adminId   管理员 ID。
-     * @param  string  $title     公告标题。
-     * @param  string  $summary   公告摘要。
-     * @param  string  $body      公告内容。
-     * @param  int     $terminal  所属终端。
+     * @param  int     $adminId        管理员 ID。
+     * @param  string  $title          公告标题。
+     * @param  string  $summary        公告摘要。
+     * @param  string  $body           公告内容。
+     * @param  int     $terminal       所属终端。
+     * @param  int     $isDialog       是否弹框。
+     * @param  string  $dialogEndTime  弹框截止时间。
      *
      * @return void
      */
-    public static function add($adminId, $title, $summary, $body, $terminal)
+    public static function add($adminId, $title, $summary, $body, $terminal, $isDialog, $dialogEndTime)
     {
         $rules = [
-            'title'    => '公告标题|require|len:1:64:1',
-            'summary'  => '公告摘要|require|len:1:255:1',
-            'body'     => '公告内容|require|len:1:50000:1',
-            'terminal' => '所属终端|require|len:1:10:0'
+            'title'           => '公告标题|require|len:1:64:1',
+            'summary'         => '公告摘要|require|len:1:255:1',
+            'body'            => '公告内容|require|len:1:50000:1',
+            'terminal'        => '所属终端|require|len:1:10:0',
+            'is_dialog'       => '是否弹框|require|integer|number_between:0:1',
+            'dialog_end_time' => '弹框截止时间|datetime'
         ];
         $data = [
-            'title'    => $title,
-            'summary'  => $summary,
-            'body'     => $body,
-            'terminal' => $terminal
+            'title'           => $title,
+            'summary'         => $summary,
+            'body'            => $body,
+            'terminal'        => $terminal,
+            'is_dialog'       => $isDialog,
+            'dialog_end_time' => $dialogEndTime
         ];
         Validator::valido($data, $rules);
         self::checkTerminal($terminal);
@@ -108,28 +114,34 @@ class Notice extends \Services\AbstractBase
     /**
      * 添加公告。
      *
-     * @param  int     $adminId   管理员 ID。
-     * @param  int     $noticeid  公告 ID。
-     * @param  string  $title     公告标题。
-     * @param  string  $summary   公告摘要。
-     * @param  string  $body      公告内容。
-     * @param  int     $terminal  所属终端。
+     * @param  int     $adminId        管理员 ID。
+     * @param  int     $noticeid       公告 ID。
+     * @param  string  $title          公告标题。
+     * @param  string  $summary        公告摘要。
+     * @param  string  $body           公告内容。
+     * @param  int     $terminal       所属终端。
+     * @param  int     $isDialog       是否弹框。
+     * @param  string  $dialogEndTime  弹框截止时间。
      *
      * @return void
      */
-    public static function edit($adminId, $noticeid, $title, $summary, $body, $terminal)
+    public static function edit($adminId, $noticeid, $title, $summary, $body, $terminal, $isDialog, $dialogEndTime)
     {
         $rules = [
-            'title'    => '公告标题|require|len:1:64:1',
-            'summary'  => '公告摘要|require|len:1:255:1',
-            'body'     => '公告内容|require|len:1:50000:1',
-            'terminal' => '所属终端|require|len:1:10:0'
+            'title'           => '公告标题|require|len:1:64:1',
+            'summary'         => '公告摘要|require|len:1:255:1',
+            'body'            => '公告内容|require|len:1:50000:1',
+            'terminal'        => '所属终端|require|len:1:10:0',
+            'is_dialog'       => '是否弹框|require|integer|number_between:0:1',
+            'dialog_end_time' => '弹框截止时间|datetime'
         ];
         $data = [
-            'title'    => $title,
-            'summary'  => $summary,
-            'body'     => $body,
-            'terminal' => $terminal
+            'title'           => $title,
+            'summary'         => $summary,
+            'body'            => $body,
+            'terminal'        => $terminal,
+            'is_dialog'       => $isDialog,
+            'dialog_end_time' => $dialogEndTime
         ];
         Validator::valido($data, $rules);
         self::checkTerminal($terminal);
@@ -181,7 +193,7 @@ class Notice extends \Services\AbstractBase
     public static function detail($noticeid)
     {
         $NoticeModel = new NoticeModel();
-        $columns     = ['noticeid', 'title', 'summary', 'body', 'terminal'];
+        $columns     = ['noticeid', 'title', 'summary', 'body', 'terminal', 'is_dialog', 'dialog_end_time'];
         $detail      = $NoticeModel->fetchOne($columns, [
             'noticeid'   => $noticeid,
             'cur_status' => ['!=', NoticeModel::STATUS_DELETED]]

@@ -14,6 +14,34 @@
 				</td>
             </tr>
             <tr>
+				<th class="left-txt">是否弹框：</th>
+				<td>
+					<select name="is_dialog" class="form-control">
+						<option value="0">否</option>
+						<option value="1">是</option>
+					</select>
+					<div class="w90" style="color:grey;">（只针对 APP,并且只弹一次）</div>
+				</td>
+            </tr>
+            <tr>
+				<th class="left-txt">弹框截止日期：</th>
+				<td>
+                    <input type="text" name="dialog_end_time" id="dialog_end_time" class="date input-text" style="width:165px;"/>
+                    <div class="w90" style="color:grey;">（超过此时间 APP 不再弹出此公告）</div>
+                    <script type="text/javascript">
+						Calendar.setup({
+							weekNumbers: false,
+							inputField : "dialog_end_time",
+							trigger    : "dialog_end_time",
+							dateFormat: "%Y-%m-%d %H:%I:%S",
+							showTime: true,
+							minuteStep: 1,
+							onSelect   : function() {this.hide();}
+						});
+                    </script>
+				</td>
+			</tr>
+            <tr>
                 <th class="left-txt">公告摘要：</th>
                 <td><textarea name="summary" id="summary" class="textarea" rows="3" cols="50"></textarea></td>
             </tr>
@@ -59,7 +87,7 @@ $(document).ready(function(){
 			'urlType' : 'domain',
             'width' : '554px',
             'minWidth' : '500px',
-            'height' : '400px'
+            'height' : '350px'
 		});
 	});
 	$('#form_submit').click(function(){
