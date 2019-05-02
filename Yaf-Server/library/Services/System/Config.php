@@ -76,6 +76,7 @@ class Config extends \Services\AbstractBase
         if ($configs === false) {
             return null;
         } else {
+            $configs = json_decode($configs, true);
             return $configs[$cfgKey] ?? null;
         }
     }
