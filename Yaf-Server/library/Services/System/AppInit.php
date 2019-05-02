@@ -31,8 +31,10 @@ class AppInit extends AbstractBase
         $tokenStatus = \Services\User\Auth::refreshToken($token);
         $userid      = \Services\User\Auth::getTokenUserId($token);
         return [
-            'token_status' => $tokenStatus ? 1 : 0,
-            'upgrade'      => \Services\System\Upgrade::upgrade($userid, $platform, $appV, $channel),
+            'token_status'           => $tokenStatus ? 1 : 0,
+            'upgrade'                => \Services\System\Upgrade::upgrade($userid, $platform, $appV, $channel),
+            'start_ad'               => \Services\System\Advertisement::single('APP_START_AD', $appV, $userid),
+            'app_home_right_btn_url' => \Services\System\Config::get('APP_HOME_RIGHT_BTN_URL')
         ];
     }
 }

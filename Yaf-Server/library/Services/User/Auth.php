@@ -15,7 +15,6 @@ use Models\User as UserModel;
 use finger\Validator;
 use Services\Sms\Sms;
 use Services\System\Push;
-use Services\Gold\Gold;
 use Services\Event\Producer;
 
 class Auth extends \Services\AbstractBase
