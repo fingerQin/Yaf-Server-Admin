@@ -79,6 +79,30 @@ class Notice extends \Services\AbstractBase
     }
 
     /**
+     * 获取 app 弹窗公告。
+     *
+     * @return array
+     */
+    public static function appDialog()
+    {
+        $datetime = date('Y-m-d H:i:s');
+        $where = [
+            'is_dialog'       => NoticeModel::STATUS_YES,
+            'dialog_end_time' => ['>=', $datetime]
+        ];
+        $columns     = ['noticeid', 'title', 'summary', 'u_time'];
+        $NoticeModel = new NoticeModel();
+        $data        = $NoticeModel->fetchOne($columns, $where, 'noticeid DESC');
+        if (empty($data)) {
+            return YCore::getNullObject();
+        } else {
+            $data['edition'] = str_pad($data['noticeid'], 10, '0', STR_PAD_RIGHT) . strtotime($data['u_time']);
+            unset($data['noticeid'], $data['u_time']);
+            return $data;
+        }
+    }
+
+    /**
      * 未读条数。
      * 
      * -- 未登录则为 0。以最后阅读时间到当前时间是否有新发布的公告。

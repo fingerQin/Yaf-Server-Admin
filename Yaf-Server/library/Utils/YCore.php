@@ -397,6 +397,18 @@ class YCore
     }
 
     /**
+     * 当数组为空时转换为空对象。
+     *
+     * @param  array  $data
+     *
+     * @return array|object
+     */
+    public static function dataToNullObject($data = [])
+    {
+        return !empty($data) ? $data : YCore::getNullObject();
+    }
+
+    /**
      * 获取一个空对象。
      * 
      * @return object

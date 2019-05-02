@@ -190,7 +190,7 @@
 
 #### 2.1 初始化接口[system.init]  ####
 
-所谓初始化接口，是指 APP 启动时第一个请求的接口。
+**所谓初始化接口，是指 APP 启动时第一个请求的接口。**
 
 此接口主要解决接口零散导致启动时造成的请求时间过长而用户体验下降的问题。其次改善了 APP 客户端编码的复杂度。
 
@@ -204,17 +204,36 @@
 >说明：token 令牌是用来做用户登录状态判断所用。令牌过期，该接口会返回说明。如果没有过期，则服务器会刷新令牌的过期时间。使其一直处于有效期。除了这个好处，还有另外一个好处：客户端依赖有 token 令牌的情况才进行请求的情况，就可以全部不用请求了。因为 token 令牌失效了的话。客户端就可以把 token 清空。
 >
 
-| 参数                  | 名称             | 类型    | 说明                                                 |
-| --------------------- | ---------------- | ------- | ---------------------------------------------------- |
-| token_status          | 用户令牌状态     | String  | 0 - 令牌无效或已经过期、1 - 令牌正常可用。           |
-| upgrade               | 升级数据         | Object  | 升级数据对象。明细参见 upgrade. 开头的说明。         |
-| upgrade.upgrade_way   | 升级模式         | String  | 0 - 不升级、1 - 建议升级、2 - 强制升级、3 - 应用关闭 |
-| upgrade.app_v         | 目标 APP 版本    | String  | 需要升级到此版本,如果已经是最新版本，此值为空字符串  |
-| upgrade.app_title     | 升级提示的标题   | String  | 需要升级到此版本,如果已经是最新版本，此值为空字符串  |
-| upgrade.app_desc      | 升级提示的描述   | String  | 需要升级到此版本,如果已经是最新版本，此值为空字符串  |
-| upgrade.app_url       | APP 下载地址     | String  | 如果已经是最新版本或是IOS版本，则此值为空字符串      |
-| upgrade.dialog_repeat | 升级弹窗重复提示 | Integer | 0 - 否，1 - 是。                                     |
-| upgrade.origin_v      | 当前APP版本      | String  | 原样返回请求过去的用户APP版本号                      |
+| 参数                   | 名称                         | 类型    | 说明                                                         |
+| ---------------------- | ---------------------------- | ------- | ------------------------------------------------------------ |
+| token_status           | 用户令牌状态                 | String  | 0 - 令牌无效或已经过期、1 - 令牌正常可用。                   |
+| upgrade                | 升级数据                     | Object  | 升级数据对象。明细参见 upgrade. 开头的说明。                 |
+| upgrade.upgrade_way    | 升级模式                     | String  | 0 - 不升级、1 - 建议升级、2 - 强制升级、3 - 应用关闭         |
+| upgrade.app_v          | 目标 APP 版本                | String  | 需要升级到此版本,如果已经是最新版本，此值为空字符串          |
+| upgrade.app_title      | 升级提示的标题               | String  | 需要升级到此版本,如果已经是最新版本，此值为空字符串          |
+| upgrade.app_desc       | 升级提示的描述               | String  | 需要升级到此版本,如果已经是最新版本，此值为空字符串          |
+| upgrade.app_url        | APP 下载地址                 | String  | 如果已经是最新版本或是IOS版本，则此值为空字符串              |
+| upgrade.dialog_repeat  | 升级弹窗重复提示             | Integer | 0 - 否，1 - 是。                                             |
+| upgrade.origin_v       | 当前APP版本                  | String  | 原样返回请求过去的用户APP版本号                              |
+| start_ad               | 广告对象                     | Object  | 没有启动广告则返回空对象。                                   |
+| start_ad.ad_id         | 广告 ID                      | Integer |                                                              |
+| start_ad.ad_name       | 广告名称                     | String  |                                                              |
+| start_ad.ad_image_url  | 广告图片地址                 | String  |                                                              |
+| start_ad.ad_url        | 广告跳转地址                 | String  | 必须实现内链跳转。详情见：系统内外链接规范文档。             |
+| app_home_right_btn_url | APP 首页导航右侧按钮跳转 URL | String  | APP 首页导航栏左右两侧各一个按钮。                           |
+| app_service            | APP 左侧底部服务中心按钮     | Object  | APP 左侧滑动菜单。                                           |
+| app_service.txt        | 服务中心按钮名称             | String  |                                                              |
+| app_service.url        | 服务中心按钮 URL             | String  |                                                              |
+| app_about              | APP 左侧底部关于我们按钮     | Object  | APP 左侧滑动菜单。                                           |
+| app_about.txt          | 关于我们按钮名称             | String  |                                                              |
+| app_about.url          | 关于我们按钮 URL             | String  |                                                              |
+| app_feedback           | APP 左侧底部意见返回按钮     | Object  | APP 左侧滑动菜单。                                           |
+| app_feedback.txt       | 意见反馈按钮名称             | String  |                                                              |
+| app_feedback.url       | 意见反馈按钮 URL             | String  |                                                              |
+| notice_dialog          | 弹框公告对象                 | Object  | 当没有弹窗公告的时候返回空对象。                             |
+| notice_dialog.title    | 公告标题                     | String  |                                                              |
+| notice_dialog.summary  | 公告摘要                     | String  |                                                              |
+| notice_dialog.edition  | 公告版次                     | String  | 当这个公告在 APP 正确弹出之后，APP 客户端要记录该值在本地。下次拿此值判断，相同则说明已经弹窗了就不再弹二次。 |
 
 示例：
 
@@ -223,15 +242,39 @@
     "code": 200,
     "msg": "success",
     "data": {
-        "token_status": 0,
+        "token_status": 1,
         "upgrade": {
-            "upgrade_way": 1,
+            "upgrade_way": 2,
             "app_v": "1.0.1",
-            "app_title": "IOS 1.0.1",
-            "app_desc": "版本优化",
-            "app_url": "",
-            "dialog_repeat": 0,
+            "app_title": "端午节新版闹龙舟",
+            "app_desc": "端午节新版闹龙舟",
+            "app_url": "https://github.com/fingerQin",
+            "dialog_repeat": 1,
             "origin_v": "1.0.0"
+        },
+        "start_ad": {
+            "ad_id": 7,
+            "ad_name": "APP 启动页广告",
+            "ad_image_url": "http://xxx.com/images/voucher/20190502/5cca477a0f163.png",
+            "ad_url": "https://github.com/fingerQin"
+        },
+        "app_home_right_btn_url": "https://github.com/fingerQin",
+        "app_service": {
+            "txt": "服务中心",
+            "url": "https://github.com/fingerQin"
+        },
+        "app_about": {
+            "txt": "关于我们",
+            "url": "https://github.com/fingerQin"
+        },
+        "app_feedback": {
+            "txt": "意见反馈",
+            "url": "https://github.com/fingerQin"
+        },
+        "notice_dialog": {
+            "title": "恭喜您被选中为2019年锦鲤",
+            "summary": "恭喜您被选中为2019年锦鲤",
+            "edition": "40000000001556786349"
         }
     }
 }
