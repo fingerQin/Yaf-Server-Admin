@@ -126,7 +126,7 @@ class Auth extends \Services\AbstractBase
         ];
         $rules = [
             'mobile'   => '手机号|require|mobilephone',
-            'password' => '密码|require|alpha_dash',
+            'password' => '密码|require|alpha_dash|len:6:20:0',
             'code'     => '验证码|require|number|len:6:6:0',
         ];
         Validator::valido($data, $rules);

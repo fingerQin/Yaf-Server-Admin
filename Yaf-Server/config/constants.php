@@ -18,7 +18,7 @@ define('STATUS_LOGIN_TIMEOUT', 601);        // 用户登录超时。
 define('STATUS_NOT_LOGIN', 602);            // 用户未登录。
 define('STATUS_OTHER_LOGIN', 603);          // 其他人登录。
 define('STATUS_ALREADY_REGISTER', 604);     // 账号已注册。
-define('STATUS_UNREGISTERD', 605);          // 账号示注册。
+define('STATUS_UNREGISTERD', 605);          // 账号未注册。
 define('STATUS_PASSWORD_EDIT', 606);        // 密码已经修改。 
 
 /**
