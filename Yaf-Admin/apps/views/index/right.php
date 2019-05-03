@@ -13,7 +13,7 @@
                     <div class="sys-info">
                         <table>
                             <tbody><tr>
-                                <th>鲸鱼后台管理系统</th>
+                                <th>后台管理系统</th>
                                 <td>V1.0.0</td>
                             </tr>
                             <tr>
