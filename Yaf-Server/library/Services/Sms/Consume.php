@@ -38,6 +38,7 @@ class Consume extends \Services\Sms\AbstractBase
             while (true) {
                 $str = $redis->bRPopLPush($queueKey, $queueIng, 60);
                 if (!empty($str)) {
+                    YLog::log(['switch' => $switch, 'data' => $str], 'sms', 'consume');
                     $arrValue = json_decode($str, true);
                     try {
                         self::send($switch, $arrValue['id'], $arrValue['mobile'], $arrValue['content']);
