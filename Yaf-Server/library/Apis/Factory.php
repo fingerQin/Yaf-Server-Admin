@@ -42,6 +42,9 @@ class Factory
         if (!isset($reqParams['appid']) || strlen($reqParams['appid']) === 0) {
             YCore::exception(STATUS_ERROR, 'appid parameters cannot be empty');
         }
+        if (!isset($reqParams['timestamp']) || strlen($reqParams['timestamp']) === 0) {
+            YCore::exception(STATUS_ERROR, 'timestamp parameters cannot be empty');
+        }
 
         // [3] 将 method 参数转换为实际的接口类名称。
         $apiName   = $reqParams['method'];

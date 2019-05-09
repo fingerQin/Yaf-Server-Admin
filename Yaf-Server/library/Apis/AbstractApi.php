@@ -10,7 +10,7 @@ namespace Apis;
 
 use Utils\YCore;
 use Utils\YInput;
-use Models\ApiAuth;
+use finger\Validator;
 
 abstract class AbstractApi
 {
@@ -78,6 +78,7 @@ abstract class AbstractApi
         $this->params    = $data;
         $this->apiKey    = $apiKey;
         $this->apiSecret = $apiSecret;
+        $this->checkTimeLag();
         $this->checksignature();
         $ip     = YCore::ip();
         $status = $this->isApiIPInWhiteList($apiType, $ip);
@@ -97,7 +98,27 @@ abstract class AbstractApi
     abstract protected function runService();
 
     /**
-     * 验证码请求签名。
+     * 验证时差。
+     *
+     * @return void
+     */
+    protected function checkTimeLag()
+    {
+        $reqTsp = $this->params['timestamp'];
+        if (!Validator::is_integer($reqTsp)) {
+            YCore::exception(STATUS_SERVER_ERROR, 'timestamp 参数格式不正确');
+        }
+        if (strlen($reqTsp) != 10) {
+            YCore::exception(STATUS_SERVER_ERROR, 'timestamp 参数必须为 10 位长度的秒值');
+        }
+        $diffSecond = $this->timestamp - $reqTsp;
+        if ($diffSecond > 600) {
+            YCore::exception(STATUS_SERVER_ERROR, 'timestamp 已经超时请求');
+        }
+    }
+
+    /**
+     * 验证请求签名。
      *
      * @return boolean
      */
@@ -111,7 +132,7 @@ abstract class AbstractApi
     /**
      * 检查当前接口类型与当前密钥对应的权限是否对应。
      * 
-     * @param  string $appType 当前调用 APPID 对应的应用类型。 
+     * @param  string  $appType  当前调用 APPID 对应的应用类型。 
      *
      * @return void
      */
