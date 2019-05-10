@@ -97,10 +97,9 @@ class Sms extends \Services\Sms\AbstractBase
      */
     public static function sendSystem($mobile, $smsType, $sendIp = '', $platform, $replaceArr = [])
     {
-        $templet   = self::getTemplet($smsType);
-        $sendIp    = (strlen($sendIp) > 0) ? $sendIp : YCore::ip();
+        $sendIp = (strlen($sendIp) > 0) ? $sendIp : YCore::ip();
         YLog::log(['sendIp' => $sendIp, 'smsType' => $smsType, 'mobile' => $mobile], 'sms', 'sendSystemLog');
-        $result    = self::getReplaceContent($smsType, $mobile, '', $replaceArr);
+        $result = self::getReplaceContent($smsType, $mobile, '', $replaceArr);
         // 创建短信日志。
         $datetime    = date('Y-m-d H:i:s', time());
         $MSmsSendLog = new SmsSendLog();
