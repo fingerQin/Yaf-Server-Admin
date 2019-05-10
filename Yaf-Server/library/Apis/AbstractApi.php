@@ -296,7 +296,7 @@ abstract class AbstractApi
         if (empty($whiteList)) {
             return false;
         }
-        if (in_array($ip, $whiteList)) {
+        if (in_array($ip, explode('|', $whiteList))) {
             return true;
         } else {
             return false;
