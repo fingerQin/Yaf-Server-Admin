@@ -10,6 +10,7 @@
 namespace finger;
 
 use Utils\YCore;
+use Utils\YUrl;
 
 class ServiceException extends \Exception
 {
@@ -29,14 +30,9 @@ class ServiceException extends \Exception
     public function __construct($message, $code = 0, $classNameAndMethod = '', $args = [], Exception $previous = null)
     {
         $code = intval($code);
-        if (is_array($message)) {
-            $this->log = $message;
-            parent::__construct($message['stackTrace'], $code, $previous);
-        } else {
-            parent::__construct($message, $code, $previous);
-        }
+        parent::__construct($message, $code, $previous);
         $this->classNameAndMethod = $classNameAndMethod;
-        $this->methodArgs         = $args;
+        $this->methodArgs = $args;
     }
 
     /**
@@ -45,11 +41,19 @@ class ServiceException extends \Exception
      */
     public function __toString()
     {
-        $errLog  = "Error Message: {$this->message} \n";
-        $errLog .= "Error Code: [{$this->code}] \n";
-        $errLog .= "Class Name and Method: {$this->classNameAndMethod}\n";
-        $errLog .= "Method Params:\n" . print_r($this->methodArgs, true) . "\n";
-        $errLog .= "Stack trace:\n" . $this->getTraceAsString();
+        $requestUrl = YUrl::getUrl();
+        $serverIP   = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
+        $clientIP   = YCore::ip();
+        $datetime = date('Y-m-d H:i:s');
+        $errLog   = "ErrorTime:{$datetime} \n";
+        $errLog  .= "ServerIP:{$serverIP} \n";
+        $errLog  .= "ClientIP:{$clientIP} \n";
+        $errLog  .= "RequestUrl:{$requestUrl} \n";
+        $errLog  .= "ErrorCode: [{$this->code}] \n";
+        $errLog  .= "ErrorMsg: {$this->message} \n";
+        $errLog  .= "Method: {$this->classNameAndMethod}\n";
+        $errLog  .= "Params:\n" . print_r($this->methodArgs, true) . "\n";
+        $errLog  .= "StackTrace:\n" . $this->getTraceAsString();
         return $errLog;
     }
 
@@ -76,27 +80,20 @@ class ServiceException extends \Exception
      */
     public function log()
     {
-        if (!empty($this->log)) {
-            $this->log['ErrorCode'] = $this->code;
-            $this->log['Method']    = $this->classNameAndMethod;
-            $this->log['Params']    = $this->methodArgs;
-            return $this->log;
-        } else {
-            $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
-            $clientIP = YCore::ip();
-            return [
-                'Type'       => 'ServiceException',
-                'ErrorCode'  => $this->code,
-                'ServerIP'   => $serverIP,
-                'ClientIP'   => $clientIP,
-                'Method'     => $this->classNameAndMethod,
-                'Params'     => $this->methodArgs,
-                'ErrorFile'  => '',
-                'ErrorLine'  => '',
-                'ErrorMsg'   => $this->message,
-                'ErrorNo'    => 0, 
-                'stackTrace' => $this->getTraceAsString()
-            ];
-        }
+        $requestUrl = YUrl::getUrl();
+        $serverIP   = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
+        $clientIP   = YCore::ip();
+        return [
+            'ErrorType'  => 'ServiceException',
+            'ErrorTime'  => date('Y-m-d H:i:s'),
+            'ServerIP'   => $serverIP,
+            'ClientIP'   => $clientIP,
+            'RequestUrl' => $requestUrl,
+            'Method'     => $this->classNameAndMethod,
+            'Params'     => $this->methodArgs,
+            'ErrorCode'  => $this->code,
+            'ErrorMsg'   => $this->message,
+            'StackTrace' => $this->getTraceAsString()
+        ];
     }
 }
