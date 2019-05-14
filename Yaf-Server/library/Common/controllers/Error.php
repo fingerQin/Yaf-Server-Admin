@@ -10,12 +10,10 @@ namespace Common\controllers;
 use finger\ServiceException;
 use Utils\YCore;
 use Utils\YLog;
-use Utils\YUrl;
 
 class Error extends \Common\controllers\Common
 {
     private $errMsgTpl = [
-        STATUS_SUCCESS          => '请求成功',
         STATUS_FORBIDDEN        => '您没有权限访问',
         STATUS_NOT_FOUND        => '您访问的资源不存在',
         STATUS_SERVER_ERROR     => '服务器发生一个问题',
@@ -33,7 +31,6 @@ class Error extends \Common\controllers\Common
      */
     public function errorAction($exception)
     {
-        $trace   = $this->logWrapper($exception->__toString());
         $errCode = $exception->getCode();
         $errMsg  = $exception->getMessage();
 
@@ -53,7 +50,7 @@ class Error extends \Common\controllers\Common
             if (YCore::appconfig('app.debug')) { // 调试模式会输出具体的错误。
                 $errMsg = $exception->__toString();
             }
-            YLog::log($exception->__toString(), 'errors', 'log');
+            YLog::log($exception->log(), 'errors', 'log');
         }
 
         // [2] 根据是不同的请求类型响应不的数据。
@@ -66,25 +63,11 @@ class Error extends \Common\controllers\Common
             echo json_encode($data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
             $this->end();
         } else if ($this->_request->isCli()) {
-            echo "ErrorDate:" . date('Y-m-d H:i:s', time()) . "\n";
-            echo "ErrorCode:{$errCode}\n";
-            echo "ErrorMsg:" . $exception->__toString();
+            echo $exception->__toString();
             $this->end();
         } else {
             $this->error("{$errMsg}", '', 0);
         }
         exit(0);
-    }
-
-    /**
-     * 错误信息包装器。
-     * 
-     * @param string $log 错误信息。
-     * @return string
-     */
-    protected function logWrapper($log)
-    {
-        $currentUrl = YUrl::getUrl();
-        return "{$log}\nRequest Url:{$currentUrl}";
     }
 }
