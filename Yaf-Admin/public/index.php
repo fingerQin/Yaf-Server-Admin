@@ -7,6 +7,7 @@
  */
 
 define('MICROTIME', microtime());
+define('TIMESTAMP', time());
 define('APP_PATH', dirname(dirname(__FILE__)));
 require(APP_PATH . '/config/constants.php');
 require(APP_PATH . '/vendor/autoload.php');

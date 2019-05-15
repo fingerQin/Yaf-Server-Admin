@@ -87,7 +87,7 @@ class Factory
         $reqLog = [
             '_userid'   => \Services\User\Auth::getTokenUserId($token),
             '_ip'       => YCore::ip(),
-            '_datetime' => date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME'])
+            '_datetime' => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $reqLog = array_merge($reqLog, $params);
         \Utils\YLog::writeApiRequestLog($reqLog);
