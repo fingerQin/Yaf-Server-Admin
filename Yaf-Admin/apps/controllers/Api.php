@@ -5,8 +5,8 @@
  * @date 2018-07-10
  */
 
-use finger\Paginator;
 use Utils\YCore;
+use finger\Paginator;
 use Services\System\ApiAuth;
 
 class ApiController extends \Common\controllers\Admin
@@ -30,11 +30,14 @@ class ApiController extends \Common\controllers\Admin
     public function addAction()
     {
         if ($this->_request->isXmlHttpRequest()) {
-            $apiType   = $this->getString('api_type');
-            $apiName   = $this->getString('api_name');
-            $apiKey    = $this->getString('api_key');
-            $apiSecret = $this->getString('api_secret');
-            ApiAuth::add($this->adminId, $apiType, $apiName, $apiKey, $apiSecret);
+            $apiType     = $this->getString('api_type');
+            $apiName     = $this->getString('api_name');
+            $apiKey      = $this->getString('api_key');
+            $apiSecret   = $this->getString('api_secret');
+            $isOpenIpBan = $this->getInt('is_open_ip_ban', 0);
+            $ipScope     = $this->getString('ip_scope', '');
+            $ipPool      = $this->getString('ip_pool', '');
+            ApiAuth::add($this->adminId, $apiType, $apiName, $apiKey, $apiSecret, $isOpenIpBan, $ipScope, $ipPool);
             $this->json(true, '添加成功');
         }
     }
@@ -45,12 +48,15 @@ class ApiController extends \Common\controllers\Admin
     public function editAction()
     {
         if ($this->_request->isXmlHttpRequest()) {
-            $id        = $this->getInt('id');
-            $apiType   = $this->getString('api_type');
-            $apiName   = $this->getString('api_name');
-            $apiKey    = $this->getString('api_key');
-            $apiSecret = $this->getString('api_secret');
-            ApiAuth::edit($this->adminId, $id, $apiType, $apiName, $apiKey, $apiSecret);
+            $id          = $this->getInt('id');
+            $apiType     = $this->getString('api_type');
+            $apiName     = $this->getString('api_name');
+            $apiKey      = $this->getString('api_key');
+            $apiSecret   = $this->getString('api_secret');
+            $isOpenIpBan = $this->getInt('is_open_ip_ban', 0);
+            $ipScope     = $this->getString('ip_scope', '');
+            $ipPool      = $this->getString('ip_pool', '');
+            ApiAuth::edit($this->adminId, $id, $apiType, $apiName, $apiKey, $apiSecret, $isOpenIpBan, $ipScope, $ipPool);
             $this->json(true, '修改成功');
         }
         $id = $this->getInt('id');

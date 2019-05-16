@@ -101,10 +101,10 @@
 	function edit(id, name) {
 		var title = '修改『' + name + '』';
 		var page_url = "{{'Api/edit'|url}}?id=" + id;
-		postDialog('editApi', page_url, title, 400, 350);
+		postDialog('editApi', page_url, title, 600, 590);
 	}
 	function add() {
-		postDialog('addApi', '{{'Api'|url:'add'}}', '添加 API 密钥', 400, 350);
+		postDialog('addApi', '{{'Api'|url:'add'}}', '添加 API 密钥', 600, 590);
 	}
 </script>
 
