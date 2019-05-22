@@ -12,7 +12,7 @@ use Utils\YCore;
 use Utils\YCache;
 use Utils\YInput;
 use Utils\YLog;
-use Models\ApiAuth;
+use Services\System\ApiAuth;
 
 class Factory
 {
@@ -62,8 +62,17 @@ class Factory
             $apiDir = "{$apiDir}\\";
         }
 
-        // [5] 映射接口类。
+        // [5] 读取 appid 配置信息。 
         $apiDetail = self::getApiDetail($reqParams['appid']);
+
+        // [6] IP 限制判断。
+        $ip   = YCore::ip();
+        $bool = ApiAuth::checkIpAllowAccess($apiDetail, $ip);
+        if ($bool == false) {
+            YCore::exception(STATUS_SERVER_ERROR, '受限 IP 不允许访问');
+        }
+
+        // [7] 映射接口类。
         $classname = "Apis\\{$apiDetail['api_type']}\\v{$version}\\{$apiDir}{$classname}Api";
 
         if (strlen($apiName) && class_exists($classname)) {
@@ -101,10 +110,7 @@ class Factory
      */
     private static function getApiDetail($appid)
     {
-        $ApiAuthModel = new ApiAuth();
-        $columns      = ['api_type', 'api_key', 'api_secret'];
-        $where        = ['api_key' => $appid, 'api_status' => ApiAuth::STATUS_YES];
-        $detail       = $ApiAuthModel->fetchOne($columns, $where);
+        $detail = ApiAuth::getApiDetail($appid);
         if (empty($detail)) {
             YCore::exception(STATUS_SERVER_ERROR, 'Bad Request');
         }

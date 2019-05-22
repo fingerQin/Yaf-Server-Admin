@@ -17,4 +17,11 @@ class ApiAuth extends AbstractBase
     protected $tableName = 'finger_api_auth';
 
     protected $primaryKey = 'id';
+
+    /**
+     * 应用类型。
+     */
+    const API_TYPE_APP      = 'app';
+    const API_TYPE_ADMIN    = 'admin';
+    const API_TYPE_ACTIVITY = 'activity';
 }

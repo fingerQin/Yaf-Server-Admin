@@ -15,12 +15,6 @@ use finger\Validator;
 abstract class AbstractApi
 {
     /**
-     * API 接口类型。
-     * -- 其他类型可能自由增减,程序已经自动映射。独 app 特殊是允许公开访问。
-     */
-    const API_TYPE_APP = 'app'; // APP 调用的接口。
-
-    /**
      * 请求参数。
      *
      * @var array
@@ -71,7 +65,7 @@ abstract class AbstractApi
      * -- 4、参数格式判断。
      * -- 5、运行接口逻辑。
      */
-    public function __construct(&$data, $apiType = self::API_TYPE_APP, $apiKey = '', $apiSecret = '')
+    public function __construct(&$data, $apiType, $apiKey = '', $apiSecret = '')
     {
         $this->apiType   = $apiType;
         $this->timestamp = $_SERVER['REQUEST_TIME'];
@@ -80,11 +74,6 @@ abstract class AbstractApi
         $this->apiSecret = $apiSecret;
         $this->checkTimeLag();
         $this->checksignature();
-        $ip     = YCore::ip();
-        $status = $this->isApiIPInWhiteList($apiType, $ip);
-        if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '您没有权限访问');
-        }
         $this->runService();
     }
 
@@ -269,37 +258,6 @@ abstract class AbstractApi
                     YCore::exception(STATUS_SERVER_ERROR, $writeApiCloseMsg);
                 }
             }
-        }
-    }
-
-    /**
-     * API 接口 IP 是否在白名单当中。
-     * 
-     * -- APP 调用的接口不受白名单限制。
-     * 
-     * @param  string  $appType  API 应用类型。
-     * @param  string  $ip       IP 地址。
-     * @return bool true-可访问、false-不可访问。
-     */
-    protected function isApiIPInWhiteList($appType, $ip)
-    {
-        $envName = YCore::appconfig('app.env');
-        $envName = \strtolower($envName);
-        if (!in_array($envName, ['beta', 'prod'])) { // 如果当前环境不是公测/正式。则不做 IP 限制。
-            return true;
-        }
-        $appType = strtolower($appType);
-        if ($appType == self::API_TYPE_APP) { // APP 调用的接口不受 IP 白名单限制。
-            return true;
-        }
-        $whiteList = YCore::appconfig('app.inside_server_ip');
-        if (empty($whiteList)) {
-            return false;
-        }
-        if (in_array($ip, explode('|', $whiteList))) {
-            return true;
-        } else {
-            return false;
         }
     }
 }
