@@ -10,6 +10,10 @@
 				{{if 'Api'|access:'add'}}
 				<a type="button" class="btn btn-mystyle btn-sm" href="javascript:add();">添加 API 应用</a>
 				{{/if}}
+
+				{{if 'Api'|access:'clearCache'}}
+				<button type="button" class="btn btn-mystyle btn-sm" onclick="clearCache();">清除配置缓存</button>
+				{{/if}}
 				<button type="button" class="btn btn-mystyle btn-sm" onclick="helpDialog('Api', 'list');">帮助</button>
 			</div>
 		</div>
@@ -105,6 +109,34 @@
 	}
 	function add() {
 		postDialog('addApi', '{{'Api'|url:'add'}}', '添加 API 密钥', 600, 590);
+	}
+
+	/**
+	* 清除配置缓存。
+	*/
+	function clearCache() {
+		layer.confirm('您确定要清除配置缓存吗？', {
+			btn: ['确定', '取消'],
+			title: '操作提示'
+		}, 
+		function() {
+			$.ajax({
+				type: "GET",
+				url: '{{'Api'|url:'clearCache'}}',
+				dataType: 'json',
+				success: function(data){
+					if (data.code == 200) {
+						dialogTips(data.msg, 3);
+					} else {
+						dialogTips(data.msg, 5);
+						return false;
+					}
+				}
+			});
+		},
+		function(){
+			// 点击取消按钮啥事也不做。
+		});
 	}
 </script>
 

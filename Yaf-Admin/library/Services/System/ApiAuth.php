@@ -11,9 +11,15 @@ use Utils\YCore;
 use finger\Validator;
 use finger\Database\Db;
 use Models\ApiAuth as ApiAuthModel;
+use Utils\YCache;
 
 class ApiAuth extends \Services\AbstractBase
 {
+    /**
+     * Api 密钥缓存 KEY。
+     */
+    const API_AUTH_CACHE_KEY = 'api-auth-cache';
+
     /**
      * 应用类型。
      * 
@@ -35,12 +41,14 @@ class ApiAuth extends \Services\AbstractBase
             'id'         => $id,
             'api_status' => ApiAuthModel::STATUS_YES
         ];
-        $columns      = ['id', 'api_type', 'api_name', 'api_key', 'api_secret'];
+        $columns      = ['id', 'api_type', 'api_name', 'api_key', 'api_secret', 'is_open_ip_ban', 'ip_scope', 'ip_pool'];
         $ApiAuthModel = new ApiAuthModel();
-        $appinfo      = $ApiAuthModel->fetchOne([], $where);
+        $appinfo      = $ApiAuthModel->fetchOne($columns, $where);
         if (empty($appinfo)) {
             YCore::exception(STATUS_SERVER_ERROR, '应用不存在或已经删除');
         }
+        $appinfo['ip_scope'] = str_replace('|', "\r\n", $appinfo['ip_scope']);
+        $appinfo['ip_pool']  = str_replace('|', "\r\n", $appinfo['ip_pool']);
         return $appinfo;
     }
 
@@ -66,14 +74,18 @@ class ApiAuth extends \Services\AbstractBase
             'api_name'       => $apiName,
             'api_key'        => $apiKey,
             'api_secret'     => $apiSecret,
-            'is_open_ip_ban' => $isOpenIpBan
+            'is_open_ip_ban' => $isOpenIpBan,
+            'ip_scope'       => $ipScope,
+            'ip_pool'        => $ipPool
         ];
         $rules = [
             'api_type'       => '应用类型|require|alpha|len:1:10:0',
             'api_name'       => '应用名称|require|len:1:20:1',
             'api_key'        => '应用标识|require|alpha_dash|len:1:20:0',
             'api_secret'     => '应用密钥|require|alpha_dash|len:32:32:0',
-            'is_open_ip_ban' => '是否限制IP访问|require|integer|number_between:0:1'
+            'is_open_ip_ban' => '是否限制IP访问|require|integer|number_between:0:1',
+            'ip_scope'       => 'IP段|len:0:400:0',
+            'ip_pool'        => 'IP池|len:0:5000:0'
         ];
         Validator::valido($data, $rules); // 验证不通过会抛异常。
         if (!in_array($apiType, self::$apiTypeDict)) {
@@ -90,8 +102,10 @@ class ApiAuth extends \Services\AbstractBase
             YCore::exception(STATUS_SERVER_ERROR, '记录不存在或已经删除');
         }
         // [3] 更新。
-        $data['u_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
-        $ok             = $ApiAuthModel->update($data, $where);
+        $data['u_time']   = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        $data['ip_scope'] = self::ipScoreFormatterToSave($ipScope);
+        $data['ip_pool']  = self::ipPoolFormatterToSave($ipPool);
+        $ok = $ApiAuthModel->update($data, $where);
         if (!$ok) {
             YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
@@ -118,23 +132,29 @@ class ApiAuth extends \Services\AbstractBase
             'api_name'       => $apiName,
             'api_key'        => $apiKey,
             'api_secret'     => $apiSecret,
-            'is_open_ip_ban' => $isOpenIpBan
+            'is_open_ip_ban' => $isOpenIpBan,
+            'ip_scope'       => $ipScope,
+            'ip_pool'        => $ipPool
         ];
         $rules = [
             'api_type'       => '应用类型|require|alpha|len:1:10:0',
             'api_name'       => '应用名称|require|len:1:20:1',
             'api_key'        => '应用标识|require|alpha_dash|len:1:20:0',
             'api_secret'     => '应用密钥|require|alpha_dash|len:32:32:0',
-            'is_open_ip_ban' => '是否限制IP访问|require|integer|number_between:0:1'
+            'is_open_ip_ban' => '是否限制IP访问|require|integer|number_between:0:1',
+            'ip_scope'       => 'IP段|len:0:400:0',
+            'ip_pool'        => 'IP池|len:0:5000:0'
         ];
         Validator::valido($data, $rules); // 验证不通过会抛异常。
         if (!in_array($apiType, self::$apiTypeDict)) {
             YCore::exception(STATUS_SERVER_ERROR, '应用类型不合法');
         }
-        $data['c_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
-        $data['u_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
-        $ApiAuthModel   = new ApiAuthModel();
-        $id             = $ApiAuthModel->insert($data);
+        $data['c_time']   = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        $data['u_time']   = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
+        $data['ip_scope'] = self::ipScoreFormatterToSave($ipScope);
+        $data['ip_pool']  = self::ipPoolFormatterToSave($ipPool);
+        $ApiAuthModel     = new ApiAuthModel();
+        $id = $ApiAuthModel->insert($data);
         if ($id == 0) {
             YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
@@ -166,6 +186,7 @@ class ApiAuth extends \Services\AbstractBase
         if (!$ok) {
             YCore::exception(STATUS_ERROR, '删除失败');
         }
+        self::clearCache();
     }
 
     /**
@@ -214,11 +235,11 @@ class ApiAuth extends \Services\AbstractBase
             return '';
         }
         $ipFilterResult = [];
-        $ipScopeArr     = explode("\n", $ipScope);
+        $ipScopeArr     = explode("\r\n", $ipScope);
         foreach ($ipScopeArr as $ipScopeSingle) {
             $ipScopeSingle = str_replace(' ', '', $ipScopeSingle);
             $ipScopeSingle = explode('-', $ipScopeSingle);
-            if (count($ipScopeSingle != 2)) {
+            if (count($ipScopeSingle) != 2) {
                 continue;
             }
             if (Validator::is_ip($ipScopeSingle[0]) == false) {
@@ -246,6 +267,30 @@ class ApiAuth extends \Services\AbstractBase
      */
     protected static function ipPoolFormatterToSave($ipPool)
     {
-        
+        if (strlen($ipPool) == 0) {
+            return '';
+        }
+        $ipFilterResult = [];
+        $ipPoolArr      = explode("\r\n", $ipPool);
+        $ipPool         = str_replace(' ', '', $ipPool);
+        foreach ($ipPoolArr as $ip) {
+            if (!Validator::is_ip($ip)) {
+                continue;
+            }
+            $ipFilterResult[] = $ip;
+        }
+        $ipFilterResult = array_unique($ipFilterResult);
+        return implode('|', $ipFilterResult);
+    }
+
+    /**
+     * 清除缓存。
+     *
+     * @return void
+     */
+    public static function clearCache()
+    {
+        $redis = YCache::getRedisClient();
+        $redis->delete(self::API_AUTH_CACHE_KEY);
     }
 }

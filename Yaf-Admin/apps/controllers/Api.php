@@ -73,4 +73,13 @@ class ApiController extends \Common\controllers\Admin
         ApiAuth::delete($this->adminId, $id);
         $this->json(true, '删除成功');
     }
+
+    /**
+     * 清除缓存。
+     */
+    public function clearCacheAction()
+    {
+        ApiAuth::clearCache();
+        $this->json(true, '缓存清除成功');
+    }
 }

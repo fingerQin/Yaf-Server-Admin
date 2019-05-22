@@ -45,22 +45,22 @@
 				<th class="left-txt">是否限制 IP 访问：</th>
 				<td>
 					<select name="is_open_ip_ban" class="form-control" >
-						<option value="0">否</option>
-						<option value="1">是</option>
+						<option {{if $detail.is_open_ip_ban == 0}}selected="selected"{{/if}} value="0">否</option>
+						<option {{if $detail.is_open_ip_ban == 1}}selected="selected"{{/if}} value="1">是</option>
 					</select>
 				</td>
 			</tr>
             <tr>
                 <th class="left-txt">IP 段：</th>
                 <td>
-                    <textarea name="ip_scope" id="ip_scope" class="textarea" rows="3" cols="50"></textarea>
+                    <textarea name="ip_scope" id="ip_scope" class="textarea" rows="3" cols="50">{{$detail.ip_scope}}</textarea>
                     <div class="w90" style="color:grey;">(格式：192.168.56.10-192.168.56.50，每行一个 IP 段)</div>
                 </td>
             </tr>
             <tr>
                 <th class="left-txt">IP 池：</th>
                 <td>
-                    <textarea name="ip_pool" id="ip_pool" class="textarea" rows="3" cols="50"></textarea>
+                    <textarea name="ip_pool" id="ip_pool" class="textarea" rows="3" cols="50">{{$detail.ip_pool}}</textarea>
                     <div class="w90" style="color:grey;">(格式：192.168.56.10，每行一个 IP 地址)</div>
                 </td>
             </tr>
