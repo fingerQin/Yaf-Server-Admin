@@ -18,4 +18,11 @@ class SmsBlacklist extends AbstractBase
     protected $tableName = 'finger_sms_blacklist';
 
     protected $primaryKey = 'id';
+
+    /**
+     * 更新时间字段。
+     * 
+     * @var string
+     */
+    protected $updateTime = false;
 }

@@ -9,6 +9,7 @@ use finger\Paginator;
 use Services\Sms\Log;
 use Services\Sms\Tpl;
 use Services\Sms\Channel;
+use Services\Sms\Blacklist;
 
 class SmsController extends \Common\controllers\Admin
 {
@@ -38,5 +39,52 @@ class SmsController extends \Common\controllers\Admin
         $this->assign('pageHtml', $pageHtml);
         $this->assign('tpls', Tpl::all());
         $this->assign('channels', Channel::all());
+    }
+
+    /**
+     * 黑名单列表。
+     */
+    public function blacklistAction()
+    {
+        $mobile    = $this->getString('mobile', '');
+        $page      = $this->getInt('page', 1);
+        $result    = Blacklist::lists($mobile, $page, 20);
+        $paginator = new Paginator($result['total'], 20);
+        $pageHtml  = $paginator->backendPageShow();
+        $this->assign('result', $result);
+        $this->assign('mobile', $mobile);
+        $this->assign('list', $result['list']);
+        $this->assign('pageHtml', $pageHtml);
+    }
+
+    /**
+     * 清除黑名单缓存。
+     */
+    public function clearBlacklistCacheAction()
+    {
+        Blacklist::clearCache();
+        $this->json(true, '清除缓存成功!');
+    }
+
+    /**
+     * 添加黑名单手机号。
+     */
+    public function addBlistAction()
+    {
+        if ($this->_request->isPost()) {
+            $mobiles = $this->getString('mobiles', '');
+            Blacklist::add($mobiles);
+            $this->json(true, '添加成功');
+        }
+    }
+
+    /**
+     * 黑名单状态变更。
+     */
+    public function deleteBlistAction()
+    {
+        $id = $this->getInt('id');
+        Blacklist::delete($id);
+        $this->json(true, '操作成功');
     }
 }

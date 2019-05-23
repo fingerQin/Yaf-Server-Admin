@@ -138,7 +138,7 @@ class Verify extends \Services\Sms\AbstractBase
         $redis = YCache::getRedisClient();
         $cache = $redis->get(self::BLACKLIST_MOBILE_CACHE_KEY);
         if ($cache === false || $cache === null) {
-            $result  = (new SmsBlacklist())->fetchAll(['mobile'], ['status' => SmsBlacklist::STATUS_YES]);
+            $result  = (new SmsBlacklist())->fetchAll(['mobile']);
             $mobiles = [];
             foreach ($result as $item) {
                 $mobiles[] = $item['mobile'];
