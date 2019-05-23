@@ -17,6 +17,11 @@ use finger\Database\Db;
 class Verify extends \Services\Sms\AbstractBase
 {
     /**
+     * 手机号码黑名单缓存 KEY。
+     */
+    const BLACKLIST_MOBILE_CACHE_KEY = 'sms-blacklist-mobile';
+
+    /**
      * 检测两次发送的间隔(用户触发的才需要调用)。
      * 
      * @param  string  $mobile  手机号码。
@@ -117,7 +122,31 @@ class Verify extends \Services\Sms\AbstractBase
      */
     public static function isBlacklistMobile($mobile)
     {
-        $result = (new SmsBlacklist())->fetchOne([], ['mobile' => $mobile]);
-        return $result ? true : false;
+        $mobiles = self::allBlacklistMobileResult();
+        return in_array($mobile, $mobiles) ? true : false;
+    }
+
+    /**
+     * 全部黑名单数据。
+     *
+     * -- 通过缓存提高并发速度。
+     *
+     * @return array
+     */
+    protected static function allBlacklistMobileResult()
+    {
+        $redis = YCache::getRedisClient();
+        $cache = $redis->get(self::BLACKLIST_MOBILE_CACHE_KEY);
+        if ($cache === false || $cache === null) {
+            $result  = (new SmsBlacklist())->fetchAll(['mobile'], ['status' => SmsBlacklist::STATUS_YES]);
+            $mobiles = [];
+            foreach ($result as $item) {
+                $mobiles[] = $item['mobile'];
+            }
+            $redis->set(self::BLACKLIST_MOBILE_CACHE_KEY, json_encode($mobiles));
+            return $result;
+        } else {
+            return json_decode($cache, true);
+        }
     }
 }
