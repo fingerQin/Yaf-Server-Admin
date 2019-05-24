@@ -294,7 +294,8 @@ class Connection
         if ($env != 'prod') {
             foreach ($params as $key => $val) {
                 $val = "'" . addslashes($val) . "'";
-                $sql = str_replace($key, $val, $sql);
+                $sql = str_replace("{$key},", "{$val},", $sql);
+                $sql = str_replace("{$key})", "{$val})", $sql);
             }
             $this->pushRunSqlRecords($sql);
         }
