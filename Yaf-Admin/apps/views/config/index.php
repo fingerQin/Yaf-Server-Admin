@@ -26,10 +26,10 @@
 				<thead>
 					<tr>
 						<th class="w5 text-center">ID</th>
-						<th class="w15 text-center">配置标题</th>
-						<th class="w15 text-center">配置编码</th>
-						<th class="w15 text-center">配置值</th>
-						<th class="w20 text-center">描述</th>
+						<th class="w15 text-left">配置标题</th>
+						<th class="w15 text-left">配置编码</th>
+						<th class="w15 text-left">配置值</th>
+						<th class="w20 text-left">描述</th>
 						<th class="w10 text-center">修改时间</th>
 						<th class="w10 text-center">创建时间</th>
 						<th class="w10 text-center">管理操作</th>
@@ -39,10 +39,10 @@
 				{{foreach $list as $item}}
 					<tr>
 						<td class="text-center">{{$item.configid}}</td>
-						<td class="text-center">{{$item.title}}</td>
-						<td class="text-center">{{$item.cfg_key}}</td>
-						<td class="text-center">{{$item.cfg_value}}</td>
-						<td class="text-center">{{$item.description}}</td>
+						<td class="text-left">{{$item.title}}</td>
+						<td class="text-left">{{$item.cfg_key}}</td>
+						<td class="text-left">{{$item.cfg_value}}</td>
+						<td class="text-left">{{$item.description}}</td>
 						<td class="text-center">{{$item.u_time}}</td>
 						<td class="text-center">{{$item.c_time}}</td>
 						<td class="text-center">

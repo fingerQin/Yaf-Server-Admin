@@ -43,8 +43,8 @@
 						<th class="w5 text-center">类型</th>
                         <th class="w5 text-center">状态</th>
                         <th class="w10 text-center">手机号</th>
-                        <th class="w15 text-center">标题</th>
-                        <th class="w35 text-center">Url/内容</th>
+                        <th class="w15 text-left">标题</th>
+                        <th class="w35 text-left">Url/内容</th>
                         <th class="w10 text-center">创建时间</th>
                         <th class="w10 text-center">更新时间</th>
                         <th class="w5 text-center">操作</th>

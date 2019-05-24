@@ -33,10 +33,10 @@
 				<thead>
 					<tr>
 						<th class="w5 text-center">ID</th>
-						<th class="w10 text-center">模板 KEY</th>
+						<th class="w10 text-left">模板 KEY</th>
                         <th class="w10 text-center">模板标题</th>
                         <th class="w10 text-center">触发类型</th>
-                        <th class="w35 text-center">模板内容</th>
+                        <th class="w35 text-left">模板内容</th>
                         <th class="w10 text-center">创建时间</th>
                         <th class="w10 text-center">更新时间</th>
                         <th class="w10 text-center">操作</th>
@@ -46,7 +46,7 @@
     				{{foreach $list as $item}}
     				<tr>
 						<td class="text-center">{{$item.id}}</td>
-						<td class="text-center">{{$item.send_key}}</td>
+						<td class="text-left">{{$item.send_key}}</td>
 						<td class="text-center">{{$item.title}}</td>
                         <td class="text-center">{{$item.trigger_type_label}}</td>
                         <td class="text-left">{{$item.sms_body}}</td>

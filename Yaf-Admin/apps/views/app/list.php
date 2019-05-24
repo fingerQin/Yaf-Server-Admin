@@ -55,7 +55,7 @@
 						<th class="w5 text-center">升级方式</th>
 						<th class="w5 text-center">升级弹窗</th>
 						<th class="w10 text-center">Android 渠道</th>
-						<th class="w25 text-center">升级描述</th>
+						<th class="w25 text-left">升级描述</th>
 						<th class="w10 text-center">修改时间</th>
 						<th class="w10 text-center">创建时间</th>
 						<th class="w10 text-center">管理操作</th>
@@ -71,7 +71,7 @@
 						<td class="text-center">{{$item.upgrade_way_txt}}</td>
 						<td class="text-center">{{$item.dialog_repeat_txt}}</td>
 						<td class="text-center">{{$item.channel}}</td>
-						<td class="text-center">{{$item.app_desc}}</td>
+						<td class="text-left">{{$item.app_desc}}</td>
 						<td class="text-center">{{$item.u_time}}</td>
 						<td class="text-center">{{$item.c_time}}</td>
 						<td class="text-center">

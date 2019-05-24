@@ -24,8 +24,8 @@
 					<tr>
 						<th class="w5 text-center">API ID</th>
 						<th class="w15 text-center">应用类型</th>
-						<th class="w15 text-center">应用名称</th>
-						<th class="w15 text-center">应用英文名称</th>
+						<th class="w15 text-left">应用名称</th>
+						<th class="w15 text-left">应用英文名称</th>
 						<th class="w15 text-center">应用密钥</th>
 						<th class="w15 text-center">修改时间</th>
 						<th class="w15 text-center">创建时间</th>
@@ -37,8 +37,8 @@
     	            <tr>
 						<td class="text-center">{{$item.id}}</td>
 						<td class="text-center">{{$item.api_type}}</td>
-						<td class="text-center">{{$item.api_name}}</td>
-						<td class="text-center">{{$item.api_key}}</td>
+						<td class="text-left">{{$item.api_name}}</td>
+						<td class="text-left">{{$item.api_key}}</td>
 						<td class="text-center">{{$item.api_secret}}</td>
 						<td class="text-center">{{$item.u_time}}</td>
 						<td class="text-center">{{$item.c_time}}</td>

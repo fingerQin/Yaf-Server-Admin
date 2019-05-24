@@ -81,7 +81,7 @@
                         <th class="w10 text-center">模板</th>
                         <th class="w10 text-center">通道</th>
                         <th class="w5 text-center">验证码</th>
-						<th class="w22 text-center">内容</th>
+						<th class="w22 text-left">内容</th>
                         <th class="w8 text-center">IP</th>
                         <th class="w5 text-center">平台</th>
 						<th class="w10 text-center">时间</th>
@@ -96,7 +96,7 @@
 						<td class="text-center">{{$item.tpl_name}}</td>
 						<td class="text-center">{{$item.channel_name}}</td>
 						<td class="text-center">{{$item.verify_code}}</td>
-                        <td class="text-center">{{$item.content}}</td>
+                        <td class="text-left">{{$item.content}}</td>
                         <td class="text-center">{{$item.ip}}</td>
                         <td class="text-center">{{$item.platform}}</td>
                         <td class="text-center">{{$item.c_time}}</td>

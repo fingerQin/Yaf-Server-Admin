@@ -41,8 +41,8 @@
 					<tr>
 						<th class="w5 text-center">ID</th>
 						<th class="w10 text-center">状态</th>
-                        <th class="w15 text-center">公告标题</th>
-                        <th class="w30 text-center">公告摘要</th>
+                        <th class="w15 text-left">公告标题</th>
+                        <th class="w30 text-left">公告摘要</th>
                         <th class="w10 text-center">所属终端</th>
                         <th class="w10 text-center">创建时间</th>
                         <th class="w10 text-center">更新时间</th>
@@ -54,8 +54,8 @@
     				<tr>
                         <td class="text-center">{{$item.noticeid}}</td>
                         <td class="text-center">{{$item.status_label}}</td>
-						<td class="text-center">{{$item.title}}</td>
-						<td class="text-center">{{$item.summary}}</td>
+						<td class="text-left">{{$item.title}}</td>
+						<td class="text-left">{{$item.summary}}</td>
 						<td class="text-center">{{$item.terminal_label}}</td>
                         <td class="text-center">{{$item.c_time}}</td>
                         <td class="text-center">{{$item.u_time}}</td>
