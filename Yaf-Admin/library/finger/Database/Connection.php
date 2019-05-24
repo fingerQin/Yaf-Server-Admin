@@ -291,7 +291,7 @@ class Connection
     final public function writeSqlLog($sql, $params = [])
     {
         $env = YCore::appconfig('app.env');
-        if ($env != 'prod') {
+        if ($env != ENV_PRO) {
             foreach ($params as $key => $val) {
                 $val = "'" . addslashes($val) . "'";
                 $sql = str_replace("{$key},", "{$val},", $sql);
