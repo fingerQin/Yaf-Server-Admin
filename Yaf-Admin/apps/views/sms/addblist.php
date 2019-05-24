@@ -1,18 +1,16 @@
 {{include file="common/header.php"}}
 
 <div class="main">
-    <form id="fromID">
+    <form id="fromID" style="padding-left:40px;">
         <table class="content" border="0" cellspacing="0" cellpadding="0">
             <tr>
-                <th class="left-txt">手机号：</th>
                 <td>
                     <textarea name="mobiles" id="mobiles" class="textarea" rows="3" cols="50" style="height:250px;"></textarea>
-                    <div class="w90" style="color:grey;">(格式：13812341234，每行一个手机号码)</div>
+                    <div class="w90" style="color:grey;text-align:center">(格式：13812341234，每行一个手机号码)</div>
                 </td>
             </tr>
             <tr>
-                <td></td>
-                <td>
+                <td style="text-align:center">
                     <span><input class="btn btn-default" id="submitID" type="button" value="保存并提交"></span>
                 </td>
             </tr>

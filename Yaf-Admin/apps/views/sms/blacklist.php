@@ -73,7 +73,7 @@
 <script type="text/javascript">
 
 function add() {
-	postDialog('addBlist', '{{'Sms'|url:'addblist'}}', '添加黑名单', 380, 400);
+	postDialog('addBlist', '{{'Sms'|url:'addblist'}}', '添加黑名单', 400, 400);
 }
 
 /**
