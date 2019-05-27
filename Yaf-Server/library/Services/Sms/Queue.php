@@ -23,7 +23,7 @@ class Queue extends \Services\Sms\AbstractBase
      *      'id'      => 日志id
      * ]
      */
-    public static function pushSmsQueue(array $data)
+    public static function push(array $data)
     {
         $redis = YCache::getRedisClient();
         $bool  = $redis->lPush(self::SMS_QUEUE_KEY, json_encode($data, JSON_UNESCAPED_UNICODE));

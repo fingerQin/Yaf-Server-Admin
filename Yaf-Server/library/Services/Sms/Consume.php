@@ -33,15 +33,14 @@ class Consume extends \Services\Sms\AbstractBase
             // [2] 因进程异常退出导致短信队列消费延迟。则不再进行第二次发送。
             $redis->delete($queueIng);
             $SmsSendLogModel = new SmsSendLog();
-            $switch = YCore::appconfig('sms.is_send_sms');
             // [3]
             while (true) {
                 $str = $redis->bRPopLPush($queueKey, $queueIng, 60);
                 if (!empty($str)) {
-                    YLog::log(['switch' => $switch, 'data' => $str], 'sms', 'consume');
+                    YLog::log(['data' => $str], 'sms', 'consume');
                     $arrValue = json_decode($str, true);
                     try {
-                        self::send($switch, $arrValue['id'], $arrValue['mobile'], $arrValue['content']);
+                        self::send($arrValue['is_send'], $arrValue['id'], $arrValue['mobile'], $arrValue['content']);
                         $redis->lRem($queueIng, $str, 1);
                     } catch (\Throwable $e) {
                         $redis->lRem($queueIng, $str, 1);

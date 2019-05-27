@@ -24,7 +24,8 @@ class Sms extends \Services\Sms\AbstractBase
      * @param  string  $sendIp      ip 地址
      * @param  string  $platform    平台。1-ios、2-android、3-wap、4-PC。
      * @param  string  $replaceArr  替换模板数组。一般不需要传，需传特殊值可用此参数。['PHOME' => 'xxx', 'USERNAME' => 'xxx']
-     * -- $replaceArr 此数组最好不要使用键名 [code]，防止混淆。
+     * 
+     * -- $replaceArr 此数组一定不要使用键名 [code]，防止混淆。
      *
      * @return void
      */
@@ -73,15 +74,14 @@ class Sms extends \Services\Sms\AbstractBase
             YLog::log($data, 'sms', 'error');
             YCore::exception(STATUS_SERVER_ERROR, '短信发送失败');
         }
-        if (YCore::appconfig('app.env') != ENV_DEV) {
-            self::clearVerifyTimesKey($mobile, $smsType);
-            $queueData = [
-                'mobile'  => $mobile,
-                'content' => $result['content'],
-                'id'      => $id
-            ];
-            Queue::pushSmsQueue($queueData);
-        }
+        self::clearVerifyTimesKey($mobile, $smsType);
+        $queueData = [
+            'id'      => $id,
+            'mobile'  => $mobile,
+            'content' => $result['content'],
+            'is_send' => YCore::appconfig('sms.is_send_sms', 0)
+        ];
+        Queue::push($queueData);
     }
 
     /**
@@ -118,15 +118,14 @@ class Sms extends \Services\Sms\AbstractBase
             YLog::log($data, 'sms', 'error');
             YCore::exception(STATUS_SERVER_ERROR, '短信发送失败');
         }
-        if (YCore::appconfig('app.env') != ENV_DEV) {
-            // 短信入队列服务
-            $queueData = [
-                'mobile'  => $mobile,
-                'content' => $result['content'],
-                'id'      => $id
-            ];
-            Queue::pushSmsQueue($queueData);
-        }
+        // 短信入队列服务
+        $queueData = [
+            'id'      => $id,
+            'mobile'  => $mobile,
+            'content' => $result['content'],
+            'is_send' => YCore::appconfig('sms.is_send_sms', 0)
+        ];
+        Queue::pushSmsQueue($queueData);
     }
 
     /**
