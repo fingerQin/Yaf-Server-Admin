@@ -42,7 +42,7 @@
                 </td>
             </tr>
             <tr>
-				<th class="left-txt">是否限制 IP 访问：</th>
+				<th class="left-txt">限制 IP 访问：</th>
 				<td>
 					<select name="is_open_ip_ban" class="form-control" >
 						<option {{if $detail.is_open_ip_ban == 0}}selected="selected"{{/if}} value="0">否</option>

@@ -135,10 +135,10 @@
 	function edit(id, name) {
 		var title = '修改『' + name + '』';
 		var page_url = "{{'App/edit'|url}}?id=" + id;
-		postDialog('editApp', page_url, title, 500, 660);
+		postDialog('editApp', page_url, title, 550, 660);
 	}
 	function add() {
-		postDialog('addApp', '{{'App'|url:'add'}}', '添加APP版本', 500, 660);
+		postDialog('addApp', '{{'App'|url:'add'}}', '添加APP版本', 550, 660);
 	}
 </script>
 
