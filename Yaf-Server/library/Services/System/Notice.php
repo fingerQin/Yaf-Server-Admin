@@ -24,7 +24,7 @@ class Notice extends \Services\AbstractBase
      */
     public static function lists($page = 1, $count = 20)
     {
-        $from    = ' FROM tb_notice ';
+        $from    = ' FROM finger_notice ';
         $offset  = self::getPaginationOffset($page, $count);
         $columns = ' noticeid,title,summary,c_time ';
         $where   = ' WHERE cur_status = :cur_status ';
@@ -60,7 +60,7 @@ class Notice extends \Services\AbstractBase
     public static function detail($userid = 0, $noticeid, $platform)
     {
         $columns = 'noticeid,title,summary,body,c_time';
-        $sql = "SELECT {$columns} FROM tb_notice WHERE "
+        $sql = "SELECT {$columns} FROM finger_notice WHERE "
              . "noticeid = :noticeid AND cur_status = :cur_status "
              . "AND terminal & :terminal_left = :terminal_right LIMIT 1";
         $terminal = self::terminalBitVal($platform);

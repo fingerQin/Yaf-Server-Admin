@@ -29,7 +29,7 @@ class Message extends \Services\AbstractBase
      */
     public static function lists($mobile = '', $readStatus = -1, $page = 1, $count = 20)
     {
-        $from       = ' FROM tb_message AS a INNER JOIN finger_user AS b ON(a.userid=b.userid)';
+        $from       = ' FROM finger_message AS a INNER JOIN finger_user AS b ON(a.userid=b.userid)';
         $offset     = self::getPaginationOffset($page, $count);
         $columns    = ' a.msgid,a.msg_type,a.is_read,a.userid,a.title,a.u_time,a.url,a.content,a.c_time,b.mobile,b.nickname ';
         $whereCount = ' WHERE status = 1 ';
@@ -49,7 +49,7 @@ class Message extends \Services\AbstractBase
             $params[':is_read'] = $readStatus;
         }
         $orderBy = ' ORDER BY a.msgid DESC ';
-        $sql     = "SELECT COUNT(1) AS count FROM tb_message {$whereCount}";
+        $sql     = "SELECT COUNT(1) AS count FROM finger_message {$whereCount}";
         $total   = Db::count($sql, $params);
         $sql     = "SELECT {$columns} {$from} {$whereList} {$orderBy} LIMIT {$offset},{$count}";
         $list    = Db::all($sql, $params);

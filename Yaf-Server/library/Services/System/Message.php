@@ -24,7 +24,7 @@ class Message extends \Services\AbstractBase
      */
     public static function lists($userid, $page = 1, $count = 20)
     {
-        $from    = ' FROM tb_message ';
+        $from    = ' FROM finger_message ';
         $offset  = self::getPaginationOffset($page, $count);
         $columns = ' msgid,msg_type,type_ref_id,is_read,title,content,url,c_time ';
         $where   = ' WHERE userid = :userid AND status = :status ';

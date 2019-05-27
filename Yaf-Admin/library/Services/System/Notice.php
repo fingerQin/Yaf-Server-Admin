@@ -27,7 +27,7 @@ class Notice extends \Services\AbstractBase
      */
     public static function lists($title = '', $status = -1, $page = 1, $count = 20)
     {
-        $from    = ' FROM tb_notice ';
+        $from    = ' FROM finger_notice ';
         $offset  = self::getPaginationOffset($page, $count);
         $columns = ' * ';
         $where   = ' WHERE 1 ';
