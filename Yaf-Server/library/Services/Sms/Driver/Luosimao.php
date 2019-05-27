@@ -78,7 +78,7 @@ class Luosimao
             YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
         if ($result['error'] != 0) {
-            YCore::exception(STATUS_SERVER_ERROR, $result['msg']);
+            YCore::exception(STATUS_SERVER_ERROR, "{$result['error']}:{$result['msg']}");
         }
     }
 

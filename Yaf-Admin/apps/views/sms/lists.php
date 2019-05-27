@@ -76,13 +76,14 @@
 				<thead>
 					<tr>
 						<th class="w5 text-center">ID</th>
-						<th class="w10 text-center">手机号</th>
-                        <th class="w5 text-center">状态</th>
+						<th class="w5 text-center">手机号</th>
+						<th class="w5 text-center">状态</th>
+						<th class="w10 text-center">ErrorMsg</th>
                         <th class="w10 text-center">模板</th>
-                        <th class="w10 text-center">通道</th>
+                        <th class="w5 text-center">通道</th>
                         <th class="w5 text-center">验证码</th>
-						<th class="w22 text-left">内容</th>
-                        <th class="w8 text-center">IP</th>
+						<th class="w25 text-left">内容</th>
+                        <th class="w5 text-center">IP</th>
                         <th class="w5 text-center">平台</th>
 						<th class="w10 text-center">时间</th>
 					</tr>
@@ -93,6 +94,7 @@
 						<td class="text-center">{{$item.id}}</td>
 						<td class="text-center">{{$item.mobile}}</td>
 						<td class="text-center">{{$item.sms_status}}</td>
+						<td class="text-center">{{$item.error_msg}}</td>
 						<td class="text-center">{{$item.tpl_name}}</td>
 						<td class="text-center">{{$item.channel_name}}</td>
 						<td class="text-center">{{$item.verify_code}}</td>
