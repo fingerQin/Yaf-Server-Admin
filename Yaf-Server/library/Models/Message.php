@@ -15,7 +15,7 @@ class Message extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_message';
+    protected $tableName  = 'finger_message';
 
     protected $primaryKey = 'msgid';
 

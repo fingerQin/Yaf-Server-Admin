@@ -15,7 +15,7 @@ class NoticeRead extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_notice_read';
+    protected $tableName  = 'finger_notice_read';
 
     protected $primaryKey = 'id';
 }

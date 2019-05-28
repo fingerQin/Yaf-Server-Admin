@@ -14,7 +14,7 @@ class SmsSendLog extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_sms_sendlog';
+    protected $tableName  = 'finger_sms_sendlog';
 
     protected $primaryKey = 'id';
 

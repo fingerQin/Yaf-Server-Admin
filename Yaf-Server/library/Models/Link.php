@@ -14,7 +14,7 @@ class Link extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_link';
+    protected $tableName  = 'finger_link';
 
     protected $primaryKey = 'link_id';
 }

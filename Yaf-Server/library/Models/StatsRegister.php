@@ -1,20 +1,20 @@
 <?php
 /**
- * 短信配置表 Model。
+ * 统计:注册汇总表 Model。
  * @author fingerQin
- * @date 2018-06-27
+ * @date 2019-05-28
  */
 
 namespace Models;
 
-class SmsConf extends AbstractBase
+class StatsRegister extends AbstractBase
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $tableName  = 'finger_sms_conf';
+    protected $tableName  = 'finger_stats_register';
 
     protected $primaryKey = 'id';
 }

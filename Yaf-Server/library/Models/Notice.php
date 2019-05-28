@@ -15,7 +15,7 @@ class Notice extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_notice';
+    protected $tableName  = 'finger_notice';
 
     protected $primaryKey = 'noticeid';
 

@@ -14,7 +14,7 @@ class AdPosition extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_ad_position';
+    protected $tableName  = 'finger_ad_position';
 
     protected $primaryKey = 'pos_id';
 }

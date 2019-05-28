@@ -14,7 +14,7 @@ class Ad extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_ad';
+    protected $tableName  = 'finger_ad';
 
     protected $primaryKey = 'ad_id';
 }

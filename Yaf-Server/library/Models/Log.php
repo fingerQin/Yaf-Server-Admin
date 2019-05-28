@@ -14,7 +14,7 @@ class Log extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_log';
+    protected $tableName  = 'finger_log';
 
     protected $primaryKey = 'logid';
 

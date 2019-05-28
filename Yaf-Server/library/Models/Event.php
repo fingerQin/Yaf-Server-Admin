@@ -14,7 +14,9 @@ class Event extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_event';
+    protected $tableName  = 'finger_event';
+
+    protected $primaryKey = 'id';
 
     /**
      * 更新时间字段。

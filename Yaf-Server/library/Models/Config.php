@@ -14,7 +14,7 @@ class Config extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_config';
+    protected $tableName  = 'finger_config';
 
     protected $primaryKey = 'configid';
 }

@@ -7,9 +7,9 @@
 
 namespace Common\controllers;
 
-use finger\ServiceException;
 use Utils\YCore;
 use Utils\YLog;
+use finger\ServiceException;
 
 class Error extends \Common\controllers\Common
 {
@@ -50,7 +50,7 @@ class Error extends \Common\controllers\Common
             if (YCore::appconfig('app.debug')) { // 调试模式会输出具体的错误。
                 $errMsg = $exception->__toString();
             }
-            YLog::log($exception->log(), 'errors', 'log');
+            YLog::log($exception->getTraceAsString(), 'errors', 'log');
         }
 
         // [2] 根据是不同的请求类型响应不的数据。

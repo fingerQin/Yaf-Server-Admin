@@ -14,7 +14,7 @@ class SmsTpl extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_sms_tpl';
+    protected $tableName  = 'finger_sms_tpl';
 
     protected $primaryKey = 'id';
 

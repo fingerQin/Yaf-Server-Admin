@@ -14,7 +14,9 @@ class District extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_district';
+    protected $tableName  = 'finger_district';
+
+    protected $primaryKey = 'districtid';
 
     /**
      * 区域类型。

@@ -14,7 +14,7 @@ class UserAddress extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_user_address';
+    protected $tableName  = 'finger_user_address';
 
     protected $primaryKey = 'addressid';
 

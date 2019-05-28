@@ -15,7 +15,7 @@ class SmsBlacklist extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_sms_blacklist';
+    protected $tableName  = 'finger_sms_blacklist';
 
     protected $primaryKey = 'id';
 }

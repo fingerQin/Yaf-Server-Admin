@@ -17,7 +17,7 @@ class Files extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_files';
+    protected $tableName  = 'finger_files';
 
     protected $primaryKey = 'file_id';
 

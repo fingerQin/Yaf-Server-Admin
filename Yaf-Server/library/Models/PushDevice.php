@@ -14,7 +14,7 @@ class PushDevice extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_push_device';
+    protected $tableName  = 'finger_push_device';
 
     protected $primaryKey = 'id';
 }
