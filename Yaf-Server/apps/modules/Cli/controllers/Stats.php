@@ -16,7 +16,7 @@ class StatsController extends \Common\controllers\Cli
      */
     public function sendAction()
     {
-        $datetime = $this->getString('datetime');
+        $datetime = $this->getString('datetime', '');
         Stats::send($datetime);
     }
 }

@@ -31,7 +31,9 @@ $actionName     = $routeArr[1];
 // 删除路由参数。
 unset($argv[0], $argv[1]);
 $params = [];
-parse_str($argv[2], $params);
+if (isset($argv[2])) {
+    parse_str($argv[2], $params);
+}
 
 $request = new \Yaf_Request_Simple('CLI', 'Cli', $controllerName, $actionName, $params);
 \Yaf_Application::app()->getDispatcher()->returnResponse(true)->dispatch($request);
