@@ -7,6 +7,7 @@
  */
 
 error_reporting(0);
+define('TIMESTAMP', time());
 ini_set('default_socket_timeout', -1);
 define('APP_PATH', dirname(dirname(__FILE__)));
 
@@ -27,5 +28,10 @@ if (count($routeArr) != 2) {
 $controllerName = $routeArr[0];
 $actionName     = $routeArr[1];
 
-$request = new \Yaf_Request_Simple('CLI', 'Cli', $controllerName, $actionName);
+// 删除路由参数。
+unset($argv[0], $argv[1]);
+$params = [];
+parse_str($argv[2], $params);
+
+$request = new \Yaf_Request_Simple('CLI', 'Cli', $controllerName, $actionName, $params);
 \Yaf_Application::app()->getDispatcher()->returnResponse(true)->dispatch($request);
