@@ -67,7 +67,7 @@ class Log extends \Services\AbstractBase
             $params[':tpl_id'] = $tplId; 
         }
         if ($channelId != -1) {
-            $where .= ' AND channel_id <= :channel_id ';
+            $where .= ' AND channel_id = :channel_id ';
             $params[':channel_id'] = $channelId; 
         }
         $orderBy   = ' ORDER BY id DESC ';
