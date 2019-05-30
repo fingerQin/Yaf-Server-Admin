@@ -161,6 +161,22 @@ class Ad extends \Services\AbstractBase
     }
 
     /**
+     * 检查广告图片 URL。
+     * @param  string $imageUrl 广告图片链接。
+     * @return void
+     */
+    public static function checkAdIpxImageUrl($imageUrl)
+    {
+        $data = [
+            'ad_image_url' => $imageUrl
+        ];
+        $rules = [
+            'ad_image_url' => 'IPhone高清广告图片|require|len:1:100:1'
+        ];
+        Validator::valido($data, $rules);
+    }
+
+    /**
      * 检查广告跳转的 URL
      * @param  string $adUrl 广告跳转 URL。
      * @return void
@@ -283,7 +299,7 @@ class Ad extends \Services\AbstractBase
             'pos_ad_count' => $posAdCount,
             'status'       => AdPosition::STATUS_YES,
             'c_by'         => $adminId,
-            'c_time'       => date('Y-m-d H:i:s', time())
+            'c_time'       => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $ok = $AdPosModel->insert($data);
         if (!$ok) {
@@ -322,7 +338,7 @@ class Ad extends \Services\AbstractBase
             'pos_code'     => $posCode,
             'pos_ad_count' => $posAdCount,
             'u_by'         => $adminId,
-            'u_time'       => date('Y-m-d H:i:s', time())
+            'u_time'       => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $ok = $AdPosModel->update($data, $where);
         if (!$ok) {
@@ -348,7 +364,7 @@ class Ad extends \Services\AbstractBase
         $data = [
             'status' => AdPosition::STATUS_DELETED,
             'u_by'   => $adminId,
-            'u_time' => date('Y-m-d H:i:s', time())
+            'u_time' => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $where = [
             'pos_id' => $posId,
@@ -407,11 +423,13 @@ class Ad extends \Services\AbstractBase
      * @param  string  $adUrl       广告URL。
      * @return void
      */
-    public static function addAd($adminId, $posId, $adName, $startTime, $endTime, $display, $remark, $adImageUrl, $adUrl)
+    public static function addAd($adminId, $posId, $adName, $startTime, $endTime, $display, 
+        $remark, $adImageUrl, $adIpxImageUrl, $adUrl)
     {
         self::checkAdName($adName);
         self::checkAdRemark($remark);
         self::checkAdImageUrl($adImageUrl);
+        self::checkAdIpxImageUrl($adIpxImageUrl);
         self::checkAdUrl($adUrl);
         self::checkDisplay($display);
         self::checkAdStartTimeOrEndTime($startTime, $endTime);
@@ -420,17 +438,18 @@ class Ad extends \Services\AbstractBase
         self::getAdPostionDetail($posId);
 
         $data = [
-            'ad_name'      => $adName,
-            'start_time'   => $startTime,
-            'end_time'     => $endTime,
-            'display'      => $display,
-            'remark'       => $remark,
-            'ad_image_url' => $adImageUrl,
-            'ad_url'       => $adUrl,
-            'pos_id'       => $posId,
-            'status'       => AdModel::STATUS_YES,
-            'c_by'         => $adminId,
-            'c_time'       => date('Y-m-d H:i:s', time())
+            'ad_name'          => $adName,
+            'start_time'       => $startTime,
+            'end_time'         => $endTime,
+            'display'          => $display,
+            'remark'           => $remark,
+            'ad_image_url'     => $adImageUrl,
+            'ad_ipx_image_url' => $adIpxImageUrl,
+            'ad_url'           => $adUrl,
+            'pos_id'           => $posId,
+            'status'           => AdModel::STATUS_YES,
+            'c_by'             => $adminId,
+            'c_time'           => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $AdModel = new AdModel();
         $ok      = $AdModel->insert($data);
@@ -453,25 +472,28 @@ class Ad extends \Services\AbstractBase
      * @param  string  $adUrl       广告URL。
      * @return void
      */
-    public static function editAd($adminId, $adId, $adName, $startTime, $endTime, $display, $remark, $adImageUrl, $adUrl)
+    public static function editAd($adminId, $adId, $adName, $startTime, $endTime, $display, 
+        $remark, $adImageUrl, $adIpxImageUrl, $adUrl)
     {
         self::checkAdName($adName);
         self::checkAdRemark($remark);
         self::checkAdImageUrl($adImageUrl);
+        self::checkAdIpxImageUrl($adIpxImageUrl);
         self::checkAdUrl($adUrl);
         self::checkDisplay($display);
         self::checkAdStartTimeOrEndTime($startTime, $endTime);
         self::getAdDetail($adId);
         $data = [
-            'ad_name'      => $adName,
-            'start_time'   => $startTime,
-            'end_time'     => $endTime,
-            'display'      => $display,
-            'remark'       => $remark,
-            'ad_image_url' => $adImageUrl,
-            'ad_url'       => $adUrl,
-            'u_by'         => $adminId,
-            'u_time'       => date('Y-m-d H:i:s', time())
+            'ad_name'          => $adName,
+            'start_time'       => $startTime,
+            'end_time'         => $endTime,
+            'display'          => $display,
+            'remark'           => $remark,
+            'ad_image_url'     => $adImageUrl,
+            'ad_ipx_image_url' => $adIpxImageUrl,
+            'ad_url'           => $adUrl,
+            'u_by'             => $adminId,
+            'u_time'           => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $where = [
             'ad_id'  => $adId,
@@ -497,7 +519,7 @@ class Ad extends \Services\AbstractBase
         $data = [
             'status' => AdModel::STATUS_DELETED,
             'u_by'   => $adminId,
-            'u_time' => date('Y-m-d H:i:s', time())
+            'u_time' => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $where = [
             'ad_id'  => $adId,

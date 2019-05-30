@@ -94,15 +94,17 @@ class AdController extends Admin
     public function addAdAction()
     {
         if ($this->_request->isXmlHttpRequest()) {
-            $posId      = $this->getInt('pos_id');
-            $adName     = $this->getString('ad_name');
-            $startTime  = $this->getString('start_time');
-            $endTime    = $this->getString('end_time');
-            $display    = $this->getInt('display');
-            $remark     = $this->getString('remark');
-            $adImageUrl = $this->getString('ad_image_url');
-            $adUrl      = $this->getString('ad_url');
-            Ad::addAd($this->adminId, $posId, $adName, $startTime, $endTime, $display, $remark, $adImageUrl, $adUrl);
+            $posId         = $this->getInt('pos_id');
+            $adName        = $this->getString('ad_name');
+            $startTime     = $this->getString('start_time');
+            $endTime       = $this->getString('end_time');
+            $display       = $this->getInt('display');
+            $remark        = $this->getString('remark');
+            $adImageUrl    = $this->getString('ad_image_url');
+            $adIpxImageUrl = $this->getString('ad_ipx_image_url', '');
+            $adUrl         = $this->getString('ad_url');
+            Ad::addAd($this->adminId, $posId, $adName, $startTime, $endTime, $display, 
+            $remark, $adImageUrl, $adIpxImageUrl, $adUrl);
             $this->json(true, '添加成功');
         }
         $posId = $this->getInt('pos_id');
@@ -117,15 +119,17 @@ class AdController extends Admin
     public function editAdAction()
     {
         if ($this->_request->isXmlHttpRequest()) {
-            $adId       = $this->getInt('ad_id');
-            $adName     = $this->getString('ad_name');
-            $startTime  = $this->getString('start_time');
-            $endTime    = $this->getString('end_time');
-            $display    = $this->getInt('display');
-            $remark     = $this->getString('remark');
-            $adImageUrl = $this->getString('ad_image_url');
-            $adUrl      = $this->getString('ad_url');
-            Ad::editAd($this->adminId, $adId, $adName, $startTime, $endTime, $display, $remark, $adImageUrl, $adUrl);
+            $adId          = $this->getInt('ad_id');
+            $adName        = $this->getString('ad_name');
+            $startTime     = $this->getString('start_time');
+            $endTime       = $this->getString('end_time');
+            $display       = $this->getInt('display');
+            $remark        = $this->getString('remark');
+            $adImageUrl    = $this->getString('ad_image_url');
+            $adIpxImageUrl = $this->getString('ad_ipx_image_url', '');
+            $adUrl         = $this->getString('ad_url');
+            Ad::editAd($this->adminId, $adId, $adName, $startTime, $endTime, $display, 
+            $remark, $adImageUrl, $adIpxImageUrl, $adUrl);
             $this->json(true, '修改成功');
         }
         $adId   = $this->getInt('ad_id');

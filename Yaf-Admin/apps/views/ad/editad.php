@@ -37,10 +37,17 @@
                 </td>
             </tr>
             <tr>
-                <th class="left-txt">友情链接图片：</th>
+                <th class="left-txt">广告图片：</th>
                 <td>
                     <input type="hidden" name="ad_image_url" id="input_voucher" value="{{$detail.ad_image_url}}" />
                     <div id="previewImage"></div>
+                </td>
+            </tr>
+            <tr>
+                <th class="left-txt">高清广告图片：</th>
+                <td>
+                    <input type="hidden" name="ad_ipx_image_url" id="ipx_input_voucher" value="{{$detail.ad_ipx_image_url}}" />
+                    <div id="ipx_previewImage"></div>
                 </td>
             </tr>
             <tr>
@@ -68,6 +75,7 @@ var uploadUrl = '{{'Index/Upload'|url}}';
 var baseJsUrl = '{{''|js}}';
 var filUrl    = '{{$files_domain_name}}';
 uploadImage(filUrl, baseJsUrl, 'previewImage', 'input_voucher', 120, 120, uploadUrl);
+uploadImage(filUrl, baseJsUrl, 'ipx_previewImage', 'ipx_input_voucher', 120, 120, uploadUrl);
 
 Calendar.setup({
 	weekNumbers: false,

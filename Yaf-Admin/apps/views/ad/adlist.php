@@ -115,13 +115,13 @@ $(document).ready(function(){
 });
 
 function add() {
-	postDialog('addAd', '{{'Ad'|url:'addAd':['pos_id' => $pos_id]}}', '添加广告', 420, 540);
+	postDialog('addAd', '{{'Ad'|url:'addAd':['pos_id' => $pos_id]}}', '添加广告', 500, 540);
 }
 
 function edit(id, name) {
 	var title = '修改『' + name + '』';
 	var page_url = "{{'Ad/editAd'|url}}?ad_id="+id;
-	postDialog('adEdit', page_url, title, 420, 540);
+	postDialog('adEdit', page_url, title, 500, 540);
 }
 
 function viewRemark(id) {
