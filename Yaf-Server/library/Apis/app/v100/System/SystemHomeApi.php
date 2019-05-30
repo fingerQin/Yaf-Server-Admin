@@ -22,10 +22,11 @@ class SystemHomeApi extends AbstractApi
      */
     protected function runService()
     {
-        $token  = $this->getString('token', '');
-        $appV   = $this->getString('app_v', '');
-        $userid = Auth::getTokenUserId($token);
-        $ads    = Advertisement::list('app_home', $appV, $userid);
+        $token    = $this->getString('token', '');
+        $appV     = $this->getString('app_v', '');
+        $platform = $this->getInt('platform', 0);
+        $userid   = Auth::getTokenUserId($token);
+        $ads      = Advertisement::list('app_home', $appV, $userid, $platform);
         $this->render(STATUS_SUCCESS, 'success', ['ads' => $ads]);
     }
 }

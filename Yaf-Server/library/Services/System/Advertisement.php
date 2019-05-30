@@ -24,28 +24,30 @@ class Advertisement extends \Services\AbstractBase
     /**
      * 获取单个广告。
      *
-     * @param  string  $posCode  广告位置。
-     * @param  string  $appV     APP 版本号(APP 登录时有用)。
-     * @param  int     $userid   用户 ID。
+     * @param  string  $posCode   广告位置。
+     * @param  string  $appV      APP 版本号(APP 登录时有用)。
+     * @param  int     $userid    用户 ID。
+     * @param  int     $platform  平台标识。
      *
      * @return void
      */
-    public static function single($posCode, $appV = '', $userid = 0)
+    public static function single($posCode, $appV = '', $userid = 0, $platform = 0)
     {
-        $list = self::list($posCode, $appV, $userid);
+        $list = self::list($posCode, $appV, $userid, $platform);
         return $list ? $list[0] : YCore::getNullObject();
     }
 
     /**
      * 获取广告列表。
      *
-     * @param  string  $posCode  广告位置。
-     * @param  string  $appV     APP 版本号(APP 登录时有用)。
-     * @param  int     $userid   用户 ID。
+     * @param  string  $posCode   广告位置。
+     * @param  string  $appV      APP 版本号(APP 登录时有用)。
+     * @param  int     $userid    用户 ID。
+     * @param  int     $platform  平台标识。
      *
      * @return void
      */
-    public static function list($posCode, $appV = '', $userid = 0)
+    public static function list($posCode, $appV = '', $userid = 0, $platform = 0)
     {
         $AdPosModel  = new AdPosition();
         $adPosDetail = $AdPosModel->fetchOne([], ['pos_code' => $posCode, 'status' => AdPosition::STATUS_YES]);
@@ -62,6 +64,17 @@ class Advertisement extends \Services\AbstractBase
             ':display' => Ad::STATUS_YES,
             ':count'   => $count
         ];
-        return Db::all($sql, $params);
+        // iOS 返回的时候，使用高清特制图。
+        $data   = [];
+        $result = Db::all($sql, $params);
+        foreach ($result as $item) {
+            if ($platform == self::PLATFORM_IOS) {
+                $item['ad_url'] = $item['ad_image_url'];
+            }
+            unset($item['ad_image_url']);
+            $data[] = $item;
+        }
+        unset($result);
+        return $data;
     }
 }

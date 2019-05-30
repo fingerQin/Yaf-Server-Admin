@@ -23,11 +23,12 @@ class SystemAdsApi extends AbstractApi
      */
     protected function runService()
     {
-        $token  = $this->getString('token', '');
-        $code   = $this->getString('code');
-        $appV   = $this->getString('app_v', '');
-        $userid = Auth::getTokenUserId($token);
-        $result = Advertisement::list($code, $appV, $userid);
+        $token    = $this->getString('token', '');
+        $code     = $this->getString('code');
+        $appV     = $this->getString('app_v', '');
+        $platform = $this->getInt('platform', 0);
+        $userid   = Auth::getTokenUserId($token);
+        $result   = Advertisement::list($code, $appV, $userid, $platform);
         $this->render(STATUS_SUCCESS, 'success', ['list' => $result]);
     }
 }

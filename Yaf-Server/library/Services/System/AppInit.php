@@ -38,7 +38,7 @@ class AppInit extends AbstractBase
         return [
             'token_status'           => $tokenStatus ? 1 : 0, // TOKEN 有效无效。
             'upgrade'                => Upgrade::upgrade($userid, $platform, $appV, $channel),
-            'start_ad'               => Advertisement::single('APP_START_AD', $appV, $userid),
+            'start_ad'               => Advertisement::single('APP_START_AD', $appV, $userid, $platform),
             'app_home_right_btn_url' => Config::get('APP_HOME_RIGHT_BTN_URL'),
             'app_service'            => self::getAppLeftBottomBtn('服务中心', 'APP_SERVICE_CONFIG'),
             'app_about'              => self::getAppLeftBottomBtn('关于我们', 'APP_ABOUT_CONFIG'),
