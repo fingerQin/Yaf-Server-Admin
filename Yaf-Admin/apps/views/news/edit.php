@@ -89,7 +89,7 @@
 var uploadUrl = '{{'Index/Upload'|url}}';
 var baseJsUrl = '{{''|js}}';
 var filUrl    = '{{$files_domain_name}}';
-uploadImage(filUrl, baseJsUrl, 'previewImage', 'input_voucher', 120, 120, uploadUrl);
+uploadImage(filUrl, baseJsUrl, 'previewImage', 'input_voucher', 160, 120, uploadUrl, '4x3');
 var editor;
 $(document).ready(function(){
 	KindEditor.ready(function(K) {

@@ -74,8 +74,8 @@
 var uploadUrl = '{{'Index/upload'|url}}';
 var baseJsUrl = '{{''|js}}';
 var filUrl    = '{{$files_domain_name}}';
-uploadImage(filUrl, baseJsUrl, 'previewImage', 'input_voucher', 120, 120, uploadUrl);
-uploadImage(filUrl, baseJsUrl, 'ipx_previewImage', 'ipx_input_voucher', 120, 120, uploadUrl);
+uploadImage(filUrl, baseJsUrl, 'previewImage', 'input_voucher', 160, 120, uploadUrl, '4x3');
+uploadImage(filUrl, baseJsUrl, 'ipx_previewImage', 'ipx_input_voucher', 160, 120, uploadUrl, '4x3');
 
 Calendar.setup({
 	weekNumbers: false,
