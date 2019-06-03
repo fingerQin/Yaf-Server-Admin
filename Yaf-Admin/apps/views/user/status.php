@@ -6,9 +6,10 @@
 			<tr>
 				<th class="left-txt">状态</th>
 				<td>
-                    <label>禁用&nbsp;<input type="radio" name="status" value="2" /></label>
+					<label>正常&nbsp;<input type="radio" name="status" value="1" /></label>
+                    <label style="margin-left:20px;">禁用&nbsp;<input type="radio" name="status" value="2" /></label>
                     <label style="margin-left:20px;">冻结&nbsp;<input type="radio" name="status" value="3" /></label>
-                    <div class="w90" style="color:grey;">禁用是禁止账号登录,冻结是冻结用户的资金/金币变动</div>
+                    <div class="w90" style="color:grey;">注：禁用是禁止账号登录<br />冻结是冻结用户的资金/金币变动</div>
 				</td>
 			</tr>
 			<tr>
