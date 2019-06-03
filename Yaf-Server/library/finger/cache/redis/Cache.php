@@ -19,15 +19,22 @@ class Cache
      */
     protected $client = null;
 
-    public function __construct()
+    /**
+     * 构造方法。
+     *
+     * @param string $redisOption Reids 配置项名称。
+     *
+     * @return void
+     */
+    public function __construct($redisOption = 'default')
     {
-        $clientName = 'winer_cache_redis';
+        $clientName = "finger_cache_redis_{$redisOption}";
         if (\Yaf_Registry::has($clientName)) {
             $this->client = \Yaf_Registry::get($clientName);
-            $redisIndex   = YCore::appconfig('redis.default.index');
+            $redisIndex   = YCore::appconfig("redis.{$redisOption}.index");
             $this->client->select($redisIndex); // 必须显示切换到指定的 Redis 库。避免使用过程中被其他程序切换未还原。
         } else {
-            $this->client = $this->connect();
+            $this->client = $this->connect($redisOption);
             \Yaf_Registry::set($clientName, $this->client);
         }
     }
@@ -44,25 +51,23 @@ class Cache
 
     /**
      * 连接 redis
+     * 
+     * @param string $redisOption Reids 配置项名称。
+     * 
+     * @return \Redis
      */
-    protected function connect()
+    protected function connect($redisOption)
     {
-        $ok = \Yaf_Registry::has('redis');
-        if ($ok) {
-            return \Yaf_Registry::get('redis');
-        } else {
-            $config     = YCore::appconfig('redis.default');
-            $redisHost  = $config['host'];
-            $redisPort  = $config['port'];
-            $redisAuth  = $config['auth'];
-            $redisIndex = $config['index'];
-            $redis = new \Redis();
-            $redis->connect($redisHost, $redisPort);
-            $redis->auth($redisAuth);
-            $redis->select($redisIndex);
-            \Yaf_Registry::set('redis', $redis);
-            return $redis;
-        }
+        $config     = YCore::appconfig("redis.{$redisOption}");
+        $redisHost  = $config['host'];
+        $redisPort  = $config['port'];
+        $redisAuth  = $config['auth'];
+        $redisIndex = $config['index'];
+        $redis = new \Redis();
+        $redis->connect($redisHost, $redisPort);
+        $redis->auth($redisAuth);
+        $redis->select($redisIndex);
+        return $redis;
     }
 
     /**

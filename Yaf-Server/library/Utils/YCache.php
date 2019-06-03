@@ -11,17 +11,20 @@ class YCache
 {
     /**
      * 初始化缓存对象。
+     * 
+     * @param string $redisOption Redis 配置项。
      *
      * @return \finger\cache\redis\Cache
      */
-    private static function getInstace()
+    private static function getInstace($redisOption = 'default')
     {
-        $ok = \Yaf_Registry::has('__system__cache__');
+        $requestKey = "__system__cache__{$redisOption}";
+        $ok = \Yaf_Registry::has($requestKey);
         if ($ok) {
-            return \Yaf_Registry::get('__system__cache__');
+            return \Yaf_Registry::get($requestKey);
         } else {
-            $systemCache = new \finger\cache\redis\Cache();
-            \Yaf_Registry::set('__system__cache__', $systemCache);
+            $systemCache = new \finger\cache\redis\Cache($redisOption);
+            \Yaf_Registry::set($requestKey, $systemCache);
             return $systemCache;
         }
     }
@@ -30,12 +33,14 @@ class YCache
      * 获取 Redis 对象。
      * 
      * -- 我们通常会用一些高级的操作虽然直接调用底层提供的方法。
+     * 
+     * @param string $redisOption Redis 配置项。
      *
      * @return \Reids
      */
-    public static function getRedisClient()
+    public static function getRedisClient($redisOption = 'default')
     {
-        $cache = self::getInstace();
+        $cache = self::getInstace($redisOption);
         return $cache->getClient();
     }
 

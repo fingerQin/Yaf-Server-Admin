@@ -1,5 +1,6 @@
 <?php
 use finger\Ip;
+use Utils\YCache;
 
 /**
  * 默认 CLI 控制器。
@@ -20,5 +21,11 @@ class IndexController extends \Common\controllers\Cli
         echo long2ip($int);
         echo "\n";
         exit;
+    }
+
+    public function redisAction()
+    {
+        $redis = YCache::getRedisClient('second');
+        $redis->set('xxx', '123');
     }
 }
