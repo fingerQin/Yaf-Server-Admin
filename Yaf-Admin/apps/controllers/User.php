@@ -6,7 +6,6 @@
  */
 
 use finger\Paginator;
-use Utils\YCore;
 use Services\User\User;
 
 class UserController extends \Common\controllers\Admin
@@ -14,7 +13,7 @@ class UserController extends \Common\controllers\Admin
     /**
      * 用户列表。
      */
-    public function indexAction()
+    public function listsAction()
     {
         $mobile    = $this->getString('mobile', '');
         $starttime = $this->getString('start_time', date('2015-06-06 00:00:00'));
