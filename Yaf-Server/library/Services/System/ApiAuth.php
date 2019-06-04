@@ -7,10 +7,10 @@
 
 namespace Services\System;
 
-use Utils\YCache;
-use Models\ApiAuth as ApiAuthModel;
-use Utils\YCore;
 use finger\Ip;
+use Utils\YCache;
+use Utils\YCore;
+use Models\ApiAuth as ApiAuthModel;
 
 class ApiAuth extends \Services\AbstractBase
 {

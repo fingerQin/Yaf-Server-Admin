@@ -17,7 +17,7 @@ class Config extends \Services\AbstractBase
      * 配置文件缓存 KEY。
      * -- 与管理后台对应。
      */
-    const CONFIG_CACHE_KEY = 'Yaf-Admin-system-configs';
+    const CONFIG_CACHE_KEY = 'system-configs';
 
     /**
      * 读取配置。
