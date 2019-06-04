@@ -34,16 +34,16 @@ class Factory
 
         // [2]
         if (!isset($reqParams['method']) || strlen($reqParams['method']) === 0) {
-            YCore::exception(STATUS_ERROR, 'method does not exist');
+            YCore::exception(STATUS_METHOD_NOT_EXISTS, 'method does not exist');
         }
         if (!isset($reqParams['v']) || strlen($reqParams['v']) === 0) {
-            YCore::exception(STATUS_ERROR, 'version number is wrong');
+            YCore::exception(STATUS_VERSION_NOT_EXISTS, 'version number is wrong');
         }
         if (!isset($reqParams['appid']) || strlen($reqParams['appid']) === 0) {
-            YCore::exception(STATUS_ERROR, 'appid parameters cannot be empty');
+            YCore::exception(STATUS_APPID_NOT_EXISTS, 'appid parameters cannot be empty');
         }
         if (!isset($reqParams['timestamp']) || strlen($reqParams['timestamp']) === 0) {
-            YCore::exception(STATUS_ERROR, 'timestamp parameters cannot be empty');
+            YCore::exception(STATUS_TIMESTAMP_NOT_EXISTS, 'timestamp parameters cannot be empty');
         }
 
         // [3] 将 method 参数转换为实际的接口类名称。
@@ -69,7 +69,7 @@ class Factory
         $ip   = YCore::ip();
         $bool = ApiAuth::checkIpAllowAccess($apiDetail, $ip);
         if ($bool == false) {
-            YCore::exception(STATUS_SERVER_ERROR, '受限 IP 不允许访问');
+            YCore::exception(STATUS_IP_FORBID, '受限 IP 不允许访问');
         }
 
         // [7] 映射接口类。
@@ -78,7 +78,7 @@ class Factory
         if (strlen($apiName) && class_exists($classname)) {
             return new $classname($reqParams, $apiDetail['api_type'], $apiDetail['api_key'], $apiDetail['api_secret']);
         } else {
-            YCore::exception(STATUS_SERVER_ERROR, '您的APP太旧请升级!');
+            YCore::exception(STATUS_API_NOT_EXISTS, '您的 APP 太旧请升级!');
         }
     }
 
