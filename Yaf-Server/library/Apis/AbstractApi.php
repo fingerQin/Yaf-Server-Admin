@@ -11,6 +11,8 @@ namespace Apis;
 use Utils\YCore;
 use Utils\YInput;
 use finger\Validator;
+use Services\AccessForbid\Forbid;
+use finger\Ip;
 
 abstract class AbstractApi
 {
@@ -72,6 +74,7 @@ abstract class AbstractApi
         $this->params    = $data;
         $this->apiKey    = $apiKey;
         $this->apiSecret = $apiSecret;
+        $this->checkIpAccessPermission();
         $this->checkTimeLag();
         $this->checksignature();
         $this->runService();
@@ -85,6 +88,15 @@ abstract class AbstractApi
      * @return void
      */
     abstract protected function runService();
+
+    protected function checkIpAccessPermission()
+    {
+        $apiMethod = $this->params['method'];
+        if (in_array($apiMethod, API_MUST_FORBID_IP_LIST)) {
+            $ip = Ip::ip();
+            Forbid::check($ip);
+        }
+    }
 
     /**
      * 验证时差。

@@ -34,7 +34,7 @@ class Files extends AbstractBase
      * @param  int     $count      每页显示条数。
      * @return array
      */
-    public function getList($userType, $userid, $fileMd5, $fileType, $startTime, $endTime, $page, $count)
+    public function lists($userType, $userid, $fileMd5, $fileType, $startTime, $endTime, $page, $count)
     {
         $offset  = $this->getPaginationOffset($page, $count);
         $columns = ' * ';
@@ -117,7 +117,7 @@ class Files extends AbstractBase
      * @param  int  $fileId  文件ID。
      * @return bool
      */
-    public function deleteFile($fileId)
+    public function delete($fileId)
     {
         $data = [
             'status' => Files::STATUS_DELETED
@@ -140,7 +140,7 @@ class Files extends AbstractBase
      * @param  int     $userid    用户ID。
      * @return int 文件ID。
      */
-    public function addFiles($fileName, $fileType, $fileSize, $fileMd5, $userType = 2, $userid = 0)
+    public function add($fileName, $fileType, $fileSize, $fileMd5, $userType = 2, $userid = 0)
     {
         $data = [
             'file_name' => $fileName,
@@ -150,7 +150,7 @@ class Files extends AbstractBase
             'user_type' => $userType,
             'user_id'   => $userid,
             'status'    => Files::STATUS_YES,
-            'c_time'    => date('Y-m-d H:i:s', time())
+            'c_time'    => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         return $this->insert($data);
     }

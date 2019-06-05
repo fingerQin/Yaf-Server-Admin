@@ -59,7 +59,7 @@ class Upload extends \Services\AbstractBase
         $FilesModel        = new Files();
         $fileName          = "/images/{$info['savepath']}{$info['savename']}";
         $imageUrl          = YUrl::filePath($fileName);
-        $fileId            = $FilesModel->addFiles($imageUrl, 1, $info['size'], $info['md5'], $userType, $userid);
+        $fileId            = $FilesModel->add($imageUrl, 1, $info['size'], $info['md5'], $userType, $userid);
         if ($fileId == 0) {
             YCore::exception(STATUS_ERROR, '文件上传失败');
         }
@@ -109,7 +109,7 @@ class Upload extends \Services\AbstractBase
         $FilesModel        = new Files();
         $fileName          = "/images/{$info['savepath']}{$info['savename']}";
         $imageUrl          = YUrl::filePath($fileName);
-        $fileId            = $FilesModel->addFiles($imageUrl, 1, $info['size'], $info['md5'], $userType, $userId);
+        $fileId            = $FilesModel->add($imageUrl, 1, $info['size'], $info['md5'], $userType, $userId);
         if ($fileId == 0) {
             YCore::exception(STATUS_ERROR, '文件上传失败');
         }

@@ -16,7 +16,6 @@ class Error extends \Common\controllers\Common
     private $errMsgTpl = [
         STATUS_FORBIDDEN            => '您没有权限访问',
         STATUS_NOT_FOUND            => '您访问的资源不存在',
-        STATUS_SERVER_ERROR         => '服务器发生一个问题',
         STATUS_ERROR                => '服务器繁忙,请稍候重试',
         STATUS_LOGIN_TIMEOUT        => '登录超时,请重新登录',
         STATUS_NOT_LOGIN            => '您还未登录',

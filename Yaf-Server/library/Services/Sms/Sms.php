@@ -173,10 +173,10 @@ class Sms extends \Services\Sms\AbstractBase
      */
     public static function verify($mobile, $code, $smsType, $isDestroy = 1, $ip = '')
     {
-        if (empty($code)) {
+        if (empty($code) || strlen($code) == 0) {
             YCore::exception(STATUS_SERVER_ERROR, '短信验证码不能为空');
         }
-        if (empty($smsType)) {
+        if (empty($smsType) || strlen($smsType) == 0) {
             YCore::exception(STATUS_SERVER_ERROR, '短信模板标识不能为空');
         }
         $ip          = strlen($ip) > 0 ? $ip : YCore::ip();
@@ -207,7 +207,7 @@ class Sms extends \Services\Sms\AbstractBase
             if (!$status) {
                 $MSmsSendLog->update(['cksms' => SmsSendLog::STATUS_INVALID], ['id' => $smsLog['id']]);
             }
-            YCore::exception(STATUS_SERVER_ERROR, '您的验证码不正确');
+            YCore::exception(STATUS_SMS_CODE_ERROR, '您的验证码不正确');
         }
         if ($isDestroy) {
             $MSmsSendLog->update(['cksms' => SmsSendLog::STATUS_USED], ['id' => $smsLog['id']]);

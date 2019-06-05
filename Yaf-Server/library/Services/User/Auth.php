@@ -16,6 +16,7 @@ use finger\Validator;
 use Services\Sms\Sms;
 use Services\System\Push;
 use Services\Event\Producer;
+use Services\AccessForbid\Forbid;
 
 class Auth extends \Services\AbstractBase
 {
@@ -52,21 +53,11 @@ class Auth extends \Services\AbstractBase
             YCore::exception(STATUS_SERVER_ERROR, '您的账号被锁定!');
         }
         if ($loginType == self::LOGIN_TYPE_SMS) {
-            if (strlen($code) === 0) {
-                YCore::exception(STATUS_SERVER_ERROR, '验证码必须填写!');
-            }
-            Sms::verify($mobile, $code, Sms::SMS_TYPE_LOGIN);
+            self::loginSmsCodeVerify($mobile, $code);
         } else {
-            if (strlen($code) === 0) {
-                YCore::exception(STATUS_SERVER_ERROR, '密码必须填写!');
-            }
-            $password = self::encryptPwd($code, $userinfo['salt']);
-            if ($password != $userinfo['pwd']) {
-                YCore::exception(STATUS_SERVER_ERROR, '密码不正确!');
-            }
+            self::loginUserPwdVerify($code, $userinfo);
         }
-        $timestamp = time();
-        $token     = self::createToken($userinfo['userid'], $userinfo['pwd'], $timestamp, $platform);
+        $token = self::createToken($userinfo['userid'], $userinfo['pwd'], TIMESTAMP, $platform);
         self::setAuthTokenLastAccessTime($userinfo['userid'], $token, $platform);
         Push::registerUserAssocDeviceToken($userinfo['userid'], $deviceToken, $platform, $appV);
         Producer::push([
@@ -76,7 +67,7 @@ class Auth extends \Services\AbstractBase
             'platform'    => $platform,
             'app_v'       => $appV,
             'v'           => $v,
-            'login_time'  => date('Y-m-d H:i:s', $timestamp)
+            'login_time'  => date('Y-m-d H:i:s', TIMESTAMP)
         ]);
         return [
             'token'    => $token,
@@ -90,9 +81,48 @@ class Auth extends \Services\AbstractBase
     }
 
     /**
+     * 登录短信验证码验证。
+     *
+     * @param  string  $mobile  手机号。
+     * @param  string  $code    验证码。
+     *
+     * @return void
+     */
+    private static function loginSmsCodeVerify($mobile, $code)
+    {
+        try {
+            Sms::verify($mobile, $code, Sms::SMS_TYPE_LOGIN);
+        } catch (\Exception $e) {
+            if ($e->getCode() == STATUS_SMS_CODE_ERROR) {
+                Forbid::position(Forbid::POSITION_LOGIN, 50, 30);
+            }
+            YCore::exception($e->getCode(), $e->getMessage());
+        }
+    }
+
+    /**
+     * 登录时用户密码验证。
+     *
+     * @param  string  $password  登录密码。
+     * @param  array   $userinfo  用户基本信息(包含：salt、pwd)。
+     * @return void
+     */
+    private static function loginUserPwdVerify($password, $userinfo)
+    {
+        if (strlen($password) === 0) {
+            YCore::exception(STATUS_SERVER_ERROR, '密码必须填写!');
+        }
+        $password = self::encryptPwd($password, $userinfo['salt']);
+        if ($password != $userinfo['pwd']) {
+            Forbid::position(Forbid::POSITION_LOGIN, 50, 30);
+            YCore::exception(STATUS_SERVER_ERROR, '密码不正确!');
+        }
+    }
+
+    /**
      * 注册。
      *
-     * @param  string  $mobile       手机号码。
+     * @param  string  $mobile       手机号码。 
      * @param  string  $code         短信验证码。
      * @param  string  $password     密码。
      * @param  string  $platform     平台。 |1-IOS|2-Android|3-WAP|4-PC端。
@@ -135,7 +165,7 @@ class Auth extends \Services\AbstractBase
             YCore::exception(STATUS_ALREADY_REGISTER, '您的账号已经被占用!');
         }
         Sms::verify($mobile, $code, Sms::SMS_TYPE_REGISTER);
-        $datetime = date('Y-m-d H:i:s', time());
+        $datetime = date('Y-m-d H:i:s', TIMESTAMP);
         $nickname = YString::asterisk($mobile, 3, 4);
         $salt     = YString::randomstr(6);
         $openid   = self::makeUserOpenId($mobile);
@@ -157,8 +187,7 @@ class Auth extends \Services\AbstractBase
         if (!$userid) {
             YCore::exception(STATUS_SERVER_ERROR, '注册失败');
         }
-        $timestamp = time();
-        $token     = self::createToken($userid, $timestamp, $platform);
+        $token = self::createToken($userid, TIMESTAMP, $platform);
         self::setAuthTokenLastAccessTime($userid, $token, $platform);
         Push::registerUserAssocDeviceToken($userid, $deviceToken, $platform, $appV);
         Producer::push([
@@ -436,4 +465,6 @@ class Auth extends \Services\AbstractBase
         ];
         Validator::valido($data, $rules);
     }
+
+
 }

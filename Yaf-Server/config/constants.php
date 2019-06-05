@@ -34,8 +34,11 @@ define('STATUS_METHOD_NOT_EXISTS', 504);    // 接口 method 不存在特殊码�
 define('STATUS_VERSION_NOT_EXISTS', 505);   // 接口版本号不存在特殊码。正式不记录日志。
 define('STATUS_APPID_NOT_EXISTS', 506);     // 接口 appid 不存在特殊码。正式不记录日志。
 define('STATUS_TIMESTAMP_NOT_EXISTS', 507); // 接口 timestamp 不存在特殊码。正式不记录日志。
-define('STATUS_IP_FORBID', 508);            // 访问接口的 IP 不允许请求。
+define('STATUS_IP_FORBID', 508);            // 访问接口的 IP 不允许请求：访问特殊类型 API 接口。
 define('STATUS_API_NOT_EXISTS', 509);       // 访问的接口不存在。
+define('STATUS_ACCESS_FORBID_IP', 510);     // 整个系统访问受限制的疑似非法 IP。
+
+define('STATUS_SMS_CODE_ERROR', 700);       // 短信验证码不正确。
 
 // 正式环境不记录日志的错误码列表。
 define('NO_RECORD_API_LIST', [
@@ -44,5 +47,18 @@ define('NO_RECORD_API_LIST', [
   STATUS_APPID_NOT_EXISTS,
   STATUS_TIMESTAMP_NOT_EXISTS,
   STATUS_IP_FORBID,
-  STATUS_API_NOT_EXISTS
+  STATUS_API_NOT_EXISTS,
+  STATUS_ACCESS_FORBID_IP
+]);
+
+/**
+ * 指定必须接受 IP 异常限制的接口列表。
+ * -- 注1：只读型接口通常不需要限制。
+ * -- 注2：敏感型或涉及数据隐私泄漏的可以加入。比如：账号密码被撞库泄漏。
+ */
+define('API_MUST_FORBID_IP_LIST', [
+  'user.login',
+  'user.register',
+  'sms.send',
+  'user.pwd.find'
 ]);

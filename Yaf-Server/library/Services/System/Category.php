@@ -93,7 +93,7 @@ class Category extends \Services\AbstractBase
      */
     public static function getCategoryKeyValueList($parentid = 0, $catType = CategoryModel::CAT_NEWS)
     {
-        $list    = self::getList($parentid, $catType);
+        $list    = self::list($parentid, $catType);
         $newList = [];
         foreach ($list as $cat) {
             $newList[$cat['cat_id']] = $cat['cat_name'];
@@ -111,7 +111,7 @@ class Category extends \Services\AbstractBase
      */
     public static function getCategoryCatCodeOrNameKeyValueList($parentid = 0, $catType = CategoryModel::CAT_NEWS)
     {
-        $list    = self::getList($parentid, $catType);
+        $list    = self::list($parentid, $catType);
         $newList = [];
         foreach ($list as $cat) {
             $newList[$cat['cat_code']] = $cat['cat_name'];
