@@ -42,8 +42,10 @@ class Auth extends \Services\AbstractBase
      */
     public static function login($mobile, $loginType, $code, $platform, $appV, $deviceToken, $v = '')
     {
+        self::checkLoginPwdErrForbidLogin($mobile);
         $userinfo = (new UserModel())->fetchOne([], ['mobile' => $mobile]);
         if (empty($userinfo)) {
+            Forbid::position(Forbid::POSITION_LOGIN, 50, 30);
             YCore::exception(STATUS_UNREGISTERD, '账号不存在!');
         }
         if ($userinfo['cur_status'] == UserModel::STATUS_INVALID) {
@@ -53,10 +55,11 @@ class Auth extends \Services\AbstractBase
             YCore::exception(STATUS_SERVER_ERROR, '您的账号被锁定!');
         }
         if ($loginType == self::LOGIN_TYPE_SMS) {
-            self::loginSmsCodeVerify($mobile, $code);
+            self::loginSmsCodeVerify($mobile, $code, $loginType);
         } else {
-            self::loginUserPwdVerify($code, $userinfo);
+            self::loginUserPwdVerify($code, $userinfo, $loginType);
         }
+        self::clearLoginPwdErrCounter($mobile);
         $token = self::createToken($userinfo['userid'], $userinfo['pwd'], TIMESTAMP, $platform);
         self::setAuthTokenLastAccessTime($userinfo['userid'], $token, $platform);
         Push::registerUserAssocDeviceToken($userinfo['userid'], $deviceToken, $platform, $appV);
@@ -83,18 +86,20 @@ class Auth extends \Services\AbstractBase
     /**
      * 登录短信验证码验证。
      *
-     * @param  string  $mobile  手机号。
-     * @param  string  $code    验证码。
+     * @param  string  $mobile     手机号。
+     * @param  string  $code       验证码。
+     * @param  int     $loginType  登录类型。1-验证码登录、2-密码登录。
      *
      * @return void
      */
-    private static function loginSmsCodeVerify($mobile, $code)
+    private static function loginSmsCodeVerify($mobile, $code, $loginType)
     {
         try {
             Sms::verify($mobile, $code, Sms::SMS_TYPE_LOGIN);
         } catch (\Exception $e) {
             if ($e->getCode() == STATUS_SMS_CODE_ERROR) {
                 Forbid::position(Forbid::POSITION_LOGIN, 50, 30);
+                self::loginPwdErrCounter($mobile, $loginType);
             }
             YCore::exception($e->getCode(), $e->getMessage());
         }
@@ -103,11 +108,13 @@ class Auth extends \Services\AbstractBase
     /**
      * 登录时用户密码验证。
      *
-     * @param  string  $password  登录密码。
-     * @param  array   $userinfo  用户基本信息(包含：salt、pwd)。
+     * @param  string  $password   登录密码。
+     * @param  array   $userinfo   用户基本信息(包含：salt、pwd)。
+     * @param  int     $loginType  登录类型。1-验证码登录、2-密码登录。
+     *
      * @return void
      */
-    private static function loginUserPwdVerify($password, $userinfo)
+    private static function loginUserPwdVerify($password, $userinfo, $loginType)
     {
         if (strlen($password) === 0) {
             YCore::exception(STATUS_SERVER_ERROR, '密码必须填写!');
@@ -115,7 +122,72 @@ class Auth extends \Services\AbstractBase
         $password = self::encryptPwd($password, $userinfo['salt']);
         if ($password != $userinfo['pwd']) {
             Forbid::position(Forbid::POSITION_LOGIN, 50, 30);
+            self::loginPwdErrCounter($userinfo['mobile'], $loginType);
             YCore::exception(STATUS_SERVER_ERROR, '密码不正确!');
+        }
+    }
+
+    /**
+     * 账号连续密码错误计数器。
+     *
+     * -- 账号密码连续错误之后锁定 24 小时。
+     *
+     * @param  string  $mobile     手机账号。
+     * @param  int     $loginType  登录类型。1-验证码登录、2-密码登录。
+     * 
+     * @return void
+     */
+    private static function loginPwdErrCounter($mobile, $loginType)
+    {
+        $counter = "login_account_lock_{$mobile}";
+        $redis   = YCache::getRedisClient();
+        $redis->set($counter, 0, ['NX', 'EX' => 86400]);
+        $int     = $redis->incr($counter);
+        if ($int >= LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK) {
+            $lastDeadlineKey = "login_account_unlock_date_{$mobile}";
+            $datetime = date('Y-m-d H:i:s', TIMESTAMP + LOGIN_PWD_ERROR_LOCK_TIME);
+            $redis->set($lastDeadlineKey, $datetime, LOGIN_PWD_ERROR_LOCK_TIME);
+            if ($loginType == 1) {
+                YCore::exception(STATUS_lOGIN_PWD_ERR_FORBID, "验证码错误" . LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK . "次被禁止登录,解禁时间：{$datetime}");
+            } else {
+                YCore::exception(STATUS_lOGIN_PWD_ERR_FORBID, "账号密码错误" . LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK . "次被禁止登录,解禁时间：{$datetime}");
+            }
+        }
+    }
+
+    /**
+     * 清除账号连续密码错误计数器。
+     *
+     * @param  string  $mobile  手机号。
+     * @return void
+     */
+    private static function clearLoginPwdErrCounter($mobile)
+    {
+        $counter = "login_account_lock_{$mobile}";
+        $redis   = YCache::getRedisClient();
+        $redis->delete($counter);
+    }
+
+    /**
+     * 检查登录密码错误次数是否触发禁止登录。
+     *
+     * @param  string  $mobile  手机号。
+     *
+     * @return void
+     */
+    private static function checkLoginPwdErrForbidLogin($mobile)
+    {
+        $counter = "login_account_lock_{$mobile}";
+        $redis   = YCache::getRedisClient();
+        $int     = $redis->get($counter);
+        if ($int >= LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK) {
+            $lastDeadlineKey = "login_account_unlock_date_{$mobile}";
+            $deadline = $redis->get($lastDeadlineKey);
+            if ($deadline !== FALSE) {
+                YCore::exception(STATUS_lOGIN_PWD_ERR_FORBID, "账号已冻结登录，解禁时间：{$deadline}");
+            } else {
+                YCore::exception(STATUS_lOGIN_PWD_ERR_FORBID, "您的账号被禁止登录,请明天重试");
+            }
         }
     }
 
