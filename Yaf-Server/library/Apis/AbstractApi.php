@@ -92,7 +92,7 @@ abstract class AbstractApi
     protected function checkIpAccessPermission()
     {
         $apiMethod = $this->params['method'];
-        if (in_array($apiMethod, API_MUST_FORBID_IP_LIST)) {
+        if ($this->apiType == 'app' && in_array($apiMethod, API_MUST_FORBID_IP_LIST)) {
             $ip = Ip::ip();
             Forbid::check($ip);
         }

@@ -58,4 +58,14 @@ class UserController extends \Common\controllers\Admin
         $userid = $this->getInt('userid');
         $this->assign('userid', $userid);
     }
+
+    /**
+     * 清除账号登录锁定。
+     */
+    public function clearAccountLoginLockAction()
+    {
+        $userid = $this->getInt('userid');
+        User::clearAccountLoginErrorLock($userid);
+        $this->json(true, '清除成功');
+    }
 }

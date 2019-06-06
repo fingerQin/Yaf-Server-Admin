@@ -12,6 +12,7 @@ use finger\Database\Db;
 use Utils\YCore;
 use Utils\YDate;
 use Utils\YString;
+use Utils\YCache;
 use Models\User as UserModel;
 
 class User extends \Services\AbstractBase
@@ -164,5 +165,25 @@ class User extends \Services\AbstractBase
     public static function encryptPassword($password, $salt)
     {
         return md5(md5($password) . $salt);
+    }
+
+    /**
+     * 清除账号登录错误锁定。
+     *
+     * @param  int  $userid  用户 ID。
+     *
+     * @return void
+     */
+    public static function clearAccountLoginErrorLock($userid)
+    {
+        $userinfo = (new UserModel())->fetchOne([], ['userid' => $userid]);
+        if (empty($userinfo)) {
+            YCore::exception(STATUS_SERVER_ERROR, '账号不存在');
+        }
+        $redis = YCache::getRedisClient();
+        $errCounterKey  = "login_account_lock_{$userinfo['mobile']}";
+        $errDeadlineKey = "login_account_unlock_date_{$userinfo['mobile']}";
+        $redis->delete($errCounterKey);
+        $redis->delete($errDeadlineKey);
     }
 }

@@ -66,7 +66,7 @@
 						<th class="w10 text-center">最后登录时间</th>
 						<th class="w10 text-center">注册时间</th>
 						<th class="w5 text-center">用户状态</th>
-						<th class="w5 text-center">操作</th>
+						<th class="w10 text-center">操作</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -85,11 +85,15 @@
 						<td align="center">{{$item.cur_status}}</td>
                         <td align="center">
 							{{if 'User'|access:'editPwd'}}
-                            <p><a href="###" onclick="editPwd({{$item.userid}}, '{{$item.mobile}}')">改密码</a></p>
+                            <a href="###" onclick="editPwd({{$item.userid}}, '{{$item.mobile}}')">[改密码]</a><br />
 							{{/if}}
 
 							{{if 'User'|access:'status'}}
-							<p><a href="###" onclick="status({{$item.userid}}, '{{$item.mobile}}')">改状态</a></p>
+							<a href="###" onclick="status({{$item.userid}}, '{{$item.mobile}}')">[改状态]</a><br />
+							{{/if}}
+
+							{{if 'User'|access:'clearAccountLoginLock'}}
+                            <a href="###" onclick="clearAccountLoginLock({{$item.userid}}, '{{$item.mobile}}')">[清除登录锁定]</a><br />
 							{{/if}}
                         </td>
 					</tr>
@@ -121,6 +125,31 @@ function status(id, name) {
 	var title = '状态设置『' + name + '』';
 	var page_url = "{{'User/status'|url}}?userid="+id;
 	postDialog('editStatus', page_url, title, 300, 200);
+}
+
+// 清除用户登录锁定。
+function clearAccountLoginLock(userid, mobile) {
+    var pageUrl = "{{'User/clearAccountLoginLock'|url}}?userid="+userid;
+    layer.confirm('您确定要清除【' + mobile + '】的登录锁定吗？', {
+		btn: ['确定', '取消'],
+		title: '操作提示'
+	}, 
+	function() {
+		$.ajax({
+			type: "GET",
+			url: pageUrl,
+			dataType: 'json',
+			success: function(data){
+				if (data.code == 200) {
+					dialogTips(data.msg, 5);
+					return false;
+				}
+			}
+		});
+	},
+	function(){
+		// 点击取消按钮啥事也不做。
+	});
 }
 </script>
 
