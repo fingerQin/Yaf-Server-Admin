@@ -141,7 +141,7 @@ class Auth extends \Services\AbstractBase
     {
         $counter = "login_account_lock_{$mobile}";
         $redis   = YCache::getRedisClient();
-        $redis->set($counter, 0, ['NX', 'EX' => 86400]);
+        $redis->set($counter, 0, ['NX', 'EX' => LOGIN_PWD_ERROR_LOCK_TIME]);
         $int     = $redis->incr($counter);
         if ($int >= LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK) {
             $lastDeadlineKey = "login_account_unlock_date_{$mobile}";
