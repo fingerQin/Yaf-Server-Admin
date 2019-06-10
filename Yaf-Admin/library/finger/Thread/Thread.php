@@ -17,6 +17,8 @@ namespace finger\Thread;
 
 abstract class Thread
 {
+    protected $masterPid           = 0;       // 主进程 ID。
+    protected $runDurationExit     = 0;       // 子进程运行多久自动退出。0 代表不退出。0 用于那些多进程一次性运算业务。
 
     protected $isNewCreate         = true;    // 子进程结束之后是否新创建。
     protected $threadNum           = 10;      // 总的进程数量。
@@ -30,7 +32,9 @@ abstract class Thread
      *
      * @return void
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * 单例对象实现。
@@ -54,6 +58,9 @@ abstract class Thread
     final public function start()
     {
         if (function_exists('pcntl_fork')) {
+            $this->masterPid = posix_getpid();
+            $this->registerSignal();
+
             while(true) {
                 $this->childCount++; // 子进程数量加1。
                 // 如果当前子进程数量小于等于允许的进程数量或允许子进程结束新开子进程的情况则执行。
@@ -70,15 +77,64 @@ abstract class Thread
                         }
                     } else {
                         $childProcessNum = $this->childCount % $this->threadNum;
-                        $this->run($this->threadNum, $childProcessNum);
+                        $startTimeTsp    = time();
+                        $this->run($this->threadNum, $childProcessNum, $startTimeTsp);
                         exit(0);
                     }
-                } else {
-                    exit(0);
                 }
             }
+            exit(0);
+        }
+    }
+
+    /**
+     * 设置子进程运行多久自动退出。
+     *
+     * @param  int  $runDurationExit  运行时长。单位（秒）。0 代表子进程无时间限制。
+     *
+     * @return void
+     */
+    final public function setRunDurationExit($runDurationExit)
+    {
+        $this->runDurationExit = $runDurationExit;
+    }
+
+    /**
+     * 检测主进程是否存活。
+     *
+     * @return bool
+     */
+    final public function detectMasterProcessAlive()
+    {
+        if(posix_kill($this->masterPid, 0)) {
+            return true;
         } else {
-            echo "You have no extension: pcntl_fork!\n";
+            return false;
+        }
+    }
+
+    /**
+     * 子进程检测是否需要退出。
+     *
+     * -- 根据父进程状态决定是否退出。
+     * -- 如果子进程退出不再生成新的子进程。则子进程不限定运行时间。
+     *
+     * @param  int  $startTimeTsp  子进程启动时间戳。
+     *
+     * @return boolean
+     */
+    final protected function isExit($startTimeTsp)
+    {
+        // [1] 运行超过指定时长则退出。
+        if ($this->isNewCreate && $this->runDurationExit > 0) {
+            $diffTime = time() - $startTimeTsp;
+            if ($diffTime >= $this->runDurationExit) {
+                exit(0);
+            }
+        }
+        // [2] 主进程退出则退出。
+        $status = $this->detectMasterProcessAlive();
+        if (!$status) {
             exit(0);
         }
     }
@@ -126,7 +182,8 @@ abstract class Thread
      * @param bool $isNewCreate true or false
      * @return void
      */
-    final public function setChildOverNewCreate($isNewCreate) {
+    final public function setChildOverNewCreate($isNewCreate)
+    {
         $this->isNewCreate = $isNewCreate;
     }
 
@@ -139,9 +196,43 @@ abstract class Thread
     }
 
     /**
+     * 父进程注册信号。
+     *
+     * @return void
+     */
+    final public function registerSignal()
+    {
+        pcntl_signal(SIGTERM, [$this, 'signalHandler']);
+        pcntl_signal(SIGHUP,  [$this, 'signalHandler']);
+        pcntl_signal(SIGINT, [$this, 'signalHandler']);
+        pcntl_signal(SIGUSR1, [$this, 'signalHandler']);
+        pcntl_signal(SIGCHLD, [$this, 'signalHandler']);
+    }
+
+    /**
+     * 信号处理器。
+     *
+     * @param  int  $signo  信号量。
+     *
+     * @return void
+     */
+    final public function signalHandler($signo)
+    {
+        switch ($signo) {
+            case SIGTERM: // 进程退出。
+            case SIGINT:  // 进程退出。
+            case SIGHUP: // 重启进程。
+            case SIGUSR1:
+            case SIGCHLD:
+            default:
+                break;
+        }
+    }
+
+    /**
      * 设置进程数。
      *
-     * @param integer $num 进程数量。
+     * @param  int  $num  进程数量。
      * @return void
      */
     final public function setThreadNum($num)
@@ -152,10 +243,11 @@ abstract class Thread
     /**
      * 抽象的业务方法。
      * 
-     * @param int $threadNum  进程数量。
-     * @param int $num        子进程编号。
+     * @param  int  $threadNum     进程数量。
+     * @param  int  $num           子进程编号。
+     * @param  int  $startTimeTsp  子进程启动时间戳。
      * 
      * @return void
      */
-    abstract public function run($threadNum, $num);
+    abstract public function run($threadNum, $num, $startTimeTsp);
 }

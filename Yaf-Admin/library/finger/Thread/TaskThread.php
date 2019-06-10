@@ -24,7 +24,9 @@ class TaskThread extends Thread
      */
     public function run($threadNum, $num)
     {
-        echo $num . "\n";
-        sleep(5);
+        while (true) {
+            sleep(1);
+            $this->isExit($startTimeTsp);
+        }
     }
 }

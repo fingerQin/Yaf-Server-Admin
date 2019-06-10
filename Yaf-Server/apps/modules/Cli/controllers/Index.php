@@ -28,4 +28,15 @@ class IndexController extends \Common\controllers\Cli
         $redis = YCache::getRedisClient('second');
         $redis->set('xxx', '123');
     }
+
+    /**
+     * 多进程测试。
+     */
+    public function processAction()
+    {
+        $objThread = \finger\Thread\TaskThread::getInstance(5);
+        $objThread->setChildOverNewCreate(true);
+        $objThread->setRunDurationExit(30);
+        $objThread->start();
+    }
 }
