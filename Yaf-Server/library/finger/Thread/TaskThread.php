@@ -28,6 +28,7 @@ class TaskThread extends Thread
         while (true) {
             sleep(30);
             $pid = posix_getpid();
+            
             $datetime = date('Y-m-d H:i:s', $startTimeTsp);
             file_put_contents('log', "进程ID:{$pid},启动时间：{$datetime}\n", FILE_APPEND);
             $this->isExit($startTimeTsp);
