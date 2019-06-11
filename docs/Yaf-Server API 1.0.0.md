@@ -436,22 +436,24 @@ sign:01E62683A5D2B7CD901F5F98C08F10EF
 
 > 请求参数
 
-| 参数     | 名称       | 必须 |  类型  | 说明                                   |
-| :------- | :--------- | :--: | :----: | :------------------------------------- |
-| method   | 接口名称   |  是  | String | 接口值 -> user.login                   |
-| mobile   | 手机账号   |  是  | String | 手机号。                               |
-| sms_code | 短信验证码 |  是  | String | 登录时需要先调用发送短信验证码的接口。 |
+| 参数       | 名称       | 必须 |  类型   | 说明                                   |
+| :--------- | :--------- | :--: | :-----: | :------------------------------------- |
+| method     | 接口名称   |  是  | String  | 接口值 -> user.login                   |
+| mobile     | 手机账号   |  是  | String  | 手机号。                               |
+| code       | 短信验证码 |  是  | String  | 登录时需要先调用发送短信验证码的接口。 |
+| login_type | 登录类型   |  是  | Integer | 1- 验证码登录、2 - 密码登录。          |
 
 > 返回参数
 
-| 参数     | 名称       |  类型   | 说明               |
-| -------- | ---------- | :-----: | ------------------ |
-| token    | 会话 TOKEN | String  |                    |
-| userid   | 用户 ID    | Integer |                    |
-| mobile   | 手机号码   | String  |                    |
-| headimg  | 头像地址   | String  | 返回的是绝对地址。 |
-| nickname | 昵称       | String  |                    |
-| reg_time | 注册时间   | String  |                    |
+| 参数     | 名称         |  类型  | 说明                         |
+| -------- | ------------ | :----: | ---------------------------- |
+| token    | 会话 TOKEN   | String |                              |
+| open_id  | 用户开放标识 | String | 唯一标识。避免隐私信息泄漏。 |
+| mobile   | 手机号码     | String |                              |
+| headimg  | 头像地址     | String | 返回的是绝对地址。           |
+| nickname | 昵称         | String |                              |
+| intro    | 个人简介     | String |                              |
+| reg_time | 注册时间     | String |                              |
 
 > 返回示例
 
@@ -460,12 +462,13 @@ sign:01E62683A5D2B7CD901F5F98C08F10EF
     "code": 200,
     "msg": "登录成功",
     "data": {
-        "token": "d557BlYBUlYDCVIDVQYHXlVbAVUDDgZaAVcBA1NUP1cCCwcOVglWXwAwUw",
-        "userid": 1,
-        "mobile": "18575202692",
+        "token": "",
+        "open_id": "677ca20c1fbbb9dc6ebd10c59ebeb196",
+        "mobile": "18575202691",
         "headimg": "",
-        "nickname": "185****2692",
-        "reg_time": "2018-06-29 18:56:48"
+        "nickname": "148****1001",
+        "intro": "",
+        "reg_time": "2019-04-01 16:17:27"
     }
 }
 ```
@@ -476,36 +479,38 @@ sign:01E62683A5D2B7CD901F5F98C08F10EF
 
 > 请求参数
 
-| 参数          | 名称               | 必须 |  类型  | 说明                                         |
-| ------------- | ------------------ | :--: | :----: | -------------------------------------------- |
-| method        | 接口名称           |  是  | String | 接口值 -> user.register                      |
-| mobile        | 手机号             |  是  | String |                                              |
-| password      | 密码               |  是  | String | 6-20 位数字字母下划线破折号组成。            |
-| code          | 短信验证码         |  是  | String |                                              |
-| request_token | 请求令牌(防重复)。 |  是  | String | 请先通过 system.request.token 获取请求令牌。 |
+| 参数     | 名称       | 必须 |  类型  | 说明                              |
+| -------- | ---------- | :--: | :----: | --------------------------------- |
+| method   | 接口名称   |  是  | String | 接口值 -> user.register           |
+| mobile   | 手机号     |  是  | String |                                   |
+| password | 密码       |  是  | String | 6-20 位数字字母下划线破折号组成。 |
+| code     | 短信验证码 |  是  | String |                                   |
 
 >返回参数
 
-| 参数     | 名称       |  类型  | 说明                              |
-| -------- | ---------- | :----: | --------------------------------- |
-| token    | 会话 TOKEN | String | 注册成功则自动登录。              |
-| mobile   | 登录手机号 | String |                                   |
-| headimg  | 头像       | String | 为空，则显示默认头像。            |
-| nickname | 昵称       | String |                                   |
-| reg_time | 注册时间   | String | 格式：Y-m-d H:i:s                 |
-| openid   | 开放 ID    | String | 用于分享等需要识别用户的标识 ID。 |
+| 参数     | 名称         |  类型  | 说明                                     |
+| -------- | ------------ | :----: | ---------------------------------------- |
+| token    | 会话 TOKEN   | String | 注册成功则自动登录。                     |
+| open_id  | 用户开放标识 | String | 用户唯一标识。用于防止用户隐私信息泄漏。 |
+| mobile   | 登录手机号   | String |                                          |
+| headimg  | 头像         | String | 为空，则显示默认头像。                   |
+| nickname | 昵称         | String |                                          |
+| reg_time | 注册时间     | String | 格式：Y-m-d H:i:s                        |
+| intro    | 个人简介     | String |                                          |
+| openid   | 开放 ID      | String | 用于分享等需要识别用户的标识 ID。        |
 
 ```json
 {
     "code": 200,
     "msg": "注册成功",
     "data": {
-        "token": "9400VVJSBlYACQcHB1BUVQUEUwoOUFFVDlMBBwIGPgIAB1BQVlUBVwEwBg",
-        "mobile": "14870311001",
+        "token": "",
+        "open_id": "677ca20c1fbbb9dc6ebd10c59ebeb196",
+        "mobile": "18575202691",
         "headimg": "",
         "nickname": "148****1001",
-        "reg_time": "2018-08-06 17:28:31",
-        "open_id": "23d944788a3ba5895bd46fb89964b607"
+        "intro": "",
+        "reg_time": "2019-04-01 16:17:27"
     }
 }
 ```

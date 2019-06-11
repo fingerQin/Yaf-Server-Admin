@@ -31,7 +31,13 @@ class EventController extends \Common\controllers\Cli
      */
     public function registerAction()
     {
-        Register::launch(Event::CODE_REGISTER);
+        $objThread = Register::getInstance(5);
+        $objThread->setChildOverNewCreate(true);
+        $objThread->setRunDurationExit(30);
+        $objThread->setEventCode(Event::CODE_REGISTER);
+        $objThread->setRetryCount(0);
+        $objThread->setInterval(0);
+        $objThread->start();
     }
 
     /**
@@ -42,6 +48,12 @@ class EventController extends \Common\controllers\Cli
      */
     public function loginAction()
     {
-        Login::launch(Event::CODE_LOGIN);
+        $objThread = Login::getInstance(5);
+        $objThread->setChildOverNewCreate(true);
+        $objThread->setRunDurationExit(30);
+        $objThread->setEventCode(Event::CODE_LOGIN);
+        $objThread->setRetryCount(0);
+        $objThread->setInterval(0);
+        $objThread->start();
     }
 }

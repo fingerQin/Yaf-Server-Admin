@@ -17,5 +17,5 @@ abstract class AbstractBase extends \Services\AbstractBase
     /**
      * 子队列事件 KEY。
      */
-    const EVENT_PREFIX = 'event-quque-sub';
+    const EVENT_PREFIX = 'event-queue-sub';
 }

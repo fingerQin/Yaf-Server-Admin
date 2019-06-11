@@ -19,7 +19,7 @@ class Login extends \Services\Event\Sub\AbstractBase
      *
      * @return void
      */
-    protected static function runService($event)
+    protected function runService($event)
     {
         
     }
