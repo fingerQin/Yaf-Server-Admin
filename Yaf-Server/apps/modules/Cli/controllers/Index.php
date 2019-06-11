@@ -34,9 +34,10 @@ class IndexController extends \Common\controllers\Cli
      */
     public function processAction()
     {
+        cli_set_process_title('YafServerProcess');
         $objThread = \finger\Thread\TaskThread::getInstance(5);
         $objThread->setChildOverNewCreate(true);
-        $objThread->setRunDurationExit(30);
+        $objThread->setRunDurationExit(60);
         $objThread->start();
     }
 }

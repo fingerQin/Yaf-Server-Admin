@@ -1245,16 +1245,9 @@ class UserLoginApi extends AbstractApi
 
 但是，活动调用和管理后台调用的时候，我们可能就要对 IP 进行限制了。毕竟，给活动或管理后台提供的接口权限相比是很大的。
 
-目前，我们暂时不支持不同应用配置单独的 IP 白名单。如果真有其需求，后续很容易通过在应用表当中增加一个字段搞定。也可以支持 IP 段设置白名单。
+在添加 App 应用的时候，可以指定哪些 IP 或 IP 段能访问我们的此 App 应用接口。
 
-在配置 config.ini 我们有如下配置指定了白名单 IP。
 
-```ini
-; 内部服务器 IP
-app.inside_server_ip = 192.168.56.1|127.0.0.1
-```
-
-我们的接口被请求的时候会在 `AbstractApi->isApiIPInWhiteList` 当中验证白名单的 IP。
 
 
 
