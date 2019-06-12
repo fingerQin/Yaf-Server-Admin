@@ -106,7 +106,7 @@ abstract class Thread
      */
     final public function detectMasterProcessAlive()
     {
-        if(posix_kill($this->masterPid, 0)) {
+        if (posix_kill($this->masterPid, 0)) {
             return true;
         } else {
             return false;
@@ -168,7 +168,7 @@ abstract class Thread
     {
         foreach (self::$childProcess as $num => $pid) {
             // 使用 posix_kill 需要当前进程所有者与被检测 $pid 所有者是同一个或者当前进程所有者拥有足够的权限。
-            if(!posix_kill($pid, 0)) {
+            if (!posix_kill($pid, 0)) {
                 return $num;
             } else {
                 return 0;
