@@ -13,12 +13,34 @@ class IndexController extends \Common\controllers\Cli
 {
     public function indexAction()
     {
+        echo "finished!\n";
     }
 
-    public function redisAction()
+    /**
+     * 监控数据上报 Push。
+     */
+    public function monitorPushAction()
     {
-        $redis = YCache::getRedisClient('second');
-        $redis->set('xxx', '123');
+        for ($i = 0; $i < 10000; $i++) {
+            $data = [
+                'code'     => 'unauthorized',
+                'ip'       => '192.168.56.1',
+                'datetime' => date('Y-m-d H:i:s', TIMESTAMP)
+            ];
+            \Services\Monitor\Producer::push($data);
+        }
+        echo "finished!\n";
+    }
+
+    /**
+     * 监控数据消费。
+     */
+    public function monitorConsumerAction()
+    {
+        $objThread = \Services\Monitor\Consumer::getInstance(5);
+        $objThread->setChildOverNewCreate(true);
+        $objThread->setRunDurationExit(60);
+        $objThread->start();
     }
 
     /**

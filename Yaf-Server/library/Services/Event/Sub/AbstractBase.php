@@ -107,7 +107,7 @@ abstract class AbstractBase extends \finger\Thread\Thread
         // [1]
         $redis            = YCache::getRedisClient();
         $eventQueueKey    = \Services\Event\AbstractBase::EVENT_PREFIX . '_' . $this->code;
-        $eventQueueIngKey = $eventQueueKey . '-ing';
+        $eventQueueIngKey = "{$eventQueueKey}-{$num}-ing";
 
         // [2] 无限循环处理消息队列的数据。
         // [2.1] 将当前正在处理的事件归恢复到事件池中。主要是预防进程重启导致正在处理的事件未正确处理。
