@@ -12,6 +12,7 @@ use Utils\YLog;
 use Utils\YCache;
 use Utils\YCore;
 use Models\Monitor;
+use finger\Database\Db;
 
 class Consumer extends \finger\Thread\Thread
 {
@@ -20,13 +21,13 @@ class Consumer extends \finger\Thread\Thread
      * 
      * @param array $data 队列数据。
      *
-     * @return void
+     * @return bool true 消费成功、false - 消费失败。
      */
     protected function runService($data)
     {
         $className = ucfirst($data['code']);
         $className = "\\Services\\Monitor\\Sub\\{$className}";
-        $className::runService($data);
+        return $className::runService($data);
     }
 
     /**
@@ -59,23 +60,23 @@ class Consumer extends \finger\Thread\Thread
         // [2.2] 无限循环让进程一直处于常驻状态。
         $MonitorModel = new Monitor();
         try {
+            $counter = 0; // 100 个一组进行入库处理。提高数据库吞吐率。
             while(true) {
                 $strQueueVal = $redis->bRPopLPush($monitorQueueKey, $monitorQueueIngKey, 3);
+                $monitorTempQueueKey = "monitor-temp-queue-{$num}-key";
                 if ($strQueueVal) {
                     $arrQueueVal = json_decode($strQueueVal, true);
-                    // [2.3] 验证事件是否已存在。
-                    $detail = $MonitorModel->fetchOne([], ['serial_no' => $arrQueueVal['serial_no']], '', '', true);
-                    if (!empty($detail)) {
-                        $redis->lRem($monitorQueueIngKey, $strQueueVal, 1);
-                        continue;
-                    }
                     // [3] 调用具体的业务来处理这个消息。
                     try {
                         $this->runService($arrQueueVal);
                         $redis->lRem($monitorQueueIngKey, $strQueueVal, 1);
+                        $redis->lPush($monitorTempQueueKey, $strQueueVal);
                         YLog::log($arrQueueVal, 'monitor', "{$arrQueueVal['code']}-success");
+                        if ($counter >= 100) {
+                            $this->monitorToSuccess($redis, $num);
+                        }
                     } catch (\Exception $e) {
-                        $this->monitorToFail($this->code, $strQueueVal, $e->getCode(), $e->getMessage());
+                        $this->monitorToFail($arrQueueVal['code'], $strQueueVal, $e->getCode(), $e->getMessage());
                         $redis->lRem($monitorQueueIngKey, $strQueueVal, 1);
                     }
                 } else {
@@ -85,12 +86,56 @@ class Consumer extends \finger\Thread\Thread
                         YCore::exception(STATUS_ERROR, 'Redis ping failure!');
                     }
                     $MonitorModel->ping();
+                    $this->monitorToSuccess($redis, $num);
                     usleep(100000);
                 }
                 $this->isExit($startTimeTsp);
             }
         } catch (\Exception $e) {
-            $this->exceptionExit($this->code, $strQueueVal, $e->getCode(), $e->getMessage());
+            $code = $arrQueueVal['code'] ?? '';
+            $this->exceptionExit($code, $strQueueVal, $e->getCode(), $e->getMessage());
+        }
+    }
+
+    /**
+     * 监控上报数据入库。
+     * 
+     * @param  \Redis  $redis  Redis 连接。
+     * @param  int     $num    子进程编号。
+     * 
+     * @return void
+     */
+    protected function monitorToSuccess($redis, $num)
+    {
+        // 消费成功之后，临时将数据存放该队列。待 100 个满足之后或没有数据之后立即入库。
+        $monitorTempQueueKey = "monitor-temp-queue-{$num}-key";
+        $data = [];
+        while (true) {
+            $queueData = $redis->rPop($monitorTempQueueKey);
+            if ($queueData === FALSE) {
+                break;
+            } else {
+                $data[] = $queueData;
+            }
+        }
+        if (!empty($data)) {
+            $params = [];
+            $sql = 'REPLACE INTO finger_monitor(serial_no,code,userid,`status`,`data`,c_time) VALUES ';
+            foreach ($data as $k => $item) {
+                $monitor  = json_decode($item, true);
+                $userid   = $monitor['userid'] ?? 0;
+                $status   = 0;
+                $datetime = $monitor['datetime'];
+                $sql .= "(:serial_no_{$k},:code_{$k},:userid_{$k},:status_{$k},:data_{$k},:c_time_{$k}),";
+                $params[":serial_no_{$k}"] = $monitor['serial_no'];
+                $params[":code_{$k}"]      = $monitor['code'];
+                $params[":data_{$k}"]      = $item;
+                $params[":userid_{$k}"]    = $userid;
+                $params[":status_{$k}"]    = $status;
+                $params[":c_time_{$k}"]    = $datetime;
+            }
+            $sql = rtrim($sql, ',');
+            Db::execute($sql, $params);
         }
     }
 

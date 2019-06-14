@@ -13,4 +13,6 @@ abstract class AbstractBase extends \Services\AbstractBase
      * 监控队列 KEY。
      */
     const MONITOR_QUEUE_KEY = 'monitor-queue';
+
+     
 }

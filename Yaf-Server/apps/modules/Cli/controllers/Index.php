@@ -13,6 +13,8 @@ class IndexController extends \Common\controllers\Cli
 {
     public function indexAction()
     {
+        $bool = \Services\Monitor\Producer::checkFrequency('register', 1);
+        var_dump($bool);
         echo "finished!\n";
     }
 
@@ -27,7 +29,7 @@ class IndexController extends \Common\controllers\Cli
                 'ip'       => '192.168.56.1',
                 'datetime' => date('Y-m-d H:i:s', TIMESTAMP)
             ];
-            \Services\Monitor\Producer::push($data);
+            \Services\Monitor\Producer::report($data);
         }
         echo "finished!\n";
     }
