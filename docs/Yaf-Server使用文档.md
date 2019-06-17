@@ -6,7 +6,7 @@
 
 >   Yaf-Server 是一个基于 Yaf 框架实现的通用型服务端项目开发框架。将一些常见业务场景已经实现。从而达到快速开发不同业务项目的目的。所谓通用型业务场景包含：登录、注册、短信发送、APP 消息推送、日志存储、文件上传、API 接口、管理后台等。该文档旨在说明这些通用业务的设计思路，以及底层封装的通用方法的使用。让团队成员快速融入到项目的开发及维护当中。
 >
->   Yaf-Server 只提供 API 接口、内嵌页(APP调用)、命令行（Cli）访问。为什么不提供 PC版、手机触屏版是因为它们的会话需要 SESSION 机制，以及我们采用了前端团队采用 Nodejs 来渲染的机制。所以，我们只安安心心做接口提供服务就好。管理后台在单独的项目 Yaf-Admin 内实现。
+>   Yaf-Server 只提供 API 接口、内嵌页(APP调用)、命令行（Cli）访问。为什么不提供 PC 版、手机触屏版是因为它们的会话需要 SESSION 机制，以及我们采用了前端团队采用 Nodejs 来渲染的机制。所以，我们只安安心心做接口提供服务就好。管理后台在单独的项目 Yaf-Admin 内实现。
 
 ### 2 框架选型
 
@@ -109,7 +109,7 @@ yaf.use_spl_autoload = 1
 │   ├── serviceErr					服务层（Services）中任何业务异常的日志存放这里。
 │   ├── sms							短信日志存放目录。
 │   ├── sql							SQL 存放这里。开发环境需要。
-│   └── unknownErr					未知的 PHP 错误存放目录。如：Notice、Warning、Fatal。
+│   └── errors						未知的 PHP 错误存放目录。如：Notice、Warning、Fatal。
 ├── public							应用入口目录。
 │   ├── cli.php						应用命令行入口文件。
 │   ├── index.php					应用 Web 入口文件。
@@ -146,6 +146,7 @@ yaf.use_spl_autoload = 1
 
 ```php
 define('MICROTIME', microtime());
+define('TIMESTAMP', time());
 define('APP_PATH', dirname(dirname(__FILE__)));
 require(APP_PATH . '/vendor/autoload.php');
 require(APP_PATH . '/config/constants.php');
@@ -276,11 +277,11 @@ if (!-e $request_filename) {
 
 **关于 Yaf 框架的路由要注意：路由注册的顺序很重要, 最后注册的路由协议, 最先尝试路由, 这就有个陷阱。**
 
-默认的路由是第一个值代表 Module，第二个值代表 Controller，第三个值代表 Action。
+默认的路由是第一个值代表 `Module`，第二个值代表 `Controller`，第三个值代表 `Action`。
 
-当路径当中只存在两个值的时候，第一个值代表 Controller，第二个值代表 Action。
+当路径当中只存在两个值的时候，第一个值代表 `Controller`，第二个值代表 `Action`。
 
-自定义路由在应用启动文件 Bootstrap.php 中的 Bootstrap 类中方法内添加。
+自定义路由在应用启动文件 `Bootstrap.php` 中的 `Bootstrap` 类中方法内添加。
 
 ```php
 <?php
@@ -289,7 +290,6 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
 {
     public function _initRoute(Yaf_Dispatcher $dispatcher) {
         $router = Yaf_Dispatcher::getInstance()->getRouter();
-        // 添加配置中的路由
         $router->addConfig(Yaf_Registry::get("config")->routes);
     }
 }
@@ -302,6 +302,10 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
 ### 6 日志
 
 日志是一个系统当中最重要的组成部分。它不仅可以分析用户的行为，也可以帮助我们排查问题。以及记录我们的系统健康状况。
+
+由于该日志只供运维与后端开发人员查看。所以，并未遵从业界的 `RFC` 的约定。当然，我们的日志也能轻松导入其他日志系统平台。
+
+
 
 #### 6.1 日志收集
 
@@ -353,7 +357,7 @@ Array
 {"Type":"ServiceException","ErrorTime":"2019-04-01 17:14:17","ErrorCode":500,"ServerIP":"192.168.28.227","ClientIP":"192.168.28.50","Method":"Apis\\Factory::factory","Params":[{"post":[],"input":""}],"ErrorFile":"","ErrorLine":"","ErrorMsg":"method does not exist","ErrorNo":0,"stackTrace":"#0 /data/web/myself/GitHub/Yaf-Server-Admin/Yaf-Server/library/Apis/Factory.php(37): Utils\\YCore::exception(500, 'method does not...')\n#1 /data/web/myself/GitHub/Yaf-Server-Admin/Yaf-Server/apps/controllers/Index.php(29): Apis\\Factory::factory(Array)\n#2 [internal function]: IndexController->indexAction()\n#3 /data/web/myself/GitHub/Yaf-Server-Admin/Yaf-Server/public/index.php(13): Yaf_Application->run()\n#4 {main}"}
 ```
 
-> 之所以，这个位置存在 json 格式的日志，主要是为了后续对接到其他日志系统的时候
+> 之所以，这个位置存在 `json` 格式的日志，主要是为了后续对接到其他日志系统。
 
 
 
@@ -362,6 +366,8 @@ Array
 - 日志时间
 - 异常 Message。
 - 异常 Code。
+- 错误抛出的服务器 IP。
+- 错误抛出时的用户 IP。 
 - 异常发生时所在位置的方法。
 - 异常发生时所在位置的方法参数。
 - 异常发生时的堆栈信息。
@@ -399,11 +405,13 @@ $postParams = $request->getPost();
 YLog::log(['ip' => $ip, 'url' => $url, 'params' => $postParams], 'accessLog', 'log');
 ```
 
+系统会把所有的 500 错误或者未知错误码的错误全部写入 `errors` 目录。
+
 
 
 #### 6.3 系统常用日志
 
-由于我们 Yaf-Server 已经实现了常规的系统功能。所以，我们有一些固定的日志。
+由于我们 `Yaf-Server` 已经实现了常规的系统功能。所以，我们有一些固定的日志。
 
 **6.3.1 系统错误日志**
 
@@ -532,7 +540,7 @@ mysql.default.charset = utf8
 mysql.activity.host    = 127.0.0.1
 mysql.activity.port    = 3306
 mysql.activity.user    = admin
-mysql.activity.pwd     = f6bea7c6f222831c658d89e49930d936
+mysql.activity.pwd     = f6bea7c6f222831c658d89e49930d930
 mysql.activity.dbname  = www.itfangtan.com
 mysql.activity.charset = utf8
 ```
@@ -660,7 +668,7 @@ if ($status) {
 }
 ```
 
-> 注意：更新失败指的是数据库在执行 SQL 的时候，返回的受影响行数为 0 为依据判断。所以，有可能两次更新的数据一致导致失败。但是，由于我们每次更新都会自动更新创建时间和更新时间。所以，这种情况基本上不会存在。有一种情况一定要引起重视：当我们的关闭了更新时间自动更新的机制或表中并无更新字段，以及我们的程序属于高并发场景。那么，在同一秒中可能会出现更新时间是相同的情况。导致更新失败。
+> 注意：更新失败指的是数据库在执行 `SQL` 的时候，返回的受影响行数为 0 为依据判断。所以，有可能两次更新的数据一致导致失败。但是，由于我们每次更新都会自动更新创建时间和更新时间。所以，这种情况基本上不会存在。有一种情况一定要引起重视：当我们的关闭了更新时间自动更新的机制或表中并无更新字段，以及我们的程序属于高并发场景。那么，在同一秒中可能会出现更新时间是相同的情况。导致更新失败。
 >
 > 所以，写程序一定要以返回的值为 true 来进行程序是否正确为依据。除非明确知道这种情况可以忽略。
 
@@ -984,7 +992,7 @@ redis.default.auth  = f6bea7c6f222831c658d89e49930d936
 redis.default.index = 1
 ```
 
-系统当中所有的 Redis 操作都是在此配置连接上进行。所以，暂时并不支持不同的业务使用不同的 Redis 服务器。
+系统当中所有的 `Redis` 操作都是在此配置连接上进行。所以，暂时并不支持不同的业务使用不同的 `Redis` 服务器。
 
 #### 9.2 缓存
 
@@ -1051,6 +1059,40 @@ $redis = YCache::getRedisClient();
 ```
 
 > 比如，当我们需要使用队列操作的相关 Redis 方法的时候。就可以通过获取 Redis 客户端连接进行队列操作。在我们的 Yaf-Server 当中，就会用到 Redis 这个方法来进行队列数据的消费。
+
+##### 9.2.5 多 Redis 连接切换
+
+当一个系统当中存在多个 Redis 连接的时候。我们需要根据业务的不同而进行切换。切换非常简单：
+
+假如配置文件里面有如下两个 Redis 连接配置：
+
+```ini
+redis.default.host  = 127.0.0.1
+redis.default.port  = 6379
+redis.default.auth  = 
+redis.default.index = 10
+
+redis.second.host  = 127.0.0.2
+redis.second.port  = 6379
+redis.second.auth  = 
+redis.second.index = 1
+```
+
+
+
+```php
+YCache::getRedisClient()
+```
+
+上述代码默认是连接 `default` 的 Redis 配置。
+
+```php
+YCache::getRedisClient('second')
+```
+
+上述代码可以切换到 `second` 的配置。
+
+
 
 
 
@@ -1130,11 +1172,11 @@ if (!\finger\Validator::is_number_between($number, $start = 0, $end = 100)) {
 
 ### 11 文件上传
 
-文件上传可以说是任何一个互联网项目基本上必须的功能。我们的基建项目默认使用阿里云的 OSS 产品来存储我们的文件。
+文件上传可以说是任何一个互联网项目基本上必须的功能。我们的基建项目默认使用阿里云的 `OSS` 产品来存储我们的文件。
 
 #### 11.1 配置文件
 
-```
+```ini
 ; 上传驱动配置
 upload.driver   = oss
 upload.save_dir = 
@@ -1171,11 +1213,11 @@ if ($re) {
 
 #### 12.1 接口入口
 
-Yaf-Server 基建项目的入口与我们的 API 入口不同。我们的 API 入口指的是项目当中 `Index模块/Index控制器/Index`动作。
+Yaf-Server 基建项目的入口与我们的 API 入口不同。我们的 API 入口指的是项目当中 `Index Modules/Index Controller/Index Action`。
 
 因为，我们在配置文件当中设置了默认的模块/控制器/动作都是 `Index`。所以，访问接口的时候，就不需要增加这些访问路径了。就可以直接类似这样访问：`https://api.phpjieshuo.com` 。
 
-打开入口文件，我们可以看到方法中定义了一个 `IS_API` 常量。这是为了方便在其他位置能知道当前访问是来源于 API 接口。
+打开入口文件，我们可以看到方法中定义了一个 `IS_API` 常量。这是为了方便在其他位置能知道当前访问是来源于 `API` 接口。
 
 其次，我们我们接着设置了以下两行代码：
 
@@ -1184,7 +1226,7 @@ header("Access-Control-Allow-Origin: *");
 header('Content-type: application/json');
 ```
 
-允许跨域访问我们的接口。这样只要拥有我们的接口密钥就可以在任何环境请求到我们的接口。同时我们返回的数据类型为 JSON。浏览器或客户端可以通过这个 header 头能识别。在一些友好的工具里面，可以自动格式返回的数据显示。
+允许跨域访问我们的接口。这样只要拥有我们的接口密钥就可以在任何环境请求到我们的接口。同时我们返回的数据类型为 `JSON`。浏览器或客户端可以通过这个 header 头能识别。在一些友好的工具里面，可以自动格式返回的数据显示。
 
 接着我们获取接口的两个主要参数：`data` 与 `sign`。
 
@@ -1216,7 +1258,7 @@ header('Content-type: application/json');
 - 得到接口类名。如 `user.login` 最终会得到 `\Apis\app\v100\User\UserLoginApi`。
 - 再通过 `class_exists` 方法验证接口对应的接口类是否存在。不存在则报：您的APP太旧请升级。
 
-
+ 
 
 #### 12.3 接口编写
 
@@ -1330,13 +1372,13 @@ class UserLoginApi extends AbstractApi
 
 #### 12.4 IP 白名单
 
-我们的接口不仅供 APP 调用，也会供活动调用以及管理后台调用。后续可以会开放给外部的合作方使用。供 APP 调用的时候，我们不会对调用端的 IP 进行限制。只要密钥签名验证通过即可访问。
+我们的接口不仅供 `APP` 调用，也会供活动调用以及管理后台调用。后续可以会开放给外部的合作方使用。供 APP 调用的时候，我们不会对调用端的 `IP` 进行限制。只要密钥签名验证通过即可访问。
 
-但是，活动调用和管理后台调用的时候，我们可能就要对 IP 进行限制了。毕竟，给活动或管理后台提供的接口权限相比是很大的。
+但是，活动调用和管理后台调用的时候，我们可能就要对 `IP` 进行限制了。毕竟，给活动或管理后台提供的接口权限相比是很大的。
 
-目前，我们暂时不支持不同应用配置单独的 IP 白名单。如果真有其需求，后续很容易通过在应用表当中增加一个字段搞定。
+目前，我们暂时不支持不同应用配置单独的 `IP` 白名单。如果真有其需求，后续很容易通过在应用表当中增加一个字段搞定。
 
-在配置 config.ini 我们有如下配置指定了白名单 IP。
+在配置 `config.ini` 我们有如下配置指定了白名单 `IP`。
 
 ```ini
 ; 内部服务器 IP
@@ -1381,13 +1423,10 @@ class SmsSendApi extends AbstractApi
     protected function runService()
     {
         $this->isAllowAccessApi(0);
-        $mobile      = $this->getString('mobile', '');
-        $key         = $this->getString('key', '');
-        $platform    = $this->getString('platform');
-        $channel     = $this->getString('channel', '');
-        $deviceToken = $this->getString('device_token', '');
-        $appV        = $this->getString('app_v', '');
-        $result      = Sms::send($mobile, $key, '', $platform);
+        $mobile   = $this->getString('mobile', '');
+        $key      = $this->getString('key', '');
+        $platform = $this->getString('platform');
+        $result   = Sms::send($mobile, $key, '', $platform);
         $this->render(STATUS_SUCCESS, '发送成功', $result);
     }
 }
@@ -1429,13 +1468,13 @@ class SmsSendApi extends AbstractApi
 #### 12.8 注意事项
 
 - 每个可写接口必须调用 `isAllowAccessApi()` 方法。并根据是否需要登录设置其调用位置。
-- 非 APP 调用时，都必须将调用方的服务器 IP 全部设置到配置文件当中的内部服务器 IP 配置。
+- 调用非 app 类型接口时，每个 appid 必须在管理后台配置哪些 IP 来访问该接口。
 
 
 
 ### 13 命令行运行
 
-命令行运行，是每个项目必不可少的功能。它通常运用在一些定时脚本或常驻进程业务。
+命令行运行，是每个项目必不可少的功能。它通常运用在一些定时脚本或常驻进程（守护进程）业务。
 
 #### 13.1 入口文件
 
@@ -1462,7 +1501,7 @@ class SmsSendApi extends AbstractApi
 创建命令行模式的控制器非常简单。与 Web 模式创建方式大致一样。主要的两个区别如下：
 
 - 控制器继承的控制器变成了 `\Common\controllers\Cli` 。
-- 控制器必须定义在 `apps\modules\controllers` 目录。不能与 Web 模式的混在一起。
+- 控制器必须定义在 `apps\modules\controllers` 目录。不能与 `Web` 模式的混在一起。
 
 
 
@@ -1489,17 +1528,17 @@ class SmsController extends \common\controllers\Cli
 
  进入 `cli.php` 所在文件夹，执行如下命令：
 
-```
+```shell
 $ php cli.php Sms/send
 ```
 
-注意：在一些安装了多个版本的 PHP 的服务器上，PHP 的命令的版本一定要与 Yaf 框架的版本对应。Sms 代表执行 Cli 模块下的 SmsController，`send` 代表 SmsController 里面的 `sendAction` 。
+注意：在一些安装了多个版本的 `PHP` 的服务器上，`PHP` 的命令的版本一定要与 `Yaf` 框架的版本对应。`Sms` 代表执行 `Cli` 模块下的 `SmsController`，`send` 代表 `SmsController` 里面的 `sendAction` 。
 
 
 
 ### 14 内嵌页
 
-在 APP 开发的时候，我们经常会有一些用户协议等需要提供页面。实际上我们可以不用提供。直接提供接口，客户端渲染即可。碍于客户端有时候不想实现这些界面。我们做出了相应的改变。
+在 `APP` 开发的时候，我们经常会有一些用户协议等需要提供页面。实际上我们可以不用提供。直接提供接口，客户端渲染即可。碍于客户端有时候不想实现这些界面。我们做出了相应的改变。
 
 
 
@@ -1661,6 +1700,16 @@ RedisMutexLock::release($lockKey);
 
 ```php
 <?php
+/**
+ * 业务多线程处理。
+ * 
+ * -- 该文件只是一个测试示例。请把你的业务不要定义在这里。你可以在任何地方继承 Thread 类。
+ * 然后实现其 run() 方法。
+ * 
+ * @author fingerQin
+ * @date 2017-09-15
+ */
+
 namespace finger\Thread;
 
 class TaskThread extends Thread
@@ -1670,17 +1719,25 @@ class TaskThread extends Thread
      * 
      * -- 在 run 中编写的方法请一定要确定是事务型的。要么成功要么失败。要处于好失败情况下的数据处理。
      * 
-     * @param int $threadNum 进程数量。
-     * @param int $num       当前子进程编号。此编号与当前进程数量对应。
+     * @param  int  $threadNum     进程数量。
+     * @param  int  $num           当前子进程编号。此编号与当前进程数量对应。比如，你有一个业务需要10个进程处理，每个进行处理其中的10分之一的数量。此时可以根据此值取模。
+     * @param  int  $startTimeTsp  子进程启动时间戳。
      * 
      * @return void
      */
-    public function run($threadNum, $num)
+    public function run($threadNum, $num, $startTimeTsp)
     {
-        echo $num . "\n";
-        sleep(3);
+        while (true) {
+            sleep(30);
+            $pid = posix_getpid();
+            
+            $datetime = date('Y-m-d H:i:s', $startTimeTsp);
+            file_put_contents('log', "进程ID:{$pid},启动时间：{$datetime}\n", FILE_APPEND);
+            $this->isExit($startTimeTsp);
+        }
     }
 }
+
 ```
 
 这里面有两个很有意思的参数。
@@ -1717,6 +1774,8 @@ class ThreadController extends \Common\controllers\Cli
     public function demoAction()
     {
         $objThread = TaskThread::getInstance(5);
+        $objThread->setChildOverNewCreate(true);
+		$objThread->setRunDurationExit(3600);
         $objThread->start();
     }
 }
@@ -2224,6 +2283,63 @@ echo YString::remove_xss(); // 请查阅该方法代码。
 ```
 
 
+
+#### 20 异常 IP 操作自动封禁
+
+任何一个系统，都会来自各种各样的攻击。比如，DOS 攻击，账号撞库。那我们此时就特别需要针对这一系列攻击进行自己侦察并自动封禁。
+
+
+
+##### 20.1 自动临时封禁
+
+在 `Services\AccessForbid` 目录下，针对 IP 封禁做了一系统的业务封装。
+
+要实现自动封禁，只需要对重要的位置进行监测即可。例如，登录、注册、找回密码、发短信等。针对这些位置，我们定义好对应的位置编码。当该位置对就的用户 IP 错误累计达到多少次就自动封禁指定的时间。比如：
+
+
+
+```php
+\Services\AccessForbid\Forbid::position('login', 50, 30);
+```
+
+在登录逻辑里面调用以上方法就可以实现错误操作 50 次，则自动禁止该 IP 操作 30 分钟。
+
+登录实现 IP 监控。是为了避免恶意用户撞库。把我们的账号全部盗取并泄漏。
+
+
+
+##### 20.2 手工封禁
+
+这个相对就简单一些。这个可以通过管理后台，对指定的 IP 直接进行临时或永久封禁。以达到恶意 IP 长期攻击系统被封禁的需求。
+
+
+
+#### 21 告警系统
+
+所谓报警，指的是在系统里面业务出现了异常行为。而我们又需要对这种异常行为进行告警处理。
+
+
+
+##### 21.1 采集告警数据
+
+告警比较简单。只需要在指定位置业务报错时调用方法即可。
+
+```
+\Services\Monitor\Producer::report($message, $frequency);
+```
+
+- $meesage 参数是报警时想要记录的警报数据。
+- $frequency 是一个错误多少次才报警。如果一时间太多的错误爆发出来。全部涌入报警系统会导致系统过载。
+
+
+
+##### 21.2 启动告警消费程序守护进程
+
+进入项目根目录下的 public 文件夹。
+
+```shell
+$ php cli.php Monitor/consumer
+```
 
 
 

@@ -50,8 +50,9 @@ class Error extends \Common\controllers\Common
                 }
             }
         } else {
-            $errCode = STATUS_ERROR;
-            YLog::log($exception->getTraceAsString(), 'errors', 'log');
+            $errCode    = STATUS_ERROR;
+            $logContent = $exception->getMessage() . "\n" . $exception->getTraceAsString();
+            YLog::log($logContent, 'errors', 'log');
         }
 
         $errMsg = $this->getErrMsg($errCode, $errMsg);
