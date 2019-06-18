@@ -15,7 +15,7 @@
 			<div class="col-md-12">
                 <form action="{{'Monitor/lists'|url}}" method="get">
                     <div class="form-group">
-                        <select name="read_status" class="form-control" style="width:180px;">
+                        <select name="code" class="form-control" style="width:180px;">
                             <option value="">告警编码</option>
                             {{foreach $codeDict as $mcode => $name}}
                             <option {{if $mcode==$code}}selected="selected"{{/if}} value="{{$mcode}}">{{$name}}</option>

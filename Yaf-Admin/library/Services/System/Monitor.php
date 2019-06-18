@@ -36,11 +36,11 @@ class Monitor extends \Services\AbstractBase
             $params[':code'] = $code;
         }
         if (strlen($startTime) != '') {
-            $where  .= ' AND a.c_time = :startTime ';
+            $where  .= ' AND c_time = :startTime ';
             $params[':startTime'] = $startTime;
         }
         if (strlen($endTime) != '') {
-            $where  .= ' AND a.c_time = :endTime ';
+            $where  .= ' AND c_time = :endTime ';
             $params[':endTime'] = $endTime;
         }
         $orderBy = ' ORDER BY id DESC ';
