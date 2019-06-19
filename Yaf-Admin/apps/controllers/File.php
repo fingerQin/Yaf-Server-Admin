@@ -6,7 +6,6 @@
  */
 
 use finger\Paginator;
-use Utils\YCore;
 use Services\System\File;
 
 class FileController extends \Common\controllers\Admin

@@ -53,8 +53,10 @@ class NoticeController extends \Common\controllers\Admin
             $dialogEndTime = $this->getString('dialog_end_time', '');
             Notice::add($this->adminId, $title, $summary, $body, $terminal, $isDialog, $dialogEndTime);
             $this->json(true, '添加成功');
+        } else {
+            $this->assign('terminal', \Models\Notice::$terminalDict);
         }
-        $this->assign('terminal', \Models\Notice::$terminalDict);
+        
     }
 
     /**
@@ -72,11 +74,12 @@ class NoticeController extends \Common\controllers\Admin
             $dialogEndTime = $this->getString('dialog_end_time', '');
             Notice::edit($this->adminId, $noticeid, $title, $summary, $body, $terminal, $isDialog, $dialogEndTime);
             $this->json(true, '更新成功');
+        } else {
+            $noticeid = $this->getInt('noticeid');
+            $detail   = Notice::detail($noticeid);
+            $this->assign('detail', $detail);
+            $this->assign('terminal', \Models\Notice::$terminalDict);
         }
-        $noticeid = $this->getInt('noticeid');
-        $detail   = Notice::detail($noticeid);
-        $this->assign('detail', $detail);
-        $this->assign('terminal', \Models\Notice::$terminalDict);
     }
 
     /**

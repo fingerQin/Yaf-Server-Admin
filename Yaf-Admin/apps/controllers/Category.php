@@ -36,20 +36,21 @@ class CategoryController extends \Common\controllers\Admin
             $display  = $this->getInt('display');
             Category::add($this->adminId, $catType, $catName, $parentid, $isOutUrl, $outUrl, $display);
             $this->json(true, '操作成功');
+        } else {
+            $catType  = $this->getInt('cat_type', Category::CAT_NEWS);
+            $parentid = $this->getInt('parentid', 0);
+            $parentCatInfo = [];
+            if ($parentid > 0) {
+                $parentCatInfo = Category::detail($parentid);
+                $catType = $parentCatInfo['cat_type'];
+            }
+            $list = Category::list(0);
+            $this->assign('parentid', $parentid);
+            $this->assign('cat_type', $catType);
+            $this->assign('list', $list);
+            $this->assign('parent_cat_info', $parentCatInfo);
+            $this->assign('cat_type_list', Category::$categoryTypeList);
         }
-        $catType  = $this->getInt('cat_type', Category::CAT_NEWS);
-        $parentid = $this->getInt('parentid', 0);
-        $parentCatInfo = [];
-        if ($parentid > 0) {
-            $parentCatInfo = Category::detail($parentid);
-            $catType = $parentCatInfo['cat_type'];
-        }
-        $list = Category::list(0);
-        $this->assign('parentid', $parentid);
-        $this->assign('cat_type', $catType);
-        $this->assign('list', $list);
-        $this->assign('parent_cat_info', $parentCatInfo);
-        $this->assign('cat_type_list', Category::$categoryTypeList);
     }
 
     /**
@@ -65,15 +66,16 @@ class CategoryController extends \Common\controllers\Admin
             $display  = $this->getInt('display');
             Category::edit($this->adminId, $catId, $catName, $isOutUrl, $outUrl, $display);
             $this->json(true, '操作成功');
+        } else {
+            $parentid = $this->getInt('parentid', 0);
+            $catId    = $this->getInt('cat_id');
+            $detail   = Category::detail($catId);
+            $list     = Category::list(0);
+            $this->assign('parentid', $parentid);
+            $this->assign('detail', $detail);
+            $this->assign('list', $list);
+            $this->assign('cat_type_list', Category::$categoryTypeList);
         }
-        $parentid = $this->getInt('parentid', 0);
-        $catId    = $this->getInt('cat_id');
-        $detail   = Category::detail($catId);
-        $list     = Category::list(0);
-        $this->assign('parentid', $parentid);
-        $this->assign('detail', $detail);
-        $this->assign('list', $list);
-        $this->assign('cat_type_list', Category::$categoryTypeList);
     }
 
     /**

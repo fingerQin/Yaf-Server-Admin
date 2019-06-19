@@ -58,10 +58,11 @@ class ApiController extends \Common\controllers\Admin
             $ipPool      = $this->getString('ip_pool', '');
             ApiAuth::edit($this->adminId, $id, $apiType, $apiName, $apiKey, $apiSecret, $isOpenIpBan, $ipScope, $ipPool);
             $this->json(true, '修改成功');
+        } else {
+            $id = $this->getInt('id');
+            $detail = ApiAuth::detail($id);
+            $this->assign('detail', $detail);
         }
-        $id = $this->getInt('id');
-        $detail = ApiAuth::detail($id);
-        $this->assign('detail', $detail);
     }
 
     /**

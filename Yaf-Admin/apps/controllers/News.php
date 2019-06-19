@@ -5,9 +5,8 @@
  * @date 2018-07-11
  */
 
-use finger\Paginator;
-use Utils\YCore;
 use Utils\YUrl;
+use finger\Paginator;
 use Services\System\Category;
 use Services\System\Upload;
 use Services\System\News;
@@ -53,13 +52,14 @@ class NewsController extends \Common\controllers\Admin
             $display  = $this->getInt('display');
             News::add($this->adminId, $catCode, $title, $intro, $keywords, $source, $imageUrl, $content, $display);
             $this->json(true, '操作成功');
+        } else {
+            $newsCatList     = Category::list(0, Category::CAT_NEWS, true);
+            $frontendUrl     = YUrl::getDomainName();
+            $filesDomainName = YUrl::getFilesDomainName();
+            $this->assign('files_domain_name', $filesDomainName);
+            $this->assign('news_cat_list', $newsCatList);
+            $this->assign('frontend_url', $frontendUrl);
         }
-        $newsCatList     = Category::list(0, Category::CAT_NEWS, true);
-        $frontendUrl     = YUrl::getDomainName();
-        $filesDomainName = YUrl::getFilesDomainName();
-        $this->assign('files_domain_name', $filesDomainName);
-        $this->assign('news_cat_list', $newsCatList);
-        $this->assign('frontend_url', $frontendUrl);
     }
 
     /**
@@ -79,16 +79,17 @@ class NewsController extends \Common\controllers\Admin
             $display  = $this->getInt('display');
             News::edit($this->adminId, $newsId, $catCode, $title, $intro, $keywords, $source, $imageUrl, $content, $display);
             $this->json(true, '操作成功');
+        } else {
+            $newsId          = $this->getInt('news_id');
+            $detail          = News::detail($newsId, true);
+            $newsCatList     = Category::list(0, 1);
+            $frontendUrl     = YUrl::getDomainName();
+            $filesDomainName = YUrl::getFilesDomainName();
+            $this->assign('files_domain_name', $filesDomainName);
+            $this->assign('news_cat_list', $newsCatList);
+            $this->assign('detail', $detail);
+            $this->assign('frontend_url', $frontendUrl);
         }
-        $newsId          = $this->getInt('news_id');
-        $detail          = News::detail($newsId, true);
-        $newsCatList     = Category::list(0, 1);
-        $frontendUrl     = YUrl::getDomainName();
-        $filesDomainName = YUrl::getFilesDomainName();
-        $this->assign('files_domain_name', $filesDomainName);
-        $this->assign('news_cat_list', $newsCatList);
-        $this->assign('detail', $detail);
-        $this->assign('frontend_url', $frontendUrl);
     }
 
     /**

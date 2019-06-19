@@ -5,9 +5,7 @@
  * @date 2018-06-27
  */
 
-use Utils\YCore;
 use Utils\YUrl;
-use ApiTools\Request;
 use Services\Power\Menu;
 use Services\System\Upload;
 use Services\Power\Help;
@@ -19,12 +17,12 @@ class IndexController extends \Common\controllers\Admin
      */
     public function indexAction()
     {
-        $menuId  = $this->getInt('menu_id', 1);
-        $topMenu = Menu::getRoleSubMenu($this->roleid, 0);
+        $menuId   = $this->getInt('menu_id', 1);
+        $topMenu  = Menu::getRoleSubMenu($this->roleid, 0);
+        $leftMenu = Menu::getLeftMenu($this->roleid, $menuId);
         $this->assign('realname', $this->realname);
         $this->assign('mobilephone', $this->mobile);
         $this->assign('top_menu', $topMenu);
-        $leftMenu = Menu::getLeftMenu($this->roleid, $menuId);
         $this->assign('left_menu', $leftMenu);
     }
 

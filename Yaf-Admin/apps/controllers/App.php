@@ -46,8 +46,9 @@ class AppController extends \Common\controllers\Admin
             $channel      = $this->getString('channel', '');
             App::add($this->adminId, $appType, $appTitle, $appV, $appDesc, $url, $upgradeWay, $dialogRepeat, $channel);
             $this->json(true, '添加成功');
+        } else {
+            $this->assign('channelDict', App::$AndroidChannelDict);
         }
-        $this->assign('channelDict', App::$AndroidChannelDict);
     }
 
     /**
@@ -67,11 +68,12 @@ class AppController extends \Common\controllers\Admin
             $channel      = $this->getString('channel', '');
             App::edit($this->adminId, $id, $appType, $appTitle, $appV, $appDesc, $url, $upgradeWay, $dialogRepeat, $channel);
             $this->json(true, '修改成功');
+        } else {
+            $id     = $this->getInt('id');
+            $detail = App::detail($id);
+            $this->assign('detail', $detail);
+            $this->assign('channelDict', App::$AndroidChannelDict);
         }
-        $id     = $this->getInt('id');
-        $detail = App::detail($id);
-        $this->assign('detail', $detail);
-        $this->assign('channelDict', App::$AndroidChannelDict);
     }
 
     /**

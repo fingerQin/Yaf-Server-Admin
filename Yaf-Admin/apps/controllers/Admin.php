@@ -5,7 +5,6 @@
  * @date 2018-07-07
  */
 
-use Utils\YCore;
 use finger\Paginator;
 use Services\Power\AdminUser;
 use Services\Power\Role;
@@ -39,9 +38,10 @@ class AdminController extends \Common\controllers\Admin
             $roleid      = $this->getInt('roleid');
             AdminUser::add($this->adminId, $realname, $password, $mobilephone, $roleid);
             $this->json(true, '添加成功');
+        } else {
+            $roles = Role::list();
+            $this->assign('roles', $roles);
         }
-        $roles = Role::list();
-        $this->assign('roles', $roles);
     }
 
     /**
@@ -54,9 +54,10 @@ class AdminController extends \Common\controllers\Admin
             $status  = $this->getInt('status');
             AdminUser::forbid($this->adminId, $adminId, $status);
             $this->json(true, '操作成功');
+        } else {
+            $roles = Role::list();
+            $this->assign('roles', $roles);
         }
-        $roles = Role::list();
-        $this->assign('roles', $roles);
     }
 
     /**
@@ -72,12 +73,13 @@ class AdminController extends \Common\controllers\Admin
             $roleid      = $this->getInt('roleid');
             AdminUser::edit($this->adminId, $adminId, $realname, $mobilephone, $roleid, $password);
             $this->json(true, '修改成功');
+        } else {
+            $adminId     = $this->getInt('admin_id');
+            $adminDetail = AdminUser::detail($adminId);
+            $roles       = Role::list();
+            $this->assign('detail', $adminDetail);
+            $this->assign('roles', $roles);
         }
-        $adminId     = $this->getInt('admin_id');
-        $adminDetail = AdminUser::detail($adminId);
-        $roles       = Role::list();
-        $this->assign('detail', $adminDetail);
-        $this->assign('roles', $roles);
     }
 
     /**
@@ -101,9 +103,10 @@ class AdminController extends \Common\controllers\Admin
             $newPwd = $this->getString('new_pwd');
             AdminUser::editPwd($this->adminId, $oldPwd, $newPwd);
             $this->json(true, '修改成功');
+        } else {
+            $adminInfo = AdminUser::detail($this->adminId);
+            $this->assign('admin_info', $adminInfo);
         }
-        $adminInfo = AdminUser::detail($this->adminId);
-        $this->assign('admin_info', $adminInfo);
     }
 
     /**

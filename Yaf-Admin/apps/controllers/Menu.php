@@ -5,7 +5,6 @@
  * @date 2018-07-07
  */
 
-use Utils\YCore;
 use Services\Power\Menu;
 
 class MenuController extends \Common\controllers\Admin
@@ -35,11 +34,12 @@ class MenuController extends \Common\controllers\Admin
             $display    = $this->getInt('display', 0);
             Menu::add($parentid, $name, $ctrlName, $actionName,$ico, $data, $listorder, $display);
             $this->json(true, '添加成功');
+        } else {
+            $parentid = $this->getInt('parentid', 0);
+            $menus    = Menu::getMenus(0);
+            $this->assign('menus', $menus);
+            $this->assign('parentid', $parentid);
         }
-        $parentid = $this->getInt('parentid', 0);
-        $menus    = Menu::getMenus(0);
-        $this->assign('menus', $menus);
-        $this->assign('parentid', $parentid);
     }
 
     /**
@@ -59,12 +59,13 @@ class MenuController extends \Common\controllers\Admin
             $display    = $this->getInt('display', 0);
             Menu::edit($menuId, $parentid, $name, $ctrlName, $actionName,$ico, $data, $listorder, $display);
             $this->json(true, '编辑成功');
+        } else {
+            $menuId = $this->getInt('menu_id');
+            $detail = Menu::getDetail($menuId);
+            $menus  = Menu::getMenus(0);
+            $this->assign('detail', $detail);
+            $this->assign('menus', $menus);
         }
-        $menuId = $this->getInt('menu_id');
-        $detail = Menu::getDetail($menuId);
-        $menus  = Menu::getMenus(0);
-        $this->assign('detail', $detail);
-        $this->assign('menus', $menus);
     }
 
     /**

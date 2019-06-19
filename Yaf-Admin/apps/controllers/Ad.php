@@ -5,8 +5,8 @@
  * @date 2018-08-07
  */
 
-use finger\Paginator;
 use Utils\YUrl;
+use finger\Paginator;
 use Services\System\Ad;
 use Common\controllers\Admin;
 
@@ -53,10 +53,11 @@ class AdController extends Admin
             $posAdCount = $this->getInt('pos_ad_count');
             Ad::editAdPostion($this->adminId, $posId, $posName, $posCode, $posAdCount);
             $this->json(true, '操作成功');
+        } else {
+            $posId  = $this->getInt('pos_id');
+            $detail = Ad::getAdPostionDetail($posId);
+            $this->assign('detail', $detail);
         }
-        $posId  = $this->getInt('pos_id');
-        $detail = Ad::getAdPostionDetail($posId);
-        $this->assign('detail', $detail);
     }
 
     /**
@@ -106,11 +107,12 @@ class AdController extends Admin
             Ad::addAd($this->adminId, $posId, $adName, $startTime, $endTime, $display, 
             $remark, $adImageUrl, $adIpxImageUrl, $adUrl);
             $this->json(true, '添加成功');
+        } else {
+            $posId = $this->getInt('pos_id');
+            $filesDomainName = YUrl::getFilesDomainName();
+            $this->assign('files_domain_name', $filesDomainName);
+            $this->assign('pos_id', $posId);
         }
-        $posId = $this->getInt('pos_id');
-        $filesDomainName = YUrl::getFilesDomainName();
-        $this->assign('files_domain_name', $filesDomainName);
-        $this->assign('pos_id', $posId);
     }
 
     /**
@@ -131,12 +133,13 @@ class AdController extends Admin
             Ad::editAd($this->adminId, $adId, $adName, $startTime, $endTime, $display, 
             $remark, $adImageUrl, $adIpxImageUrl, $adUrl);
             $this->json(true, '修改成功');
+        } else {
+            $adId   = $this->getInt('ad_id');
+            $detail = Ad::getAdDetail($adId);
+            $filesDomainName = YUrl::getFilesDomainName();
+            $this->assign('files_domain_name', $filesDomainName);
+            $this->assign('detail', $detail);
         }
-        $adId   = $this->getInt('ad_id');
-        $detail = Ad::getAdDetail($adId);
-        $filesDomainName = YUrl::getFilesDomainName();
-        $this->assign('files_domain_name', $filesDomainName);
-        $this->assign('detail', $detail);
     }
 
     /**

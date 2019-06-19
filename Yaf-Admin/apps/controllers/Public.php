@@ -5,7 +5,6 @@
  * @date 2018-07-06
  */
 
-use Utils\YCore;
 use Services\Power\Auth;
 use Services\Sms\Sms;
 

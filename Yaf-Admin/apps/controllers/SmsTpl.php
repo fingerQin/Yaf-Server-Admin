@@ -53,9 +53,10 @@ class SmsTplController extends \Common\controllers\Admin
             $triggerType = $this->getInt('trigger_type');
             Tpl::edit($this->adminId, $id, $sendKey, $title, $smsBody, $triggerType);
             $this->json(true, '更新成功');
+        } else {
+            $id = $this->getInt('id');
+            $detail = Tpl::detail($id);
+            $this->assign('detail', $detail);
         }
-        $id = $this->getInt('id');
-        $detail = Tpl::detail($id);
-        $this->assign('detail', $detail);
     }
 }

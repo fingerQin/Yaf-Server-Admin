@@ -5,9 +5,9 @@
  * @date 2017-07-06
  */
 
-use finger\Paginator;
 use Utils\YCore;
 use Utils\YUrl;
+use finger\Paginator;
 use Services\System\Category;
 use Services\System\Link;
 
@@ -43,14 +43,15 @@ class LinkController extends \Common\controllers\Admin
             $display  = $this->getInt('display');
             Link::add($this->adminId, $linkName, $linkUrl, $catId, $imageUrl, $display);
             $this->json(true, '添加成功');
+        } else {
+            $list = Category::list(0, 2);
+            if (empty($list)) {
+                YCore::exception(STATUS_ERROR, '请立即创建友情链接分类');
+            }
+            $filesDomainName = YUrl::getFilesDomainName();
+            $this->assign('cat_list', $list);
+            $this->assign('files_domain_name', $filesDomainName);
         }
-        $list = Category::list(0, 2);
-        if (empty($list)) {
-            YCore::exception(STATUS_ERROR, '请立即创建友情链接分类');
-        }
-        $filesDomainName = YUrl::getFilesDomainName();
-        $this->assign('cat_list', $list);
-        $this->assign('files_domain_name', $filesDomainName);
     }
 
     /**
@@ -67,17 +68,18 @@ class LinkController extends \Common\controllers\Admin
             $display  = $this->getInt('display');
             Link::edit($this->adminId, $linkId, $linkName, $linkUrl, $catId, $imageUrl, $display);
             $this->json(true, '修改成功');
+        } else {
+            $linkId = $this->getInt('link_id');
+            $detail = Link::detail($linkId);
+            $list   = Category::list(0, 2);
+            $this->assign('detail', $detail);
+            if (empty($list)) {
+                YCore::exception(STATUS_ERROR, '请立即创建友情链接分类');
+            }
+            $filesDomainName = YUrl::getFilesDomainName();
+            $this->assign('cat_list', $list);
+            $this->assign('files_domain_name', $filesDomainName);
         }
-        $linkId = $this->getInt('link_id');
-        $detail = Link::detail($linkId);
-        $list   = Category::list(0, 2);
-        $this->assign('detail', $detail);
-        if (empty($list)) {
-            YCore::exception(STATUS_ERROR, '请立即创建友情链接分类');
-        }
-        $filesDomainName = YUrl::getFilesDomainName();
-        $this->assign('cat_list', $list);
-        $this->assign('files_domain_name', $filesDomainName);
     }
 
     /**

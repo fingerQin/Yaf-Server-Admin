@@ -6,7 +6,6 @@
  */
 
 use finger\Paginator;
-use Utils\YCore;
 use Services\System\Config;
 
 class ConfigController extends \Common\controllers\Admin
@@ -54,10 +53,11 @@ class ConfigController extends \Common\controllers\Admin
             $description = $this->getString('description');
             Config::edit($this->adminId, $configId, $title, $cfgKey, $cfgValue, $description);
             $this->json(true, '修改成功');
+        } else {
+            $configId = $this->getInt('config_id');
+            $detail   = Config::detail($configId);
+            $this->assign('detail', $detail);
         }
-        $configId = $this->getInt('config_id');
-        $detail   = Config::detail($configId);
-        $this->assign('detail', $detail);
     }
 
     /**

@@ -5,7 +5,6 @@
  * @date 2018-07-07
  */
 
-use Utils\YCore;
 use Services\Power\Role;
 use Services\Power\Menu;
 
@@ -58,10 +57,11 @@ class RoleController extends \Common\controllers\Admin
             $description = $this->getString('description');
             Role::edit($roleid, $rolename, $listorder, $description);
             $this->json(true, '修改成功');
+        } else {
+            $roleid = $this->getInt('roleid');
+            $role   = Role::detail($roleid);
+            $this->assign('role', $role);
         }
-        $roleid = $this->getInt('roleid');
-        $role   = Role::detail($roleid);
-        $this->assign('role', $role);
     }
 
     /**
@@ -91,7 +91,8 @@ class RoleController extends \Common\controllers\Admin
     /**
      * 获取角色权限的菜单ID。
      */
-    public function getRolePermissionMenuAction() {
+    public function getRolePermissionMenuAction()
+    {
         $roleid    = $this->getInt('roleid');
         $privMenus = Menu::getRolePermissionMenu($roleid);
         $menus     = Menu::getMenus(0);
