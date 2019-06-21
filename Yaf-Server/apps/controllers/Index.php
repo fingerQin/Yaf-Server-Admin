@@ -6,6 +6,7 @@
  */
 
 use Apis\Factory;
+use Utils\YExcel;
 
 class IndexController extends \Common\controllers\Api
 {
