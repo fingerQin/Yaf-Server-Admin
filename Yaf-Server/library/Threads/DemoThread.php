@@ -7,9 +7,9 @@
 
 namespace Threads;
 
+use Models\Event;
 use finger\Thread\Thread;
 use Services\Event\Sub\Login;
-use Models\Event;
 
 class DemoThread extends Thread
 {
