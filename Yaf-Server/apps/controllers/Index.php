@@ -6,7 +6,6 @@
  */
 
 use Apis\Factory;
-use Utils\YCore;
 
 class IndexController extends \Common\controllers\Api
 {

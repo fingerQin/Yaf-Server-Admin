@@ -9,9 +9,7 @@
 namespace Apis;
 
 use Utils\YCore;
-use Utils\YCache;
 use Utils\YInput;
-use Utils\YLog;
 use Services\System\ApiAuth;
 
 class Factory
@@ -20,7 +18,7 @@ class Factory
      * 根据接口名称返回接口对象。
      * 
      * -- 1、接口名称转类名称规则：user.login = UserLoginApi
-     * -- 2、当method参数为空的时候，要抛出异常给调用的人捕获处理。
+     * -- 2、当 method 参数为空的时候，要抛出异常给调用的人捕获处理。
      *
      * @param  array  $apiData 请求来的所有参数。
      * @throws Exception

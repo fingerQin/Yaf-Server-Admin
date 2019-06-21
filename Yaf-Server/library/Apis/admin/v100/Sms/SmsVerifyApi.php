@@ -21,13 +21,11 @@ class SmsVerifyApi extends AbstractApi
     protected function runService()
     {
         $this->isAllowAccessApi(0);
-        $mobile    = $this->getString('mobile', '');
-        $key       = $this->getString('key', '');
-        $code      = $this->getString('code', '');
-        $platform  = $this->getString('platform');
-        $isDestroy = $this->getInt('is_destroy', 0);
-        $ip        = YCore::ip();
-        $result    = Sms::verify($mobile, $code, $key, $isDestroy = 0, $ip);
+        $mobile = $this->getString('mobile', '');
+        $key    = $this->getString('key', '');
+        $code   = $this->getString('code', '');
+        $ip     = YCore::ip();
+        $result = Sms::verify($mobile, $code, $key, $isDestroy = 0, $ip);
         $this->render(STATUS_SUCCESS, '验证码正确', $result);
     }
 }

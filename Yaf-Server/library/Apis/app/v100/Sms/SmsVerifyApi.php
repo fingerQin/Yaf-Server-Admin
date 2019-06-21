@@ -24,10 +24,9 @@ class SmsVerifyApi extends AbstractApi
         $mobile    = $this->getString('mobile', '');
         $key       = $this->getString('key', '');
         $code      = $this->getString('code', '');
-        $platform  = $this->getString('platform');
         $isDestroy = $this->getInt('is_destroy', 0);
         $ip        = YCore::ip();
-        $result    = Sms::verify($mobile, $code, $key, $isDestroy = 0, $ip);
+        $result    = Sms::verify($mobile, $code, $key, $isDestroy, $ip);
         $this->render(STATUS_SUCCESS, '验证码正确', $result);
     }
 }

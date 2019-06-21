@@ -9,7 +9,6 @@
 
 namespace Apis\app\v100\System;
 
-use Utils\YCore;
 use Apis\AbstractApi;
 use Services\User\Auth;
 use Services\System\Advertisement;

@@ -21,14 +21,11 @@ class SmsSendApi extends AbstractApi
     protected function runService()
     {
         $this->isAllowAccessApi(0);
-        $mobile      = $this->getString('mobile', '');
-        $key         = $this->getString('key', '');
-        $platform    = $this->getString('platform');
-        $channel     = $this->getString('channel', '');
-        $deviceToken = $this->getString('device_token', '');
-        $appV        = $this->getString('app_v', '');
-        $ip          = YCore::ip();
-        $result      = Sms::send($mobile, $key, $ip, $platform);
+        $mobile   = $this->getString('mobile', '');
+        $key      = $this->getString('key', '');
+        $platform = $this->getString('platform');
+        $ip       = YCore::ip();
+        $result   = Sms::send($mobile, $key, $ip, $platform);
         $this->render(STATUS_SUCCESS, '发送成功', $result);
     }
 }

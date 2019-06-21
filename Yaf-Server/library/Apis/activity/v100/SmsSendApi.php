@@ -7,7 +7,6 @@
 
 namespace Apis\activity\v100\Sms;
 
-use Utils\YCore;
 use Apis\AbstractApi;
 use Services\Sms\Sms;
 
@@ -20,13 +19,10 @@ class SmsSendApi extends AbstractApi
      */
     protected function runService()
     {
-        $mobile      = $this->getString('mobile', '');
-        $key         = $this->getString('key', '');
-        $platform    = $this->getString('platform');
-        $channel     = $this->getString('channel', '');
-        $deviceToken = $this->getString('device_token', '');
-        $appV        = $this->getString('app_v', '');
-        $result      = Sms::send($mobile, $key, '', $platform);
+        $mobile   = $this->getString('mobile', '');
+        $key      = $this->getString('key', '');
+        $platform = $this->getString('platform');
+        $result   = Sms::send($mobile, $key, '', $platform);
         $this->render(200, '发送成功', $result);
     }
 }

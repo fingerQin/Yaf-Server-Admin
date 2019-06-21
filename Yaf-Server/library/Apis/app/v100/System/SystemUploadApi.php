@@ -8,7 +8,6 @@
 
 namespace Apis\app\v100\System;
 
-use Utils\YUrl;
 use Apis\AbstractApi;
 use Services\User\Auth;
 use Services\System\Upload;

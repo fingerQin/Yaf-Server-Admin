@@ -12,7 +12,8 @@ class MonitorController extends \Common\controllers\Cli
     /**
      * 注册事件消费常驻进程。
      * 
-     * -- 启动方式：php cli.php Monitor/consumer
+     * -- 进入项目根目录下的 public 文件夹，然后如下方式启动：
+     * -- $ php cli.php Monitor/consumer
      *
      */
     public function consumerAction()

@@ -13,7 +13,8 @@ class Cli extends Common
      * 重写父方法, Cli 模式关闭模板渲染。
      * @return void
      */
-    public function init() {
+    public function init()
+    {
         parent::init();
         $this->end();
         if (PHP_SAPI != 'cli') { // 非 CLI 模式运行则报错。

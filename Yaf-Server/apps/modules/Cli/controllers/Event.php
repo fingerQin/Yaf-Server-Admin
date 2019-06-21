@@ -15,7 +15,8 @@ class EventController extends \Common\controllers\Cli
     /**
      * 事件分发常驻进程。
      * 
-     * -- 启动方式：php cli.php event/dispatcher
+     * -- 进入项目根目录下的 public 文件夹，然后如下方式启动：
+     * -- $ php cli.php Event/dispatcher
      *
      */
     public function dispatcherAction()
@@ -26,7 +27,8 @@ class EventController extends \Common\controllers\Cli
     /**
      * 注册事件消费常驻进程。
      * 
-     * -- 启动方式：php cli.php event/register
+     * -- 进入项目根目录下的 public 文件夹，然后如下方式启动：
+     * -- $ php cli.php Event/register
      *
      */
     public function registerAction()
@@ -43,7 +45,8 @@ class EventController extends \Common\controllers\Cli
     /**
      * 登录事件消费常驻进程。
      * 
-     * -- 启动方式：php cli.php event/login
+     * -- 进入项目根目录下的 public 文件夹，然后如下方式启动：
+     * -- $ php cli.php Event/login
      *
      */
     public function loginAction()

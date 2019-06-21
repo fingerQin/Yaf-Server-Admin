@@ -10,9 +10,9 @@ namespace Apis;
 
 use Utils\YCore;
 use Utils\YInput;
+use finger\Ip;
 use finger\Validator;
 use Services\AccessForbid\Forbid;
-use finger\Ip;
 
 abstract class AbstractApi
 {
@@ -89,6 +89,14 @@ abstract class AbstractApi
      */
     abstract protected function runService();
 
+    /**
+     * 验证当前访问接口的 IP 是否有权限。
+     *
+     * -- 1、只有 app 类型接口才做此限制。因为，其他类型的接口有限制指定 IP 才可访问。
+     * -- 2、只对一些对系统性能、资源消耗（短信）、信息安全（用户数据撞库泄漏）等接口做限制。
+     * 
+     * @return void
+     */
     protected function checkIpAccessPermission()
     {
         $apiMethod = $this->params['method'];
