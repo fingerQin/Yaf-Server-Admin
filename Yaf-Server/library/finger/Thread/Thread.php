@@ -128,7 +128,7 @@ abstract class Thread
         // [1] 运行超过指定时长则退出。
         if ($this->isNewCreate && $this->runDurationExit > 0) {
             $diffTime = time() - $startTimeTsp;
-            if ($diffTime >= $this->runDurationExit) {
+            if ($diffTime >= $this->runDurationExit * 60) {
                 exit(0);
             }
         }
