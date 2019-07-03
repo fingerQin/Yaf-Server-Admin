@@ -91,8 +91,8 @@ class YDir
             return TRUE;
         }
         $path = self::path($path);
-        @mkdir($path, 0777, true);
-        @chmod($path, 0777);
+        @mkdir($path, $mode, true);
+        @chmod($path, $mode);
         return true;
     }
 
