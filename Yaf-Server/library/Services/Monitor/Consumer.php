@@ -60,21 +60,19 @@ class Consumer extends \finger\Thread\Thread
         // [2.2] 无限循环让进程一直处于常驻状态。
         $MonitorModel = new Monitor();
         try {
-            $counter = 0; // 100 个一组进行入库处理。提高数据库吞吐率。
+            $batResult = []; // 保存每批次入库的数据。
             while(true) {
                 $strQueueVal = $redis->bRPopLPush($monitorQueueKey, $monitorQueueIngKey, 3);
-                $monitorTempQueueKey = "monitor-temp-queue-{$num}-key";
                 if ($strQueueVal) {
                     $arrQueueVal = json_decode($strQueueVal, true);
                     // [3] 调用具体的业务来处理这个消息。
                     try {
+                        if (count($batResult) >= 100) {
+                            $this->monitorToSuccess($batResult);
+                        }
                         $this->runService($arrQueueVal);
                         $redis->lRem($monitorQueueIngKey, $strQueueVal, 1);
-                        $redis->lPush($monitorTempQueueKey, $strQueueVal);
                         YLog::log($arrQueueVal, 'monitor', "{$arrQueueVal['code']}-success");
-                        if ($counter >= 100) {
-                            $this->monitorToSuccess($redis, $num);
-                        }
                     } catch (\Exception $e) {
                         $this->monitorToFail($arrQueueVal['code'], $strQueueVal, $e->getCode(), $e->getMessage());
                         $redis->lRem($monitorQueueIngKey, $strQueueVal, 1);
@@ -100,28 +98,16 @@ class Consumer extends \finger\Thread\Thread
     /**
      * 监控上报数据入库。
      * 
-     * @param  \Redis  $redis  Redis 连接。
-     * @param  int     $num    子进程编号。
+     * @param  array  $batResult  一组待入库数据。
      * 
      * @return void
      */
-    protected function monitorToSuccess($redis, $num)
+    protected function monitorToSuccess(&$batResult)
     {
-        // 消费成功之后，临时将数据存放该队列。待 100 个满足之后或没有数据之后立即入库。
-        $monitorTempQueueKey = "monitor-temp-queue-{$num}-key";
-        $data = [];
-        while (true) {
-            $queueData = $redis->rPop($monitorTempQueueKey);
-            if ($queueData === FALSE) {
-                break;
-            } else {
-                $data[] = $queueData;
-            }
-        }
         if (!empty($data)) {
             $params = [];
             $sql = 'REPLACE INTO finger_monitor(serial_no,code,userid,`status`,`data`,c_time) VALUES ';
-            foreach ($data as $k => $item) {
+            foreach ($batResult as $k => $item) {
                 $monitor  = json_decode($item, true);
                 $userid   = $monitor['userid'] ?? 0;
                 $status   = 0;
