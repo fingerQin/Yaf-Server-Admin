@@ -107,15 +107,15 @@ class Common extends \Yaf_Controller_Abstract
         $gpValue = $this->getGP($name);
         if (is_null($gpValue)) {
             if (is_null($defaultValue)) {
-                YCore::exception(4000004, "{$name}值异常");
+                YCore::exception(STATUS_ERROR, "{$name}值异常");
             } else if (!is_array($defaultValue)) {
-                YCore::exception(4000005, "defaultValue参数不是数组");
+                YCore::exception(STATUS_ERROR, "defaultValue参数不是数组");
             } else {
                 return $defaultValue;
             }
         } else {
             if (!is_array($gpValue)) {
-                YCore::exception(4000006, "{$name}值不是数组");
+                YCore::exception(STATUS_ERROR, "{$name}值不是数组");
             } else {
                 return $gpValue;
             }
@@ -137,15 +137,15 @@ class Common extends \Yaf_Controller_Abstract
         $gpValue = $this->getGP($name);
         if (is_null($gpValue)) {
             if (is_null($defaultValue)) {
-                YCore::exception(4000007, "{$name}值异常");
+                YCore::exception(STATUS_ERROR, "{$name}值异常");
             } else if (!Validator::is_float($defaultValue)) {
-                YCore::exception(4000008, "defaultValue参数不是浮点型");
+                YCore::exception(STATUS_ERROR, "defaultValue参数不是浮点型");
             } else {
                 return $defaultValue;
             }
         } else {
             if (!Validator::is_float($gpValue)) {
-                YCore::exception(4000009, "{$name}值不是浮点型");
+                YCore::exception(STATUS_ERROR, "{$name}值不是浮点型");
             } else {
                 return $gpValue;
             }
@@ -166,7 +166,7 @@ class Common extends \Yaf_Controller_Abstract
         $gpValue = $this->getGP($name);
         if (is_null($gpValue)) {
             if (is_null($defaultValue)) {
-                YCore::exception(4000010, "{$name}值异常");
+                YCore::exception(STATUS_ERROR, "{$name}值异常");
             } else {
                 return $defaultValue;
             }
