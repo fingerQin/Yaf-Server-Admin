@@ -13,13 +13,57 @@ use finger\Ip;
 class YCore
 {
     /**
+     * 忽略不处理的错误。
+     *
+     * -- 在 PHP 底层有一些异常抛出的时候，同时会触发一个错误。导致我们异常与错误处理同时生效而陷入逻辑处理的困难。
+     * -- 忽略之后，可以实现只处理异常。
+     * 
+     * @var array
+     */
+    protected static $ignoreError = [
+        'server has gone away',
+        'no connection to the server',
+        'Lost connection',
+        'is dead or not enabled',
+        'Error while sending',
+        'decryption failed or bad record mac',
+        'server closed the connection unexpectedly',
+        'SSL connection has been closed unexpectedly',
+        'Error writing data to the connection',
+        'Resource deadlock avoided',
+        'Transaction() no null',
+        'child connection forced to terminate due to client_idle_limit',
+        'query_wait_timeout',
+        'reset by peer',
+        'Physical connection is not usable',
+        'TCP Provider: Error code 0x68',
+        'Name or service not known'
+    ];
+
+    /**
+     * 是否属于忽略性的错误。
+     * 
+     * @param  string  $errMsg  错误信息。
+     *
+     * @return bool
+     */
+    protected static function isIgnoreError($errMsg)
+    {
+        foreach (self::$ignoreError as $msg) {
+            if (strpos($errMsg, $msg) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 抛出异常。
-     *
-     * @param  int      $errCode            错误编号。
-     * @param  string   $errMsg             错误信息。
-     * @param  string   $classNameAndMethod 出错位置执行的类与方法。当使用 try cacth 捕获异常时将捕获的异常信息传入。
-     * @param  string   $args               出错位置传入方法的参数。当使用 try cacth 捕获异常时将捕获的异常信息传入。
-     *
+     * 
+     * @param  int            $errCode             错误编号。
+     * @param  string|array   $errMsg              错误信息。
+     * @param  string         $classNameAndMethod  出错位置执行的类与方法。当使用 try cacth 捕获异常时将捕获的异常信息传入。
+     * @param  string         $args                出错位置传入方法的参数。当使用 try cacth 捕获异常时将捕获的异常信息传入。
      * @throws \finger\ServiceException
      */
     public static function exception($errCode, $errMsg, $classNameAndMethod = '', $args = [])
@@ -41,11 +85,13 @@ class YCore
      * @param  string  $errstr   错误的信息。
      * @param  string  $errfile  发生错误的文件名。
      * @param  int     $errline  错误发生的行号。
-     *
      * @return void
      */
     public static function errorHandler($errno, $errstr, $errfile, $errline)
     {
+        if ($errno == E_WARNING && self::isIgnoreError($errstr)) {
+            return;
+        }
         // [1] 获取堆栈信息。
         $debugStack = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 4);
         $traceStack = '';
@@ -57,15 +103,9 @@ class YCore
         // [2] 根据环境控制错误信息输出。
         $serverIP = isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
         $clientIP = YCore::ip();
-
         $appDebug = self::appconfig('app.debug');
-        $trace    = "PHP Error:{$errno}\n"
-                  . "ServerIP:{$serverIP}\n"
-                  . "ClientIP:{$clientIP}\n"
-                  . "Error Message:{$errstr}\n"
-                  . "Error File:{$errfile}\n"
-                  . "Error Line:{$errline}\n"
-                  . "StackTrace:\n{$traceStack}";
+        $request  = new \Yaf_Request_Http();
+        $isCli    = $request->isCli();
 
         $logData = [
             'Type'       => 'set_error_handler',
@@ -78,25 +118,26 @@ class YCore
             'ErrorNo'    => $errno, 
             'stackTrace' => $traceStack
         ];
-        // [3] 根据不同的环境配置打日志。
-        YLog::log($logData, 'errors', 'log', true);
-        $request = new \Yaf_Request_Http();
-        $isAjax  = $request->isXmlHttpRequest();
-        if ($isAjax) {
+        YLog::log($logData, 'errors', 'log', $isForceWrite = true);
+        if (defined('IS_API')) {
+            ob_clean();
             header("Access-Control-Allow-Origin: *");
             header('Content-type: application/json');
             $data = [
                 'code' => STATUS_ERROR,
-                'msg'  => $appDebug ? $trace : '服务器繁忙,请稍候重试'
+                'msg'  => $appDebug ? print_r($logData, true) : '服务器繁忙,请稍候重试'
             ];
+            YLog::writeApiResponseLog($data);
             echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        } else if ($isCli) {
+            $datetime = date('Y-m-d H:i:s', time());
+            echo $datetime . "\n" . print_r($logData, true);
         } else {
+            ob_clean();
             if ($appDebug) {
-                echo "<pre>\n{$trace}\n</pre>";
+                echo print_r($logData, true);
             } else {
-                $redirect500Url = YUrl::createBackendUrl('Error', 'serverError');
                 header('HTTP/1.1 500 Internal Server Error');
-                header("Location: {$redirect500Url}");
             }
         }
         exit(0);

@@ -13,6 +13,51 @@ use finger\Ip;
 class YCore
 {
     /**
+     * 忽略不处理的错误。
+     *
+     * -- 在 PHP 底层有一些异常抛出的时候，同时会触发一个错误。导致我们异常与错误处理同时生效而陷入逻辑处理的困难。
+     * -- 忽略之后，可以实现只处理异常。
+     * 
+     * @var array
+     */
+    protected static $ignoreError = [
+        'server has gone away',
+        'no connection to the server',
+        'Lost connection',
+        'is dead or not enabled',
+        'Error while sending',
+        'decryption failed or bad record mac',
+        'server closed the connection unexpectedly',
+        'SSL connection has been closed unexpectedly',
+        'Error writing data to the connection',
+        'Resource deadlock avoided',
+        'Transaction() no null',
+        'child connection forced to terminate due to client_idle_limit',
+        'query_wait_timeout',
+        'reset by peer',
+        'Physical connection is not usable',
+        'TCP Provider: Error code 0x68',
+        'Name or service not known'
+    ];
+
+    /**
+     * 是否属于忽略性的错误。
+     * 
+     * @param  string  $errMsg  错误信息。
+     *
+     * @return bool
+     */
+    protected static function isIgnoreError($errMsg)
+    {
+        foreach (self::$ignoreError as $msg) {
+            if (strpos($errMsg, $msg) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 抛出异常。
      * 
      * @param  int            $errCode             错误编号。
@@ -44,6 +89,9 @@ class YCore
      */
     public static function errorHandler($errno, $errstr, $errfile, $errline)
     {
+        if ($errno == E_WARNING && self::isIgnoreError($errstr)) {
+            return;
+        }
         // [1] 获取堆栈信息。
         $debugStack = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 4);
         $traceStack = '';

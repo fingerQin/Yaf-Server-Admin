@@ -20,14 +20,6 @@ class Connection
     protected $dbConnection = null;
 
     /**
-     * 在使用预处理语句时使用。
-     * -- 即建立一个只能向后的指针。
-     *
-     * @var array
-     */
-    protected $prepareAttr = [\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY];
-
-    /**
      * 连接哪个数据库配置。对应系统配置文件 config.ini 当中 mysql.xxx.host 的 xxx
      *
      * @var string
@@ -96,7 +88,7 @@ class Connection
         if (strlen($dbOption) > 0) {
             $this->dbOption = $dbOption;
         }
-        $registryName  = "mysql_{$this->dbOption}";
+        $registryName = "mysql_{$this->dbOption}";
         // [1] 传统初始化MySQL方式。
         $config   = YCore::appconfig("mysql.{$this->dbOption}");
         $host     = $config['host'];
