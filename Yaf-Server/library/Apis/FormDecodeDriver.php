@@ -11,7 +11,7 @@ use Utils\YCore;
 
 class FormDecodeDriver
 {
-   /**
+    /**
      * 解析请求数据。
      * 
      * @param  array  $params  请求参数。
@@ -34,11 +34,11 @@ class FormDecodeDriver
     public static function checkSign($params, $apiSecret)
     {
         $sign = $params['sign'];
-        unset($sign);
+        unset($params['sign']);
         ksort($params);
         $str = '';
         foreach ($params as $key => $value) {
-            if (!is_array($value)) {
+            if (!is_array($value) && strlen($value) != 0) {
                 $str .= "{$key}{$value}"; // 非数组的值才能进行签名。
             }
         }
