@@ -453,6 +453,61 @@ class Models
     }
 
     /**
+     * 批量插入数据。
+     *
+     * @param array $data
+     *
+     * @return bool
+     * 
+     * --- eg:start ---
+     * $data = [
+     *     [
+     *         'username' => '张三',
+     *         'age'      => 20
+     *     ],
+     *     [
+     *         'username' => '李四',
+     *         'age'      => 22
+     *     ]，
+     *     ......
+     * ];
+     * --- eg:end   ---
+     * 
+     */
+    final public function insertAll(array $data)
+    {
+        if (empty($data)) {
+            YCore::exception(STATUS_ERROR, 'insertAll::Batch insert data cannot be empty');
+        }
+        // [1] 取第一个数组的键作为字段。
+        if (!is_array($data[0])) {
+            YCore::exception(STATUS_ERROR, 'insertAll:第一个数组元素不是数组类型');
+        }
+        $fileds = array_keys($data[0]);
+        $sql    = 'INSERT INTO ' . $this->tableName . ' ( ';
+        $sql   .= implode(',', $fileds) . ' ) VALUES ';
+        // [2] 组装 SQL values 部分。
+        $insertParams = []; // 保存绑定的数值。
+        foreach ($data as $key => $item) {
+            $_tmpValues = '';
+            foreach ($item as $fieldName => $v) {
+                $bindKey = ":{$fieldName}_{$key}";
+                $insertParams[$bindKey] = $v;
+                $_tmpValues .= "{$bindKey},";
+            }
+            $_tmpValues = trim($_tmpValues, ',');
+            $sql .= "({$_tmpValues}),";
+        }
+        $sql = trim($sql, ',');
+        $PDO = $this->dbConnection->getDbClient();
+        $sth = $PDO->prepare($sql);
+        $this->dbConnection->writeSqlLog($sql, $insertParams);
+        $sth->execute($insertParams);
+        $affectedRow = $sth->rowCount();
+        return $affectedRow > 0 ? true : false;
+    }
+
+    /**
      * 解析 where 条件。
      * -- Example start --
      * # 示例1：

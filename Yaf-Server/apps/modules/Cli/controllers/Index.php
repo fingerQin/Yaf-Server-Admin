@@ -42,4 +42,44 @@ class IndexController extends \Common\controllers\Cli
         }
         echo "ok:{$datetime}\n";
     }
+
+    public function testAction()
+    {
+        $data = [
+            [
+                'code'       => 'register',
+                'userid'     => '0',
+                'error_code' => '0',
+                'error_msg'  => '',
+                'status'     => '1',
+                'data'       => 'sssss'
+            ],
+            [
+                'code'       => 'register',
+                'userid'     => '0',
+                'error_code' => '0',
+                'error_msg'  => '',
+                'status'     => '1',
+                'data'       => 'sssss'
+            ],
+            [
+                'code'       => 'register',
+                'userid'     => '0',
+                'error_code' => '0',
+                'error_msg'  => '',
+                'status'     => '1',
+                'data'       => 'sssss'
+            ],
+            [
+                'code'       => 'register',
+                'userid'     => '0',
+                'error_code' => '0',
+                'error_msg'  => '',
+                'status'     => '1',
+                'data'       => 'sssss'
+            ]
+        ];
+        $EventModel = new Event();
+        $EventModel->insertAll($data);
+    }
 }
