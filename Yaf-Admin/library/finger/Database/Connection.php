@@ -118,7 +118,7 @@ class Connection
      *
      * @return void
      */
-    final public static function close($dbOption = '')
+    final public function close($dbOption = '')
     {
         if (strlen($dbOption) == 0) {
             $dbOption = $this->dbOption;
