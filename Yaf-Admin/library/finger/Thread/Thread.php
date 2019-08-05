@@ -37,6 +37,13 @@ abstract class Thread
     }
 
     /**
+     * 防止克隆导致单例失败。
+     *
+     * @return void
+     */
+    private function __clone(){}
+
+    /**
      * 单例对象实现。
      * @param  integer $threadNum 线程数量。
      * @return instance
