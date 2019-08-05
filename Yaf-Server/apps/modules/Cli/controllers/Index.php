@@ -45,40 +45,21 @@ class IndexController extends \Common\controllers\Cli
 
     public function testAction()
     {
-        $data = [
-            [
-                'code'       => 'register',
-                'userid'     => '0',
-                'error_code' => '0',
-                'error_msg'  => '',
-                'status'     => '1',
-                'data'       => 'sssss'
-            ],
-            [
-                'code'       => 'register',
-                'userid'     => '0',
-                'error_code' => '0',
-                'error_msg'  => '',
-                'status'     => '1',
-                'data'       => 'sssss'
-            ],
-            [
-                'code'       => 'register',
-                'userid'     => '0',
-                'error_code' => '0',
-                'error_msg'  => '',
-                'status'     => '1',
-                'data'       => 'sssss'
-            ],
-            [
-                'code'       => 'register',
-                'userid'     => '0',
-                'error_code' => '0',
-                'error_msg'  => '',
-                'status'     => '1',
-                'data'       => 'sssss'
-            ]
+        $datetime = date('Y-m-d H:i:s');
+        $item = [
+            'code'       => 'register',
+            'userid'     => '0',
+            'error_code' => '0',
+            'error_msg'  => '',
+            'status'     => '1',
+            'data'       => 'sssss',
+            'u_time'     => $datetime,
+            'c_time'     => $datetime
         ];
+        $data = [];
+        for ($i = 0; $i < 1000; $i++) {
+            $data[] = $item;
+        }
         $EventModel = new Event();
         $EventModel->insertAll($data);
     }

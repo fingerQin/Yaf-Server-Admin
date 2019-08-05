@@ -18,10 +18,10 @@ define('USER_ADDRESS_MAX_COUNT', 5); // 用户地址最大数量。
 define('LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK', 5);  // 登录密码错误次数达该值则锁定。
 define('LOGIN_PWD_ERROR_LOCK_TIME', 86400);       // 登录超过设定次数，则锁定该时间(单位:秒)。
 
- /**
-  * 错误码。
-  * 请注意不要使用 512 做为错误码。PHP 内置错误当中可能会出现 512。
-  */
+/**
+ * 错误码。
+ * 请注意不要使用 512 做为错误码。PHP 内置错误当中可能会出现 512。
+ */
 define('STATUS_SUCCESS', 200);              // 请求成功。
 define('STATUS_FORBIDDEN', 403);            // 没权限。
 define('STATUS_NOT_FOUND', 404);            // 请求找不到。
