@@ -22,6 +22,14 @@
 				<form action="{{'Ad/adlist'|url}}" onsubmit="return submitBefore();" method="get">
 					<div class="form-group">
 						<input type="text" name="ad_name" id="ad_name" class="form-control" style="width: 180px;" value="{{$ad_name}}" placeholder="广告名称">
+                    </div>
+                    <div class="form-group">
+                        <span class="pull-left form-span">显示状态</span>
+                        <select id="display" name="display" class="form-control" style="width:100px;">
+                            <option value="-1">全部</option>
+                            <option {{if $display==0}}selected="selected"{{/if}} value="0">隐藏</option>
+                            <option {{if $display==1}}selected="selected"{{/if}} value="1">显示</option>
+						</select>
 					</div>
 					<div class="form-group">
                         <input type="hidden" name="pos_id" value="{{$pos_id}}" />
@@ -39,11 +47,11 @@
                             <th class="w5 text-center">排序</th>
                             <th class="w5 text-center">ID</th>
                             <th class="w15 text-center">广告图片</th>
-                            <th class="w15 text-center">广告名称</th>
-                            <th class="w10 text-center">生效时间</th>
-                            <th class="w10 text-center">失效时间</th>
+                            <th class="w20 text-center">广告名称</th>
+                            <th class="w5 text-center">终端</th>
+                            <th class="w15 text-center">生效(失败)时间</th>
                             <th class="w5 text-center">状态</th>
-                            <th class="w10 text-center">广告备注</th>
+                            <th class="w5 text-center">备注</th>
                             <th class="w10 text-center">创建时间</th>
                             <th class="w10 text-center">管理操作</th>
                         </tr>
@@ -53,10 +61,10 @@
                         <tr>
                             <td align='center'><input name='listorders[{{$item.ad_id}}]' type='text' size='3' value='{{$item.listorder}}' class='input-text' style="text-align:center;"></td>
                             <td align="center">{{$item.ad_id}}</td>
-                            <td align="center"><a target="_blank" href="{{$item.ad_url}}"><img style="width:180px" src="{{$item.ad_image_url}}" /></a></td>
+                            <td align="center"><a target="_blank" href="{{$item.ad_url}}"><img style="width:120px" src="{{$item.ad_image_url}}" /></a></td>
                             <td align="center">{{$item.ad_name}}</td>
-                            <td align="center">{{$item.start_time}}</td>
-                            <td align="center">{{$item.end_time}}</td>
+                            <td align="center">{{$item.terminal_label}}</td>
+                            <td align="center">开始:{{$item.start_time}}<br/><p>结束:{{$item.end_time}}</p></td>
                             <td align="center">{{if $item.display}}显示{{else}}隐藏{{/if}}</td>
                             <td align="center">
                                 <a id="view_remark_{{$item.ad_id}}" title="{{$item.remark|escape}}" href="###" onClick="viewRemark('view_remark_{{$item.ad_id}}')">查看</a>

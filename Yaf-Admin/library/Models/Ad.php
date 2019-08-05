@@ -8,8 +8,6 @@
 namespace Models;
 
 use finger\Database\Db;
-use Utils\YCore;
-use Utils\YDate;
 
 class Ad extends AbstractBase
 {
@@ -19,6 +17,45 @@ class Ad extends AbstractBase
      * @var string
      */
     protected $tableName = 'finger_ad';
+
+    /**
+     * 终端。
+     */
+    const TERMINAL_ANDROID      = 1;    // Android App。
+    const TERMINAL_IOS          = 2;    // iOS App。
+    const TERMINAL_PC           = 4;    // PC 网站。
+    const TERMINAL_H5           = 8;    // H5 触屏端。
+    const TERMINAL_MINI_PROGRAM = 16;   // 微信小程序。
+
+    /**
+     * 终端字典。
+     *
+     * @var array
+     */
+    public static $terminalDict = [
+        self::TERMINAL_ANDROID      => 'Android',
+        self::TERMINAL_IOS          => 'iOS',
+        self::TERMINAL_H5           => 'H5',
+        self::TERMINAL_PC           => 'PC',
+        self::TERMINAL_MINI_PROGRAM => '小程序'
+    ];
+
+    /**
+     * 翻译终端为中文显示。
+     *
+     * @param  int  $terminal
+     * @return void
+     */
+    protected static function translateTerminalToLabel($terminal)
+    {
+        $result = [];
+        foreach (self::$terminalDict as $_terminal => $tm) {
+            if (($terminal & $_terminal) == $_terminal) {
+                $result[] = $tm;
+            }
+        }
+        return implode('<br/>', $result);
+    }
 
     /**
      * 获取指定广告位置的广告列表。
@@ -53,6 +90,9 @@ class Ad extends AbstractBase
         $total     = $countData ? $countData['count'] : 0;
         $sql       = "SELECT {$columns} FROM {$this->tableName} {$where} {$orderBy} LIMIT {$offset},{$count}";
         $list      = Db::all($sql, $params);
+        foreach ($list as $k => $v) {
+            $list[$k]['terminal_label'] = self::translateTerminalToLabel($v['terminal']);
+        }
         $result = [
             'list'   => $list,
             'total'  => $total,

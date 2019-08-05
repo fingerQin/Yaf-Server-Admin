@@ -37,6 +37,15 @@
                 </td>
             </tr>
             <tr>
+                <th class="left-txt">显示终端：</th>
+                <td>
+                    {{foreach $terminalDict as $terminal => $terminalLabel}}
+                    <label style="margin-right:10px;padding-right:5px;">
+                    <input type="checkbox" {{if ($terminal & $detail.terminal) == $terminal}}checked="checked"{{/if}} name="terminal[]" value="{{$terminal}}" />{{$terminalLabel}}</label>
+                    {{/foreach}}
+                </td>
+            </tr>
+            <tr>
                 <th class="left-txt">广告图片：</th>
                 <td>
                     <input type="hidden" name="ad_image_url" id="input_voucher" value="{{$detail.ad_image_url}}" />

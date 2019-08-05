@@ -129,6 +129,25 @@ class Ad extends \Services\AbstractBase
     }
 
     /**
+     * 检查显示终端值是否合法。
+     *
+     * @param  int  $terminal  终端值。
+     *
+     * @return void
+     */
+    public static function checkTerminal($terminal)
+    {
+        if (empty($terminal)) {
+            YCore::exception(STATUS_SERVER_ERROR, '必须选择显示终端');
+        }
+        foreach ($terminal as $tt) {
+            if (!array_key_exists($tt, self::$terminalDict)) {
+                YCore::exception(STATUS_SERVER_ERROR, '显示终端值有误');
+            }
+        }
+    }
+
+    /**
      * 检查广告备注。
      * @param  string $remark 广告备注。
      * @return void
@@ -421,10 +440,11 @@ class Ad extends \Services\AbstractBase
      * @param  string  $remark      广告备注。
      * @param  string  $adImageUrl  广告图片。
      * @param  string  $adUrl       广告URL。
+     * @param  array   $terminal    显示终端。
      * @return void
      */
     public static function addAd($adminId, $posId, $adName, $startTime, $endTime, $display, 
-        $remark, $adImageUrl, $adIpxImageUrl, $adUrl)
+        $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal)
     {
         self::checkAdName($adName);
         self::checkAdRemark($remark);
@@ -449,6 +469,7 @@ class Ad extends \Services\AbstractBase
             'pos_id'           => $posId,
             'status'           => AdModel::STATUS_YES,
             'c_by'             => $adminId,
+            'terminal'         => array_sum($terminal),
             'c_time'           => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $AdModel = new AdModel();
@@ -470,10 +491,11 @@ class Ad extends \Services\AbstractBase
      * @param  string  $remark      广告备注。
      * @param  string  $adImageUrl  广告图片。
      * @param  string  $adUrl       广告URL。
+     * @param  array   $terminal    显示终端。
      * @return void
      */
     public static function editAd($adminId, $adId, $adName, $startTime, $endTime, $display, 
-        $remark, $adImageUrl, $adIpxImageUrl, $adUrl)
+        $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal)
     {
         self::checkAdName($adName);
         self::checkAdRemark($remark);
@@ -492,6 +514,7 @@ class Ad extends \Services\AbstractBase
             'ad_image_url'     => $adImageUrl,
             'ad_ipx_image_url' => $adIpxImageUrl,
             'ad_url'           => $adUrl,
+            'terminal'         => array_sum($terminal),
             'u_by'             => $adminId,
             'u_time'           => date('Y-m-d H:i:s', TIMESTAMP)
         ];
@@ -550,5 +573,15 @@ class Ad extends \Services\AbstractBase
                 return YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
             }
         }
+    }
+
+    /**
+     * 获取广告字典。
+     *
+     * @return array
+     */
+    public static function getAdTerminalDict()
+    {
+        return AdModel::$terminalDict;
     }
 }
