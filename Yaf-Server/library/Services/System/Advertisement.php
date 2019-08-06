@@ -59,15 +59,19 @@ class Advertisement extends \Services\AbstractBase
         $count  = $adPosDetail['pos_ad_count'] > self::MAX_COUNT ? MAX_COUNT : $adPosDetail['pos_ad_count'];
         $sql    = 'SELECT ad_id,ad_name,ad_image_url,ad_ipx_image_url, ad_url FROM finger_ad '
                 . 'WHERE pos_id = :pos_id AND status = :status AND display = :display '
+                . 'AND start_time <= :start_time AND end_time >= :end_time '
                 . 'AND type_flag & :bitVal != 0 AND terminal & :terminal != 0 '
                 . 'ORDER BY listorder ASC, ad_id DESC LIMIT :count';
-        $params = [
-            ':pos_id'   => $adPosDetail['pos_id'],
-            ':bitVal'   => $bitVal,
-            ':terminal' => self::terminalBitVal($platform),
-            ':status'   => Ad::STATUS_YES,
-            ':display'  => Ad::STATUS_YES,
-            ':count'    => $count
+        $datetime = date('Y-m-d H:i:s', time());
+        $params   = [
+            ':pos_id'     => $adPosDetail['pos_id'],
+            ':bitVal'     => $bitVal,
+            ':start_time' => $datetime,
+            ':end_time'   => $datetime,
+            ':terminal'   => self::terminalBitVal($platform),
+            ':status'     => Ad::STATUS_YES,
+            ':display'    => Ad::STATUS_YES,
+            ':count'      => $count
         ];
         // iOS 返回的时候，使用高清特制图。
         $data   = [];

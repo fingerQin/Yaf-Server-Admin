@@ -441,10 +441,11 @@ class Ad extends \Services\AbstractBase
      * @param  string  $adImageUrl  广告图片。
      * @param  string  $adUrl       广告URL。
      * @param  array   $terminal    显示终端。
+     * @param  array   $flag        限制条件 FLAG 位值。
      * @return void
      */
     public static function addAd($adminId, $posId, $adName, $startTime, $endTime, $display, 
-        $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal)
+        $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal, $flag)
     {
         self::checkAdName($adName);
         self::checkAdRemark($remark);
@@ -470,6 +471,7 @@ class Ad extends \Services\AbstractBase
             'status'           => AdModel::STATUS_YES,
             'c_by'             => $adminId,
             'terminal'         => array_sum($terminal),
+            'type_flag'        => array_sum($flag),
             'c_time'           => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $AdModel = new AdModel();
@@ -492,10 +494,11 @@ class Ad extends \Services\AbstractBase
      * @param  string  $adImageUrl  广告图片。
      * @param  string  $adUrl       广告URL。
      * @param  array   $terminal    显示终端。
+     * @param  array   $flag        限制条件 FLAG 位值。
      * @return void
      */
     public static function editAd($adminId, $adId, $adName, $startTime, $endTime, $display, 
-        $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal)
+        $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal, $flag)
     {
         self::checkAdName($adName);
         self::checkAdRemark($remark);
@@ -515,6 +518,7 @@ class Ad extends \Services\AbstractBase
             'ad_ipx_image_url' => $adIpxImageUrl,
             'ad_url'           => $adUrl,
             'terminal'         => array_sum($terminal),
+            'type_flag'        => array_sum($flag),
             'u_by'             => $adminId,
             'u_time'           => date('Y-m-d H:i:s', TIMESTAMP)
         ];
@@ -583,5 +587,15 @@ class Ad extends \Services\AbstractBase
     public static function getAdTerminalDict()
     {
         return AdModel::$terminalDict;
+    }
+
+    /**
+     * 广告限制条件字典。
+     *
+     * @return array
+     */
+    public static function getAdFlagDict()
+    {
+        return AdModel::$flagDict;
     }
 }

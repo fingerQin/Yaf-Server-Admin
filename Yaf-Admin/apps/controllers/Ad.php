@@ -105,13 +105,15 @@ class AdController extends Admin
             $adIpxImageUrl = $this->getString('ad_ipx_image_url', '');
             $adUrl         = $this->getString('ad_url');
             $terminal      = $this->getArray('terminal', []);
+            $flag          = $this->getArray('flag', []);
             Ad::addAd($this->adminId, $posId, $adName, $startTime, $endTime, $display, 
-            $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal);
+            $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal, $flag);
             $this->json(true, '添加成功');
         } else {
             $posId = $this->getInt('pos_id');
             $filesDomainName = YUrl::getFilesDomainName();
             $this->assign('terminalDict', Ad::getAdTerminalDict());
+            $this->assign('flagDict', Ad::getAdFlagDict());
             $this->assign('files_domain_name', $filesDomainName);
             $this->assign('pos_id', $posId);
         }
@@ -133,14 +135,16 @@ class AdController extends Admin
             $adIpxImageUrl = $this->getString('ad_ipx_image_url', '');
             $adUrl         = $this->getString('ad_url');
             $terminal      = $this->getArray('terminal', []);
+            $flag          = $this->getArray('flag', []);
             Ad::editAd($this->adminId, $adId, $adName, $startTime, $endTime, $display, 
-            $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal);
+            $remark, $adImageUrl, $adIpxImageUrl, $adUrl, $terminal, $flag);
             $this->json(true, '修改成功');
         } else {
             $adId   = $this->getInt('ad_id');
             $detail = Ad::getAdDetail($adId);
             $filesDomainName = YUrl::getFilesDomainName();
             $this->assign('terminalDict', Ad::getAdTerminalDict());
+            $this->assign('flagDict', Ad::getAdFlagDict());
             $this->assign('files_domain_name', $filesDomainName);
             $this->assign('detail', $detail);
         }

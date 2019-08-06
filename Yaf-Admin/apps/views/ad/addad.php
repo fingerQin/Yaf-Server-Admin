@@ -46,6 +46,15 @@
                 </td>
             </tr>
             <tr>
+                <th class="left-txt">限制条件：</th>
+                <td>
+                    {{foreach $flagDict as $flag => $flagLabel}}
+                    <label style="margin-right:10px;padding-right:5px;">
+                    <input type="checkbox" name="flag[]" value="{{$flag}}" />{{$flagLabel}}</label>
+                    {{/foreach}}
+                </td>
+            </tr>
+            <tr>
                 <th class="left-txt">广告图片：</th>
                 <td>
                     <input type="hidden" name="ad_image_url" id="input_voucher" value="" />
