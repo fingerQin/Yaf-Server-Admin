@@ -20,23 +20,6 @@ class Notice extends AbstractBase
     protected $primaryKey = 'noticeid';
 
     /**
-     * 终端常量。
-     * --主要解决公告多端显示问题。
-     */
-    const TERMINAL_APP = 1;
-    const TERMINAL_M   = 2;
-    const TERMINAL_PC  = 4;
-
-    /**
-     * 终端常量字典。
-     */
-    public static $terminalDict = [
-        self::TERMINAL_APP => 'APP',
-        self::TERMINAL_M   => 'M站',
-        self::TERMINAL_PC  => 'PC'
-    ];
-
-    /**
      * 状态字典。
      *
      * @var array

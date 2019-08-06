@@ -54,9 +54,8 @@ class NoticeController extends \Common\controllers\Admin
             Notice::add($this->adminId, $title, $summary, $body, $terminal, $isDialog, $dialogEndTime);
             $this->json(true, '添加成功');
         } else {
-            $this->assign('terminal', \Models\Notice::$terminalDict);
+            $this->assign('terminal', Notice::$terminalDict);
         }
-        
     }
 
     /**
@@ -78,7 +77,7 @@ class NoticeController extends \Common\controllers\Admin
             $noticeid = $this->getInt('noticeid');
             $detail   = Notice::detail($noticeid);
             $this->assign('detail', $detail);
-            $this->assign('terminal', \Models\Notice::$terminalDict);
+            $this->assign('terminal', Notice::$terminalDict);
         }
     }
 

@@ -177,7 +177,7 @@ class Notice extends \Services\AbstractBase
             if (!is_numeric($t)) {
                 YCore::exception(STATUS_SERVER_ERROR, '终端值格式不正确');
             }
-            if (!array_key_exists($t, NoticeModel::$terminalDict)) {
+            if (!array_key_exists($t, self::$terminalDict)) {
                 YCore::exception(STATUS_SERVER_ERROR, '所属终端值有误');
             }
         }
@@ -254,14 +254,20 @@ class Notice extends \Services\AbstractBase
     private static function splitTerminal($bitVal)
     {
         $data = [];
-        if (($bitVal & NoticeModel::TERMINAL_APP) == NoticeModel::TERMINAL_APP) {
-            $data[] = NoticeModel::TERMINAL_APP;
+        if (($bitVal & self::TERMINAL_IOS) == self::TERMINAL_IOS) {
+            $data[] = self::TERMINAL_IOS;
         }
-        if (($bitVal & NoticeModel::TERMINAL_M) == NoticeModel::TERMINAL_M) {
-            $data[] = NoticeModel::TERMINAL_M;
+        if (($bitVal & self::TERMINAL_ANDROID) == self::TERMINAL_ANDROID) {
+            $data[] = self::TERMINAL_ANDROID;
         }
-        if (($bitVal & NoticeModel::TERMINAL_PC) == NoticeModel::TERMINAL_PC) {
-            $data[] = NoticeModel::TERMINAL_PC;
+        if (($bitVal & self::TERMINAL_H5) == self::TERMINAL_H5) {
+            $data[] = self::TERMINAL_H5;
+        }
+        if (($bitVal & self::TERMINAL_PC) == self::TERMINAL_PC) {
+            $data[] = self::TERMINAL_PC;
+        }
+        if (($bitVal & self::TERMINAL_MINI_PROGRAM) == self::TERMINAL_MINI_PROGRAM) {
+            $data[] = self::TERMINAL_MINI_PROGRAM;
         }
         return $data ? implode(',', $data) : '';
     }
@@ -276,14 +282,20 @@ class Notice extends \Services\AbstractBase
     private static function terminalConvert($bitVal)
     {
         $data = [];
-        if (($bitVal & NoticeModel::TERMINAL_APP) == NoticeModel::TERMINAL_APP) {
-            $data[] = NoticeModel::$terminalDict[NoticeModel::TERMINAL_APP];
+        if (($bitVal & self::TERMINAL_IOS) == self::TERMINAL_IOS) {
+            $data[] = self::$terminalDict[self::TERMINAL_IOS];
         }
-        if (($bitVal & NoticeModel::TERMINAL_M) == NoticeModel::TERMINAL_M) {
-            $data[] = NoticeModel::$terminalDict[NoticeModel::TERMINAL_M];
+        if (($bitVal & self::TERMINAL_ANDROID) == self::TERMINAL_ANDROID) {
+            $data[] = self::$terminalDict[self::TERMINAL_ANDROID];
         }
-        if (($bitVal & NoticeModel::TERMINAL_PC) == NoticeModel::TERMINAL_PC) {
-            $data[] = NoticeModel::$terminalDict[NoticeModel::TERMINAL_PC];
+        if (($bitVal & self::TERMINAL_H5) == self::TERMINAL_H5) {
+            $data[] = self::$terminalDict[self::TERMINAL_H5];
+        }
+        if (($bitVal & self::TERMINAL_PC) == self::TERMINAL_PC) {
+            $data[] = self::$terminalDict[self::TERMINAL_PC];
+        }
+        if (($bitVal & self::TERMINAL_MINI_PROGRAM) == self::TERMINAL_MINI_PROGRAM) {
+            $data[] = self::$terminalDict[self::TERMINAL_MINI_PROGRAM];
         }
         return $data ? implode(',', $data) : '-';
     }
