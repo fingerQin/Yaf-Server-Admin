@@ -62,7 +62,7 @@ class Address extends \Services\AbstractBase
         $AddressModel = new UserAddress();
         $addressInfo  = $AddressModel->fetchOne([], $where);
         if (empty($addressInfo)) {
-            YCore::exception(STATUS_ERROR, '您选择的收货地址已经失效');
+            YCore::exception(STATUS_SERVER_ERROR, '您选择的收货地址已经失效');
         }
         $DistrictModel = new District();
         $districtInfo  = $DistrictModel->fetchOne([], [
