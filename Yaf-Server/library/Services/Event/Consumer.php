@@ -21,7 +21,7 @@ class Consumer extends \Services\Event\AbstractBase
      *
      * @return void
      */
-     public static function dispatcher()
+    public static function dispatcher()
     {
         // [1]
         $redis            = YCache::getRedisClient();
