@@ -28,8 +28,8 @@
 						<span class="pull-left form-span">Android 渠道:</span>
 						<select name="channel" id="channel" class="form-control">
 							<option value="" {{if $channel == ''}}selected{{/if}}>请选择</option>
-							{{foreach $channelDict as $ch}}
-							<option value="{{$ch}}" {{if $ch == $channel}}selected{{/if}}>{{$ch}}</option>
+							{{foreach $channelDict as $ch => $chName}}
+							<option value="{{$ch}}" {{if $ch == $channel}}selected{{/if}}>{{$chName}}</option>
 							{{/foreach}}
 						</select>
 					</div>
@@ -70,8 +70,8 @@
 						<td class="text-center">{{$item.app_v}}</td>
 						<td class="text-center">{{$item.upgrade_way_txt}}</td>
 						<td class="text-center">{{$item.dialog_repeat_txt}}</td>
-						<td class="text-center">{{$item.channel}}</td>
-						<td class="text-left">{{$item.app_desc}}</td>
+						<td class="text-center">{{$item.channel_label}}</td>
+						<td class="text-left"><pre>{{$item.app_desc}}</pre></td>
 						<td class="text-center">{{$item.u_time}}</td>
 						<td class="text-center">{{$item.c_time}}</td>
 						<td class="text-center">

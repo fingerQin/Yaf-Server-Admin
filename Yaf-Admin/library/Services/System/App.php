@@ -66,32 +66,16 @@ class App extends \Services\AbstractBase
      * @var array
      */
     public static $AndroidChannelDict = [
-        'yingyongbao',
-        '163',
-        'wandou',
-        'xiaomi',
-        'baidu',
-        'huawei',
-        '360',
-        'yingyonghui',
-        'youyi',
-        'mumayi',
-        'ppandroid',
-        'lenovo',
-        'oppo',
-        'meizu',
-        'jinli', 
-        'sogou',
-        'shop',
-        'nduo',
-        'jifeng',
-        'anzhi',
-        'sanxing',
-        'uc',
-        'vivo',
-        'opera',
-        'yyb',
-        'assist91'
+        'yingyongbao' => '腾讯应用宝',
+        'oppo'        => 'OPPO',
+        'vivo'        => 'VIVO',
+        'xiaomi'      => '小米',
+        'huawei'      => '华为',
+        '360'         => '360',
+        'meizu'       => '魅族',
+        'lenovo'      => '联想',
+        'baidu'       => '百度',
+        'wandou'      => '阿里豌豆荚'
     ];
 
     /**
@@ -291,13 +275,14 @@ class App extends \Services\AbstractBase
             $list[$key]['upgrade_way_txt']   = self::upgradeWayTranslate($item['upgrade_way']);
             $list[$key]['app_type_txt']      = self::appTypeTranslate($item['app_type']);
             $list[$key]['dialog_repeat_txt'] = $item['dialog_repeat'] ? '每次都弹' : '只弹一次';
+            $list[$key]['channel_label']     = App::$AndroidChannelDict[$item['channel']] ?? '-';
         }
         $result = [
             'list'   => $list,
             'total'  => $total,
             'page'   => $page,
             'count'  => $count,
-            'isnext' => self::IsHasNextPage($total, $page, $count)
+            'isnext' => self::isHasNextPage($total, $page, $count)
         ];
         return $result;
     }

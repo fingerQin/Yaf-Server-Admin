@@ -5,8 +5,8 @@
  * @date 2019-04-17
  */
 
-use Services\Sms\Tpl;
 use finger\Paginator;
+use Services\Sms\Tpl;
 
 class SmsTplController extends \Common\controllers\Admin
 {

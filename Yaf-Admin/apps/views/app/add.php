@@ -24,8 +24,8 @@
 				<td>
 					<select name="channel" id="channel" class="form-control">
 						<option value="">请选择</option>
-						{{foreach $channelDict as $ch}}
-						<option value="{{$ch}}">{{$ch}}</option>
+						{{foreach $channelDict as $ch => $chName}}
+						<option value="{{$ch}}">{{$chName}}</option>
 						{{/foreach}}
 					</select>
 					<div class="w90" style="color:grey;">（Android 才设置，iOS 不用选择）</div>
