@@ -32,7 +32,6 @@ class Consume extends \Services\Sms\AbstractBase
         try {
             // [2] 因进程异常退出导致短信队列消费延迟。则不再进行第二次发送。
             $redis->delete($queueIng);
-            $SmsSendLogModel = new SmsSendLog();
             // [3]
             while (true) {
                 $str = $redis->rPopLPush($queueKey, $queueIng);
@@ -52,7 +51,6 @@ class Consume extends \Services\Sms\AbstractBase
                         self::updateSendStatus($arrValue['id'], 0, $e->getCode(), $e->getMessage(), false);
                     }
                 } else {
-                    $SmsSendLogModel->ping();
                     usleep(100000); // 0.1秒。
                 }
             }
