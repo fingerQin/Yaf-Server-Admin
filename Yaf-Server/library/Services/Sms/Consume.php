@@ -35,7 +35,7 @@ class Consume extends \Services\Sms\AbstractBase
             $SmsSendLogModel = new SmsSendLog();
             // [3]
             while (true) {
-                $str = $redis->bRPopLPush($queueKey, $queueIng, 60);
+                $str = $redis->rPopLPush($queueKey, $queueIng);
                 if (!empty($str)) {
                     YLog::log(['data' => $str], 'sms', 'consume');
                     $arrValue = json_decode($str, true);

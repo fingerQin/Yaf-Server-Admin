@@ -200,8 +200,9 @@ class Connection
                 return true;
             }
         } catch (\PDOException $e) {
-            if ($isReconnect) {
-                YLog::log('reconnect', 'errors', 'mysql-ping');
+            $mysqlGoneAwayErrMsg = 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away';
+            if ($isReconnect && !self::$transactionStatus && stripos($e->getMessage(), $mysqlGoneAwayErrMsg) !== FALSE) {
+                YLog::log("reconnect:{$dbOption}", 'errors', 'mysql-ping');
                 $this->reconnect($dbOption);
                 return true;
             } else {
