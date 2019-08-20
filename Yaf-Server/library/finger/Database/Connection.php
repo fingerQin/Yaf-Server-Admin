@@ -40,6 +40,13 @@ class Connection
     protected $runSqlRecords = [];
 
     /**
+     * 是否开启事务。
+     *
+     * @var bool
+     */
+    protected static $transactionStatus = false;
+
+    /**
      * 构造方法。
      *
      * @param  string  $dbOption  数据库配置项。
@@ -169,7 +176,8 @@ class Connection
      * @param  int     $isReconnect  当与 MySQL 服务器的连接不可用时,是否重连。默认断线重连。
      * @param  string  $dbOption     数据库配置项。断线重连时，以哪个数据库配置重连。
      * 
-     * @return bool
+     * @return void
+     * @throws \finger\ServiceException
      */
     final public function ping($isReconnect = true, $dbOption = '')
     {
@@ -177,16 +185,16 @@ class Connection
             $dbOption = $this->dbOption;
         }
         if (!$this->dbConnection) {
-            YCore::exception(STATUS_ERROR, '请正确连接数据库');
+            YCore::exception(STATUS_ERROR, 'Please connect to the database correctly!');
         }
         try {
             $info = $this->dbConnection->getAttribute(\PDO::ATTR_SERVER_INFO);
             if (is_null($info)) {
-                if ($isReconnect) {
+                if ($isReconnect && !self::$transactionStatus) {
                     $this->reconnect($dbOption);
                     return true;
                 } else {
-                    return false;
+                    YCore::exception(STATUS_ERROR, 'The database server is disconnected!');
                 }
             } else {
                 return true;
@@ -214,6 +222,7 @@ class Connection
                 $this->openTransactionFailed();
             }
         }
+        self::$transactionStatus = true;
     }
 
     /**
@@ -228,6 +237,7 @@ class Connection
                 $this->commitTransactionFailed();
             }
         }
+        self::$transactionStatus = false;
     }
 
     /**
@@ -242,6 +252,7 @@ class Connection
                 $this->rollbackTransactionFailed();
             }
         }
+        self::$transactionStatus = false;
     }
 
     /**
