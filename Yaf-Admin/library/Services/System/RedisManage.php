@@ -34,6 +34,6 @@ class RedisManage extends \Services\AbstractBase
     public static function delete($keys)
     {
         $redis = YCache::getRedisClient();
-        $redis->delete($keys);
+        $redis->del($keys);
     }
 }

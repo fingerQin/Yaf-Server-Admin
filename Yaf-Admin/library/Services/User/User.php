@@ -183,7 +183,7 @@ class User extends \Services\AbstractBase
         $redis = YCache::getRedisClient();
         $errCounterKey  = "login_account_lock_{$userinfo['mobile']}";
         $errDeadlineKey = "login_account_unlock_date_{$userinfo['mobile']}";
-        $redis->delete($errCounterKey);
-        $redis->delete($errDeadlineKey);
+        $redis->del($errCounterKey);
+        $redis->del($errDeadlineKey);
     }
 }

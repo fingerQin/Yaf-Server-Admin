@@ -31,7 +31,7 @@ class Consume extends \Services\Sms\AbstractBase
         $arrValue = [];
         try {
             // [2] 因进程异常退出导致短信队列消费延迟。则不再进行第二次发送。
-            $redis->delete($queueIng);
+            $redis->del($queueIng);
             // [3]
             while (true) {
                 $str = $redis->rPopLPush($queueKey, $queueIng);

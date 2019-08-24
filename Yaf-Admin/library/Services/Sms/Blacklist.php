@@ -67,7 +67,7 @@ class Blacklist extends \Services\AbstractBase
     public static function clearCache()
     {
         $redis = YCache::getRedisClient();
-        $redis->delete(self::BLACKLIST_MOBILE_CACHE_KEY);
+        $redis->del(self::BLACKLIST_MOBILE_CACHE_KEY);
     }
 
     /**

@@ -165,7 +165,7 @@ class Auth extends \Services\AbstractBase
     {
         $counter = "login_account_lock_{$mobile}";
         $redis   = YCache::getRedisClient();
-        $redis->delete($counter);
+        $redis->del($counter);
     }
 
     /**

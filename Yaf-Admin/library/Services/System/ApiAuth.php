@@ -291,6 +291,6 @@ class ApiAuth extends \Services\AbstractBase
     public static function clearCache()
     {
         $redis = YCache::getRedisClient();
-        $redis->delete(self::API_AUTH_CACHE_KEY);
+        $redis->del(self::API_AUTH_CACHE_KEY);
     }
 }
