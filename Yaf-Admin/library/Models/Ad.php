@@ -126,7 +126,7 @@ class Ad extends AbstractBase
             'total'  => $total,
             'page'   => $page,
             'count'  => $count,
-            'isnext' => $this->IsHasNextPage($total, $page, $count)
+            'isnext' => $this->isHasNextPage($total, $page, $count)
         ];
         return $result;
     }

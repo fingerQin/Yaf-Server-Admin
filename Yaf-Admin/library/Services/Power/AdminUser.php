@@ -52,7 +52,7 @@ class AdminUser extends \Services\AbstractBase
             'total'   => $total,
             'page'    => $page,
             'count'   => $count,
-            'is_next' => self::IsHasNextPage($total, $page, $count)
+            'is_next' => self::isHasNextPage($total, $page, $count)
         ];
         return $result;
     }

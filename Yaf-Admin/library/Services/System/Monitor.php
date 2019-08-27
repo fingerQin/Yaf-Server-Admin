@@ -58,7 +58,7 @@ class Monitor extends \Services\AbstractBase
             'total'  => $total,
             'page'   => $page,
             'count'  => $count,
-            'isnext' => self::IsHasNextPage($total, $page, $count)
+            'isnext' => self::isHasNextPage($total, $page, $count)
         ];
         return $result;
     }

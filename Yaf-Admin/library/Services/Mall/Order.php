@@ -100,7 +100,7 @@ class Order extends AbstractBase
             'total'  => $total,
             'page'   => $page,
             'count'  => $count,
-            'isnext' => self::IsHasNextPage($total, $page, $count)
+            'isnext' => self::isHasNextPage($total, $page, $count)
         ];
         return $result;
     }
