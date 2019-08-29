@@ -52,8 +52,6 @@ class SmartyAdapter implements \Yaf_View_Interface
      */
     public function setScriptPath($path)
     {
-        var_dump($path);
-        exit;
         if (is_readable($path)) {
             $this->_smarty->template_dir = $path;
             return;
