@@ -45,11 +45,7 @@ class Consumer extends \Services\Event\AbstractBase
                     $redis->lRem($eventQueueIngKey, $strEventVal, 1); // 从正在处理的队列中移除这个值。
                     YLog::log($arrEventVal, 'event', 'dispatcher-success');
                 } else {
-                    $pong = $redis->ping();
-                    if ($pong != '+PONG') {
-                        YLog::log('Redis ping failure!postion:dispatcher', 'redis', 'ping');
-                        YCore::exception(STATUS_ERROR, 'Redis ping failure!');
-                    }
+                    YCache::ping();
                     usleep(10000);
                 }
             }

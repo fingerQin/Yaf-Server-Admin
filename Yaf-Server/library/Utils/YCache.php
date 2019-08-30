@@ -105,4 +105,21 @@ class YCache
     {
         return (self::getInstace())->decr($key, $step);
     }
+
+    /**
+     * Redis 存活检测。
+     *
+     * @param string $redisOption Redis 配置项。
+     * 
+     * @return void
+     */
+    public static function ping($redisOption = 'default')
+    {
+        $redis = self::getRedisClient($redisOption);
+        $pong  = $redis->ping();
+        if ($pong != '+PONG') {
+            YLog::log('Redis ping failure!postion:dispatcher', 'redis', 'ping');
+            YCore::exception(STATUS_ERROR, 'Redis ping failure!');
+        }
+    }
 }

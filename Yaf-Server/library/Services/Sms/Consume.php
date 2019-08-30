@@ -13,6 +13,7 @@ use Utils\YCore;
 use Utils\YInput;
 use Models\SmsSendLog;
 use Models\SmsConf;
+use finger\Database\Db;
 use Services\Sms\Driver\Luosimao;
 
 class Consume extends \Services\Sms\AbstractBase
@@ -51,6 +52,8 @@ class Consume extends \Services\Sms\AbstractBase
                         self::updateSendStatus($arrValue['id'], 0, $e->getCode(), $e->getMessage(), false);
                     }
                 } else {
+                    Db::ping();
+                    YCache::ping();
                     usleep(100000); // 0.1秒。
                 }
             }

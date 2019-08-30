@@ -40,6 +40,15 @@ class Connection
     protected $runSqlRecords = [];
 
     /**
+     * 当前已连接的数据库标识。
+     * 
+     * -- 通过这个可以检测连接心跳的时候，直接可全部重连。
+     *
+     * @var array
+     */
+    protected static $connectedIdent = [];
+
+    /**
      * 是否开启事务。
      *
      * @var bool
@@ -56,8 +65,8 @@ class Connection
     {
         if (strlen($dbOption) > 0) {
             $this->dbOption = $dbOption;
+            $this->changeDb($this->dbOption);
         }
-        $this->changeDb($this->dbOption);
     }
 
     /**
@@ -115,7 +124,18 @@ class Connection
         // 以关联数组返回查询结果。
         $dbh->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         $dbh->query("SET NAMES {$charset}");
+        self::$connectedIdent[$registryName] = $dbOption; // 之所以以连接标识做键,是避免多次连接导致持续的增加。
         \Yaf_Registry::set($registryName, $dbh);
+    }
+
+    /**
+     * 获取当前 MySQL 连接的标识。
+     *
+     * @return void
+     */
+    final public static function getConnectedIdent()
+    {
+        return self::$connectedIdent;
     }
 
     /**
@@ -207,6 +227,43 @@ class Connection
                 return true;
             } else {
                 return false;
+            }
+        }
+    }
+
+    /**
+     * 对当前已激活的 MySQL 连接进行存活心路检测。
+     * 
+     * @param  bool  $isReconnect  是否重连。
+     *
+     * @return void
+     */
+    public static function allPing($isReconnect = true)
+    {
+        foreach (self::$connectedIdent as $dbOption) {
+            $registryName = "mysql_{$dbOption}";
+            if (\Yaf_Registry::has($registryName) === true) {
+                $dbh = \Yaf_Registry::get($registryName);
+                try {
+                    $info = $dbh->getAttribute(\PDO::ATTR_SERVER_INFO);
+                    if (is_null($info)) {
+                        if ($isReconnect && !self::$transactionStatus) {
+                            (new self)->reconnect($dbOption);
+                        } else {
+                            YCore::exception(STATUS_ERROR, 'The database server is disconnected!');
+                        }
+                    } else {
+                        YCore::exception(STATUS_ERROR, 'The database server is disconnected!');
+                    }
+                } catch (\PDOException $e) {
+                    $mysqlGoneAwayErrMsg = 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away';
+                    if ($isReconnect && !self::$transactionStatus && stripos($e->getMessage(), $mysqlGoneAwayErrMsg) !== FALSE) {
+                        YLog::log("reconnect:{$dbOption}", 'errors', 'mysql-ping');
+                        (new self)->reconnect($dbOption);
+                    } else {
+                        YCore::exception(STATUS_ERROR, 'The database server is disconnected!');
+                    }
+                }
             }
         }
     }

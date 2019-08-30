@@ -230,4 +230,15 @@ class Db
         $data = $sth->fetch(\PDO::FETCH_ASSOC);
         return $data ? intval($data['count']) : 0;
     }
+
+    /**
+     * 主动向当前所有 MySQL 连接发起心跳检测。
+     * 
+     * @throws Exception
+     * @return void
+     */
+    public static function ping()
+    {
+        Connection::allPing();
+    }
 }

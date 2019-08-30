@@ -78,13 +78,9 @@ class Consumer extends \finger\Thread\Thread
                         $redis->lRem($monitorQueueIngKey, $strQueueVal, 1);
                     }
                 } else {
-                    $pong = $redis->ping();
-                    if ($pong != '+PONG') {
-                        YLog::log('Redis ping failure!', 'redis', 'monitor-ping');
-                        YCore::exception(STATUS_ERROR, 'Redis ping failure!');
-                    }
-                    $MonitorModel->ping();
-                    $this->monitorToSuccess($redis, $num);
+                    Db::ping();
+                    YCache::ping();
+                    $this->monitorToSuccess($batResult);
                     usleep(100000);
                 }
                 $this->isExit($startTimeTsp);
