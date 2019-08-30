@@ -51,7 +51,7 @@
 					</div>
 					<div class="form-group">
 						<span class="pull-left form-span">管理员</span>
-						<input type="text" name="admin_name" class="form-control" style="width: 120px;" value="{{$admin_name}}" placeholder="请输入管理员账号">
+						<input type="text" name="admin_name" class="form-control" style="width: 150px;" value="{{$admin_name}}" placeholder="请输入管理员账号">
 					</div>
 					<div class="form-group">
 						<button type="submit" class="form-control btn btn-info" ><span class="glyphicon glyphicon-search"></span> 查询 </button>
@@ -110,7 +110,7 @@
 							<div class="pull-right page-block">
 								<nav>
 									<ul class="pagination">
-										{{$page_html}}
+										{{$pageHtml nofilter}}
 									</ul>
 								</nav>
 							</div>

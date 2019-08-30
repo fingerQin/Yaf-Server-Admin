@@ -6,13 +6,13 @@
 			<tr>
 				<th class="left-txt">模板标题：</th>
 				<td>
-					<input type="text" name="title" id="title" class="input-text" value="{{$detail.title|escape}}" />
+					<input type="text" name="title" id="title" class="input-text" value="{{$detail.title}}" />
 				</td>
 			</tr>
 			<tr>
 				<th class="left-txt">模板 KEY：</th>
 				<td>
-					<input type="text" name="send_key" id="send_key" class="input-text" value="{{$detail.send_key|escape}}" />
+					<input type="text" name="send_key" id="send_key" class="input-text" value="{{$detail.send_key}}" />
 				</td>
 			</tr>
 			<tr>
@@ -26,7 +26,7 @@
 			</tr>
 			<tr>
                 <th class="left-txt">短信内容：</th>
-                <td><textarea name="sms_body" id="sms_body" class="textarea" rows="3" cols="50">{{$detail.sms_body|escape}}</textarea></td>
+                <td><textarea name="sms_body" id="sms_body" class="textarea" rows="3" cols="50">{{$detail.sms_body}}</textarea></td>
             </tr>
 			<tr>
 				<td></td>

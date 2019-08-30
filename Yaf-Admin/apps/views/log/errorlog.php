@@ -33,7 +33,7 @@
 						<div class="pull-right">
 							<nav>
 								<ul class="pagination">
-									{{ page_html|raw }}
+									{{ pageHtml nofilter|raw }}
 								</ul>
 							</nav>
 						</div>

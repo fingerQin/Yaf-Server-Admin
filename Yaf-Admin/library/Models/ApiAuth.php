@@ -14,7 +14,7 @@ class ApiAuth extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_api_auth';
+    protected $tableName  = 'finger_api_auth';
 
     protected $primaryKey = 'id';
 }

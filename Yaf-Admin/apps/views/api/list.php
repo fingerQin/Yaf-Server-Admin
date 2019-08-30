@@ -59,7 +59,7 @@
 							<div class="pull-right page-block">
 								<nav>
 									<ul class="pagination">
-										{{$page_html}}
+										{{$pageHtml nofilter}}
 									</ul>
 								</nav>
 							</div>

@@ -29,7 +29,7 @@ class AdminRolePriv extends AbstractBase
         $where = [
             'roleid' => $roleid
         ];
-        return $this->del($where);
+        return $this->delete($where);
     }
 
     /**

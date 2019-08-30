@@ -27,7 +27,7 @@ class NewsController extends \Common\controllers\Admin
         $list      = News::list($title, $adminName, $catCode, $starttime, $endtime, $page, 20);
         $paginator = new Paginator($list['total'], 20);
         $pageHtml  = $paginator->backendPageShow();
-        $this->assign('page_html', $pageHtml);
+        $this->assign('pageHtml', $pageHtml);
         $this->assign('list', $list['list']);
         $this->assign('title', $title);
         $this->assign('starttime', $starttime);

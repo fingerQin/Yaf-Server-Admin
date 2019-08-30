@@ -27,7 +27,7 @@ class OrderController extends \Common\controllers\Admin
         $result         = Order::list($goodsId, $mobile, $receiverName, $receiverMobile, $orderSn, $orderStatus, $startTime, $endTime, $page, 20);
         $paginator      = new Paginator($result['total'], 20);
         $pageHtml       = $paginator->backendPageShow();
-        $this->assign('page_html', $pageHtml);
+        $this->assign('pageHtml', $pageHtml);
         $this->assign('list', $result['list']);
         $this->assign('goods_id', $goodsId);
         $this->assign('receiver_name', $receiverName);
@@ -67,10 +67,11 @@ class OrderController extends \Common\controllers\Admin
             $receiverZip     = $this->getString('receiver_zip');
             Order::adjustAddress($this->adminId, $orderId, $districtId, $receiverName, $receiverAddress, $receiverMobile, $receiverZip);
             $this->json(true, '调价成功');
+        } else {
+            $orderId     = $this->getInt('order_id');
+            $orderDetail = Order::getShopOrderDetail($orderId);
+            $this->assign('order_detail', $orderDetail);
         }
-        $orderId     = $this->getInt('order_id');
-        $orderDetail = Order::getShopOrderDetail($orderId);
-        $this->assign('order_detail', $orderDetail);
     }
 
     /**

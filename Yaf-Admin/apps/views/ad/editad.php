@@ -71,7 +71,7 @@
             <tr>
                 <th class="left-txt">备注：</th>
                 <td>
-                    <textarea name="remark" id="remark" class="form-control" rows="3" cols="50">{{$detail.remark|escape}}</textarea>
+                    <textarea name="remark" id="remark" class="form-control" rows="3" cols="50">{{$detail.remark}}</textarea>
                 </td>
             </tr>
             <tr>

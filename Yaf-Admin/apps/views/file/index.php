@@ -104,7 +104,7 @@
 					<tr>
 						<td colspan="16">
 							<div class="pull-right page-block">
-								<nav><ul class="pagination">{{$page_html}}</ul></nav>
+								<nav><ul class="pagination">{{$pageHtml nofilter}}</ul></nav>
 							</div>
 						</td>
 					</tr>

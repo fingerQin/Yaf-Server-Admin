@@ -22,10 +22,10 @@
 				</tr>
 				<tr>
 					<th class="left-txt">处理备注：</th>
-					<td>{{$detail.remark|escape}}</td>
+					<td>{{$detail.remark}}</td>
 				</tr>
 				<tr>
-					<td colspan="2"><textarea readonly="readonly" style="height:200px;width:95%;margin-left:10px;">{{$detail.data|escape}}</textarea></td>
+					<td colspan="2"><textarea readonly="readonly" style="height:200px;width:95%;margin-left:10px;">{{$detail.data}}</textarea></td>
 				</tr>
 			<tbody>
 		</table>

@@ -1,11 +1,5 @@
 {{include file="common/header.php"}}
 
-<style type="text/css">
-    .content .left-txt{
-        width:30%;
-    }
-</style>
-
 <div class="main">
     <form id="fromID">
         <table class="content" border="0" cellspacing="0" cellpadding="0">

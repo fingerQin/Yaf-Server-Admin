@@ -3,7 +3,7 @@
 <link href="{{'kindeditor_custom.css'|css}}" rel="stylesheet" type="text/css">
 
 <div id="helpstr">
-{{$helpstr}}<br />
+{{$helpstr nofilter}}<br />
 <button type="button" id="helpstr-button">编辑文档</button>
 </div>
 

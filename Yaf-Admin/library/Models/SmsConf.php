@@ -14,7 +14,7 @@ class SmsConf extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_sms_conf';
+    protected $tableName  = 'finger_sms_conf';
 
     protected $primaryKey = 'id';
 }

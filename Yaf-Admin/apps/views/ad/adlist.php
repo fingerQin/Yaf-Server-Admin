@@ -63,11 +63,11 @@
                             <td align="center">{{$item.ad_id}}</td>
                             <td align="center"><a target="_blank" href="{{$item.ad_url}}"><img style="width:120px" src="{{$item.ad_image_url}}" /></a></td>
                             <td align="center">{{$item.ad_name}}</td>
-                            <td align="center">{{$item.terminal_label}}</td>
+                            <td align="center">{{$item.terminal_label nofilter}}</td>
                             <td align="center">开始:{{$item.start_time}}<br/><p>结束:{{$item.end_time}}</p></td>
                             <td align="center">{{if $item.display}}显示{{else}}隐藏{{/if}}</td>
                             <td align="center">
-                                <a id="view_remark_{{$item.ad_id}}" title="{{$item.remark|escape}}" href="###" onClick="viewRemark('view_remark_{{$item.ad_id}}')">查看</a>
+                                <a id="view_remark_{{$item.ad_id}}" title="{{$item.remark}}" href="###" onClick="viewRemark('view_remark_{{$item.ad_id}}')">查看</a>
                             </td>
                             <td align="center">{{$item.c_time}}</td>
                             <td align="center">
@@ -85,7 +85,7 @@
                         <tr>
                             <td colspan="16">
                                 <div class="pull-right page-block">
-                                    <nav><ul class="pagination">{{$page_html}}</ul></nav>
+                                    <nav><ul class="pagination">{{$pageHtml nofilter}}</ul></nav>
                                 </div>
                             </td>
                         </tr>

@@ -14,7 +14,7 @@ class AppUpgrade extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_app_upgrade';
+    protected $tableName  = 'finger_app_upgrade';
 
     protected $primaryKey = 'id';
 

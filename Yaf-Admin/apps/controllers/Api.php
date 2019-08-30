@@ -20,7 +20,7 @@ class ApiController extends \Common\controllers\Admin
         $list      = ApiAuth::list($page, 10);
         $paginator = new Paginator($list['total'], 10);
         $pageHtml  = $paginator->backendPageShow();
-        $this->assign('page_html', $pageHtml);
+        $this->assign('pageHtml', $pageHtml);
         $this->assign('list', $list['list']);
     }
 

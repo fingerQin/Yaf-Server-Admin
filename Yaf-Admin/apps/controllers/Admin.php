@@ -21,7 +21,7 @@ class AdminController extends \Common\controllers\Admin
         $result    = AdminUser::list($keywords, $page, 10);
         $paginator = new Paginator($result['total'], 20);
         $pageHtml  = $paginator->backendPageShow();
-        $this->assign('page_html', $pageHtml);
+        $this->assign('pageHtml', $pageHtml);
         $this->assign('keywords', $keywords);
         $this->assign('list', $result['list']);
     }
@@ -118,7 +118,7 @@ class AdminController extends \Common\controllers\Admin
         $result    = AdminService::getAdminLoginHistoryList($this->adminId, $page, 20);
         $paginator = new Paginator($result['total'], 20);
         $pageHtml  = $paginator->backendPageShow();
-        $this->assign('page_html', $pageHtml);
+        $this->assign('pageHtml', $pageHtml);
         $this->assign('list', $result['list']);
     }
 }

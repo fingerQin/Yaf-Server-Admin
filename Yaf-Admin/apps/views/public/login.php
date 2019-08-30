@@ -2,7 +2,7 @@
 <!-- saved from url=(0050)http://local.jinradmin.jinr.com/Index/Public/Login -->
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>登录</title>
+    <title>《腿神》管理后台登录</title>
     <link href="{{'bootstrap.min.css'|css}}" title="" rel="stylesheet">
     <link href="{{'body.css'|css}}" rel="stylesheet" type="text/css">
     <link href="{{'login.css'|css}}" rel="stylesheet" type="text/css">
@@ -14,7 +14,7 @@
 <body>
 <div class="top width">
     <div class="txt-1 marign">
-        <h1 style="color: #fff;">后台管理系统</h1>
+        <h1 style="color: #fff;">《腿神》后台管理系统</h1>
     </div>
 </div>
 

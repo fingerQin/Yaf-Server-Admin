@@ -15,7 +15,7 @@ class Category extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_category';
+    protected $tableName  = 'finger_category';
 
     protected $primaryKey = 'cat_id';
 

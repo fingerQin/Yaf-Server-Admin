@@ -14,7 +14,7 @@ class User extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_user';
+    protected $tableName  = 'finger_user';
 
     protected $primaryKey = 'userid';
 

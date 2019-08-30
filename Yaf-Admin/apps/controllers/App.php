@@ -22,7 +22,7 @@ class AppController extends \Common\controllers\Admin
         $list      = App::list($appType, $channel, $appV, $page, 20);
         $paginator = new Paginator($list['total'], 20);
         $pageHtml  = $paginator->backendPageShow();
-        $this->assign('page_html', $pageHtml);
+        $this->assign('pageHtml', $pageHtml);
         $this->assign('list', $list['list']);
         $this->assign('appType', $appType);
         $this->assign('channel', $channel);

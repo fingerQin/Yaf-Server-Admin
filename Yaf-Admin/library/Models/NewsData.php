@@ -15,7 +15,7 @@ class NewsData extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_news_data';
+    protected $tableName  = 'finger_news_data';
 
     protected $primaryKey = 'newsid';
 }

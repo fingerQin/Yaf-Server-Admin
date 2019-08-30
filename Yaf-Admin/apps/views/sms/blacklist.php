@@ -8,7 +8,7 @@
             </div>
             <div class="pull-right">
 				{{if 'Sms'|access:'addBlist'}}
-				<button type="button" class="btn btn-mystyle btn-sm" onclick="add();">添加配置</button>
+				<button type="button" class="btn btn-mystyle btn-sm" onclick="add();">添加黑名单</button>
 				{{/if}}
 
 				{{if 'Sms'|access:'clearBlacklistCache'}}
@@ -60,7 +60,7 @@
 					<tr>
 						<td colspan="16">
 							<div class="pull-right page-block">
-								<nav><ul class="pagination">{{$pageHtml}}</ul></nav>
+								<nav><ul class="pagination">{{$pageHtml nofilter}}</ul></nav>
 							</div>
 						</td>
 					</tr>

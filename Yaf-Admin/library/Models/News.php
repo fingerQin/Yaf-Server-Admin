@@ -18,7 +18,7 @@ class News extends AbstractBase
      *
      * @var string
      */
-    protected $tableName = 'finger_news';
+    protected $tableName  = 'finger_news';
 
     protected $primaryKey = 'news_id';
 }

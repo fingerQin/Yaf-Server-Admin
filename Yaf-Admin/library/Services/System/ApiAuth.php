@@ -8,10 +8,10 @@
 namespace Services\System;
 
 use Utils\YCore;
+use Utils\YCache;
 use finger\Validator;
 use finger\Database\Db;
 use Models\ApiAuth as ApiAuthModel;
-use Utils\YCache;
 
 class ApiAuth extends \Services\AbstractBase
 {

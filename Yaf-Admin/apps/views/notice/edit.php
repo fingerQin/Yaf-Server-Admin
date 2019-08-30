@@ -10,7 +10,7 @@
 			<tr>
 				<th class="left-txt">公告标题：</th>
 				<td>
-					<input type="text" name="title" id="title" class="input-text" value="{{$detail.title|escape}}" />
+					<input type="text" name="title" id="title" class="input-text" value="{{$detail.title}}" />
 				</td>
             </tr>
             <tr>
@@ -43,7 +43,7 @@
 			</tr>
             <tr>
                 <th class="left-txt">公告摘要：</th>
-                <td><textarea name="summary" id="summary" class="textarea" rows="3" cols="50">{{$detail.summary|escape}}</textarea></td>
+                <td><textarea name="summary" id="summary" class="textarea" rows="3" cols="50">{{$detail.summary}}</textarea></td>
             </tr>
 			<tr>
                 <th class="left-txt">公告内容：</th>

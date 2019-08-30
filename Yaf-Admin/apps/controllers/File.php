@@ -25,7 +25,7 @@ class FileController extends \Common\controllers\Admin
         $list      = File::list($userType, $userName, $fileMd5, $fileType, $startTime, $endTime, $page, 20);
         $paginator = new Paginator($list['total'], 20);
         $pageHtml  = $paginator->backendPageShow();
-        $this->assign('page_html', $pageHtml);
+        $this->assign('pageHtml', $pageHtml);
         $this->assign('list', $list['list']);
         $this->assign('user_type', $userType);
         $this->assign('user_name', $userName);

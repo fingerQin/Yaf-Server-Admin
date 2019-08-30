@@ -55,9 +55,9 @@
 						<td class="text-center">
 							{{if 'Admin'|access:'forbid'}}
 								{{if $item.user_status}}
-								<a class="forbid" rel="{{$item.adminid}}" realname="{{$item.real_name|escape}}" status="0" href="javascript:void(0)">禁用</a>
+								<a class="forbid" rel="{{$item.adminid}}" realname="{{$item.real_name}}" status="0" href="javascript:void(0)">禁用</a>
 								{{else}}
-								<a class="forbid" rel="{{$item.adminid}}" realname="{{$item.real_name|escape}}" status="1" href="javascript:void(0)">解禁</a>
+								<a class="forbid" rel="{{$item.adminid}}" realname="{{$item.real_name}}" status="1" href="javascript:void(0)">解禁</a>
 								{{/if}}
 							{{/if}}
 
@@ -76,7 +76,7 @@
 					<tr>
 						<td colspan="16">
 							<div class="pull-right page-block">
-								<nav><ul class="pagination">{{$page_html}}</ul></nav>
+								<nav><ul class="pagination">{{$pageHtml nofilter}}</ul></nav>
 							</div>
 						</td>
 					</tr>

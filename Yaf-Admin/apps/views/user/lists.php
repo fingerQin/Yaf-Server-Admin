@@ -15,7 +15,7 @@
 				<form action="{{'Coupon/history'|url}}" onsubmit="return submitBefore();" method="get">
 					<div class="form-group">
 						<span class="pull-left form-span">手机账号</span>
-						<input type="text" name="mobile" id="mobile" class="form-control" style="width: 180px;" value="{{$mobile|escape}}" placeholder="请输入用户手机账号">
+						<input type="text" name="mobile" id="mobile" class="form-control" style="width: 180px;" value="{{$mobile}}" placeholder="请输入用户手机账号">
 					</div>
 					<div class="form-group" style="width:415px;">
 						<span class="pull-left form-span">下单时间</span>
@@ -104,7 +104,7 @@
 						<td colspan="16">
 							<div class="pull-right page-block">
 								<nav>
-									<ul class="pagination">{{$page_html}}</ul>
+									<ul class="pagination">{{$pageHtml nofilter}}</ul>
 								</nav>
 							</div>
 						</td>

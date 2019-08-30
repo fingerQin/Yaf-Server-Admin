@@ -22,7 +22,7 @@ class UserController extends \Common\controllers\Admin
         $list      = User::list($mobile, $starttime, $endtime, $page, 20);
         $paginator = new Paginator($list['total'], 20);
         $pageHtml  = $paginator->backendPageShow();
-        $this->assign('page_html', $pageHtml);
+        $this->assign('pageHtml', $pageHtml);
         $this->assign('list', $list['list']);
         $this->assign('mobile', $mobile);
         $this->assign('start_time', $starttime);
@@ -39,9 +39,10 @@ class UserController extends \Common\controllers\Admin
             $password = $this->getString('password');
             User::editPwd($userid, $password);
             $this->json(true, '操作成功');
+        } else {
+            $userid = $this->getInt('userid');
+            $this->assign('userid', $userid);
         }
-        $userid = $this->getInt('userid');
-        $this->assign('userid', $userid);
     }
 
     /**
@@ -54,9 +55,10 @@ class UserController extends \Common\controllers\Admin
             $status = $this->getInt('status');
             User::editStatus($userid, $status);
             $this->json(true, '操作成功');
+        } else {
+            $userid = $this->getInt('userid');
+            $this->assign('userid', $userid);
         }
-        $userid = $this->getInt('userid');
-        $this->assign('userid', $userid);
     }
 
     /**
