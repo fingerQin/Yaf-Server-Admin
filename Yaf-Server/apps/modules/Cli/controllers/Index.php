@@ -29,7 +29,7 @@ class IndexController extends \Common\controllers\Cli
     public function threadPushAction()
     {
         $datetime  = date('Y-m-d H:i:s', time());
-        for ($i = 0; $i < 1000; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             Producer::push([
                 'code'        => Event::CODE_LOGIN,
                 'userid'      => 1,
