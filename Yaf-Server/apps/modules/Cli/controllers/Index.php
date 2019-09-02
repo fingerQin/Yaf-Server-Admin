@@ -8,6 +8,7 @@
 use Utils\YExcel;
 use Models\Event;
 use Services\Event\Producer;
+use Threads\DemoThread;
 
 class IndexController extends \Common\controllers\Cli
 {
@@ -28,19 +29,10 @@ class IndexController extends \Common\controllers\Cli
      */
     public function threadPushAction()
     {
-        $datetime  = date('Y-m-d H:i:s', time());
-        for ($i = 0; $i < 100; $i++) {
-            Producer::push([
-                'code'        => Event::CODE_LOGIN,
-                'userid'      => 1,
-                'mobile'      => '18575202691',
-                'platform'    => 1,
-                'app_v'       => '0.0.1',
-                'v'           => '1.0.0',
-                'login_time'  => $datetime
-            ]);
-        }
-        echo "ok:{$datetime}\n";
+        $objThread = DemoThread::getInstance(50);
+        $objThread->setChildOverNewCreate(false);
+        $objThread->setRunDurationExit(30);
+        $objThread->start();
     }
 
     public function testAction()
