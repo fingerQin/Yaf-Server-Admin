@@ -120,7 +120,7 @@ abstract class AbstractBase extends \finger\Thread\Thread
         $EventModel = new Event();
         try {
             while(true) {
-                $strEventVal = $redis->bRPopLPush($eventQueueKey, $eventQueueIngKey, 3);
+                $strEventVal = $redis->bRPopLPush($eventQueueKey, $eventQueueIngKey, 1);
                 if ($strEventVal) {
                     $arrEventVal = json_decode($strEventVal, true);
                     // [2.3] 验证事件是否已存在。

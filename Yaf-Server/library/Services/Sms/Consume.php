@@ -35,7 +35,7 @@ class Consume extends \Services\Sms\AbstractBase
             $redis->del($queueIng);
             // [3]
             while (true) {
-                $str = $redis->bRPopLPush($queueKey, $queueIng, 3);
+                $str = $redis->bRPopLPush($queueKey, $queueIng, 1);
                 if (!empty($str)) {
                     YLog::log(['data' => $str], 'sms', 'consume');
                     $arrValue = json_decode($str, true);
