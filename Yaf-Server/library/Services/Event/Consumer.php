@@ -37,7 +37,7 @@ class Consumer extends \Services\Event\AbstractBase
         // [2.2] 无限循环让进程一直处于常驻状态。
         try {
             while(true) {
-                $strEventVal = $redis->bRPopLPush($eventQueueKey, $eventQueueIngKey, 10);
+                $strEventVal = $redis->bRPopLPush($eventQueueKey, $eventQueueIngKey, 3);
                 if ($strEventVal) {
                     $arrEventVal = json_decode($strEventVal, true);
                     $subEventkey = self::EVENT_PREFIX . '_' . $arrEventVal['code']; // 子事件队列 KEY。
@@ -46,7 +46,6 @@ class Consumer extends \Services\Event\AbstractBase
                     YLog::log($arrEventVal, 'event', 'dispatcher-success');
                 } else {
                     YCache::ping();
-                    usleep(10000);
                 }
             }
         } catch (\Exception $e) {

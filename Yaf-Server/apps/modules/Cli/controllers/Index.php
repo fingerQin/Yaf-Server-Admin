@@ -29,7 +29,7 @@ class IndexController extends \Common\controllers\Cli
      */
     public function threadPushAction()
     {
-        $objThread = DemoThread::getInstance(50);
+        $objThread = DemoThread::getInstance(5);
         $objThread->setChildOverNewCreate(false);
         $objThread->setRunDurationExit(30);
         $objThread->start();

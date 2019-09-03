@@ -62,7 +62,7 @@ class Consumer extends \finger\Thread\Thread
         try {
             $batResult = []; // 保存每批次入库的数据。
             while(true) {
-                $strQueueVal = $redis->rPopLPush($monitorQueueKey, $monitorQueueIngKey);
+                $strQueueVal = $redis->bRPopLPush($monitorQueueKey, $monitorQueueIngKey, 3);
                 if ($strQueueVal) {
                     $arrQueueVal = json_decode($strQueueVal, true);
                     // [3] 调用具体的业务来处理这个消息。
@@ -81,7 +81,6 @@ class Consumer extends \finger\Thread\Thread
                     Db::ping();
                     YCache::ping();
                     $this->monitorToSuccess($batResult);
-                    usleep(100000);
                 }
                 $this->isExit($startTimeTsp);
             }
