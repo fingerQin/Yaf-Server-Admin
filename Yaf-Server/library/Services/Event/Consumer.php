@@ -37,7 +37,7 @@ class Consumer extends \Services\Event\AbstractBase
         // [2.2] 无限循环让进程一直处于常驻状态。
         try {
             while(true) {
-                $strEventVal = $redis->bRPopLPush($eventQueueKey, $eventQueueIngKey, 3);
+                $strEventVal = $redis->bRPopLPush($eventQueueKey, $eventQueueIngKey, 1);
                 if ($strEventVal) {
                     $arrEventVal = json_decode($strEventVal, true);
                     $subEventkey = self::EVENT_PREFIX . '_' . $arrEventVal['code']; // 子事件队列 KEY。
