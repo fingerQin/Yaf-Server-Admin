@@ -14,7 +14,7 @@
 <body>
 <div class="top width">
     <div class="txt-1 marign">
-        <h1 style="color: #fff;">《腿神》后台管理系统</h1>
+        <h1 style="color: #fff;">后台管理系统</h1>
     </div>
 </div>
 
