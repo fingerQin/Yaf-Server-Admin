@@ -12,7 +12,7 @@
 		</div>
 		<div class="search-box row">
 			<div class="col-md-12">
-				<form action="{{'Coupon/history'|url}}" onsubmit="return submitBefore();" method="get">
+				<form action="{{'User/lists'|url}}" onsubmit="return submitBefore();" method="get">
 					<div class="form-group">
 						<span class="pull-left form-span">手机账号</span>
 						<input type="text" name="mobile" id="mobile" class="form-control" style="width: 180px;" value="{{$mobile}}" placeholder="请输入用户手机账号">
