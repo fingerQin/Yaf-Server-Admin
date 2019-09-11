@@ -77,6 +77,16 @@ function fail(message, interval, jumpUrl)
  * @return void
  */
 function postDialog(dialog_id, page_url, dialog_title, dialog_width, dialog_height, scrolling) {
+	var height = document.documentElement.clientHeight;
+	var width  = document.documentElement.clientWidth;
+
+	if (height < dialog_height) {
+		scrolling = true; // 实际高度小于指定的高度时，则自动滚动处理。
+		dialog_height = height - 20
+	}
+	if (width < dialog_width) {
+		dialog_width = dialog_width - 10
+	}
 	layer.open({
 		id: dialog_id,
 		type: 2,
