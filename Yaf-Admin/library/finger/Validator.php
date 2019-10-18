@@ -120,7 +120,7 @@ class Validator
                         $classFuncName = "is_{$ruleName}"; // 当前调用的验证器名称。
                         if (!self::$classFuncName($valiValue)) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
-                            YCore::exception(STATUS_ERROR, $errmsg);
+                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
                         }
                         break;
                     case 'alpha_between' :
@@ -128,14 +128,14 @@ class Validator
                             continue;
                         }
                         if (!isset($arrRuleItem[1])) {
-                            YCore::exception(STATUS_ERROR, 'Alpha_between validator must set the starting value');
+                            YCore::exception(STATUS_SERVER_ERROR, 'Alpha_between validator must set the starting value');
                         }
                         if (!isset($arrRuleItem[2])) {
-                            YCore::exception(STATUS_ERROR, 'Alpha_between validator must set the cut-off value');
+                            YCore::exception(STATUS_SERVER_ERROR, 'Alpha_between validator must set the cut-off value');
                         }
                         if (!self::is_alpha_between($valiValue, $arrRuleItem[1], $arrRuleItem[2])) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
-                            YCore::exception(STATUS_ERROR, $errmsg);
+                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
                         }
                         break;
                     case 'number_between' :
@@ -143,16 +143,16 @@ class Validator
                             continue;
                         }
                         if (!isset($arrRuleItem[1])) {
-                            YCore::exception(STATUS_ERROR, 'Number_between validator must set the minimum value');
+                            YCore::exception(STATUS_SERVER_ERROR, 'Number_between validator must set the minimum value');
                         }
                         if (!isset($arrRuleItem[2])) {
-                            YCore::exception(STATUS_ERROR, 'Number_between validator must set the maximum value');
+                            YCore::exception(STATUS_SERVER_ERROR, 'Number_between validator must set the maximum value');
                         }
                         if (!self::is_number_between($valiValue, $arrRuleItem[1], $arrRuleItem[2])) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
                             $errmsg = str_replace('%min%', $arrRuleItem[1], $errmsg);
                             $errmsg = str_replace('%max%', $arrRuleItem[2], $errmsg);
-                            YCore::exception(STATUS_ERROR, $errmsg);
+                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
                         }
                         break;
                     case 'len' :
@@ -160,19 +160,19 @@ class Validator
                             continue;
                         }
                         if (!isset($arrRuleItem[1])) {
-                            YCore::exception(STATUS_ERROR, 'Len validator first parameter must be set');
+                            YCore::exception(STATUS_SERVER_ERROR, 'Len validator first parameter must be set');
                         }
                         if (!isset($arrRuleItem[2])) {
-                            YCore::exception(STATUS_ERROR, 'Len validator second parameter must be set');
+                            YCore::exception(STATUS_SERVER_ERROR, 'Len validator second parameter must be set');
                         }
                         if (!isset($arrRuleItem[3])) {
-                            YCore::exception(STATUS_ERROR, 'Len validator third parameter must be set');
+                            YCore::exception(STATUS_SERVER_ERROR, 'Len validator third parameter must be set');
                         }
                         if (!self::is_len($valiValue, $arrRuleItem[1], $arrRuleItem[2], $arrRuleItem[3])) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
                             $errmsg = str_replace('%min%', $arrRuleItem[1], $errmsg);
                             $errmsg = str_replace('%max%', $arrRuleItem[2], $errmsg);
-                            YCore::exception(STATUS_ERROR, $errmsg);
+                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
                         }
                         break;
                     case 'date' :
@@ -180,16 +180,16 @@ class Validator
                             continue;
                         }
                         if (!isset($arrRuleItem[1])) {
-                            YCore::exception(STATUS_ERROR, 'Date validator first parameter must be set');
+                            YCore::exception(STATUS_SERVER_ERROR, 'Date validator first parameter must be set');
                         }
                         $format = $arrRuleItem[1] == 1 ? 'Y-m-d H:i:s' : 'Y-m-d';
                         if (!self::is_date($valiValue, $format)) {
                             $errmsg = str_replace('%label%', $labelName, self::$ruleTxt[$ruleName]);
-                            YCore::exception(STATUS_ERROR, $errmsg);
+                            YCore::exception(STATUS_SERVER_ERROR, $errmsg);
                         }
                         break;
                     default :
-                        YCore::exception(STATUS_ERROR, 'In the name of the validator illegally');
+                        YCore::exception(STATUS_ERROR, "In the name `{$ruleName}` of the validator illegally");
                         break;
                 }
             }
@@ -227,7 +227,7 @@ class Validator
      */
     public static function is_mobilephone($mobilephone)
     {
-        return preg_match('/^13[\d]{9}$|^14[0-9]\d{8}$|^15[0-9]\d{8}$|^17[0-9]\d{8}$|^18[0-9]\d{8}$/', $mobilephone) ? true : false;
+        return preg_match('/^13[\d]{9}$|^14[0-9]\d{8}$|^15[0-9]\d{8}$|^16[0-9]\d{8}$|^17[0-9]\d{8}$|^18[0-9]\d{8}$/', $mobilephone) ? true : false;
     }
 
     /**
