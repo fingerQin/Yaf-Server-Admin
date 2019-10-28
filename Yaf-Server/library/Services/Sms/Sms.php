@@ -125,7 +125,7 @@ class Sms extends \Services\Sms\AbstractBase
             'content' => $result['content'],
             'is_send' => YCore::appconfig('sms.is_send_sms', 0)
         ];
-        Queue::pushSmsQueue($queueData);
+        Queue::push($queueData);
     }
 
     /**
