@@ -7,7 +7,7 @@
 
 namespace Apis\admin\v100\Sms;
 
-use Utils\YCore;
+use finger\Utils\YCore;
 use Apis\AbstractApi;
 use Services\Sms\Sms;
 

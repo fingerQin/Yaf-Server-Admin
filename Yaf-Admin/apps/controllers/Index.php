@@ -5,7 +5,7 @@
  * @date 2018-06-27
  */
 
-use Utils\YUrl;
+use finger\Utils\YUrl;
 use Services\Power\Menu;
 use Services\Power\Help;
 use Services\System\Upload;

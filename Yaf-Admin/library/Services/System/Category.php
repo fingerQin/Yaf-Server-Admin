@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use Utils\YCore;
+use finger\Utils\YCore;
 use finger\Database\Db;
 use Models\News;
 use Models\Category as CategoryModel;

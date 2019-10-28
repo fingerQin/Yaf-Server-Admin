@@ -9,8 +9,8 @@ namespace Services\System;
 
 use finger\Validator;
 use finger\Database\Db;
-use Utils\YCore;
-use Utils\YCache;
+use finger\Utils\YCore;
+use finger\Utils\YCache;
 use Models\Config as ConfigModel;
 
 class Config extends \Services\AbstractBase

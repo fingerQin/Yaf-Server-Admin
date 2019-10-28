@@ -9,8 +9,8 @@ namespace Services\System;
 
 use finger\Validator;
 use finger\Database\Db;
-use Utils\YCore;
-use Utils\YUrl;
+use finger\Utils\YCore;
+use finger\Utils\YUrl;
 use Models\Ad as AdModel;
 use Models\AdPosition;
 

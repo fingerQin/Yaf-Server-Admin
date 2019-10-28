@@ -8,8 +8,8 @@
 namespace Services\User;
 
 use finger\Validator;
-use Utils\YString;
-use Utils\YCore;
+use finger\Utils\YString;
+use finger\Utils\YCore;
 use Models\User;
 use Services\Sms\Sms;
 

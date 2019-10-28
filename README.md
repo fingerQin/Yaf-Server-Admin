@@ -186,7 +186,7 @@ $ chmod -R 0777 ./logs
 
 
 
-###6 Composer update
+### 6 Composer update
 
  
 

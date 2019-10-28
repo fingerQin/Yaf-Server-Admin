@@ -10,8 +10,8 @@
 
 namespace Common\controllers;
 
-use Utils\YCore;
-use Utils\YUrl;
+use finger\Utils\YCore;
+use finger\Utils\YUrl;
 use Services\Power\Auth;
 use Services\System\OperationLog;
 

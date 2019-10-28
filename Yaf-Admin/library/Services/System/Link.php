@@ -9,7 +9,7 @@ namespace Services\System;
 
 use finger\Validator;
 use finger\Database\Db;
-use Utils\YCore;
+use finger\Utils\YCore;
 use Models\Link as LinkModel;
 
 class Link extends \Services\AbstractBase

@@ -7,8 +7,8 @@
 
 namespace Services\System;
 
-use Utils\YCore;
-use Utils\YCache;
+use finger\Utils\YCore;
+use finger\Utils\YCache;
 use finger\Validator;
 use finger\Database\Db;
 use Models\ApiAuth as ApiAuthModel;

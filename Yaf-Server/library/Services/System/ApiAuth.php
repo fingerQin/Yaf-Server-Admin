@@ -8,8 +8,8 @@
 namespace Services\System;
 
 use finger\Ip;
-use Utils\YCache;
-use Utils\YCore;
+use finger\Utils\YCache;
+use finger\Utils\YCore;
 use Models\ApiAuth as ApiAuthModel;
 
 class ApiAuth extends \Services\AbstractBase

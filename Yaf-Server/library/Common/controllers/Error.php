@@ -7,8 +7,8 @@
 
 namespace Common\controllers;
 
-use Utils\YCore;
-use Utils\YLog;
+use finger\Utils\YCore;
+use finger\Utils\YLog;
 use finger\ServiceException;
 
 class Error extends \Common\controllers\Common
@@ -37,7 +37,14 @@ class Error extends \Common\controllers\Common
             $errCode    = STATUS_ERROR;
             $errMsg     = '服务器繁忙,请稍候重试';
             $logContent = $exception->getMessage() . "\n" . $exception->getTraceAsString();
-            YLog::log($logContent, 'errors', 'log');
+
+            if ($exception instanceof \RedisException) { // Redis 的错误写一篇 Redis 特定的目录文件。
+                YLog::log($logContent, 'redis', 'log');
+            } elseif ($exception instanceof \PDOException) { // MySQL PDO 报错。
+                YLog::log($logContent, 'pdo', 'log');
+            } else {
+                YLog::log($logContent, 'errors', 'log');
+            }
         }
 
         // [2] 根据是不同的请求类型响应不的数据。

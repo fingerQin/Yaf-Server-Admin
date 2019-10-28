@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use Utils\YCache;
+use finger\Utils\YCache;
 
 class RedisManage extends \Services\AbstractBase
 {

@@ -18,7 +18,7 @@ class Cli extends Common
         parent::init();
         $this->end();
         if (PHP_SAPI != 'cli') { // 非 CLI 模式运行则报错。
-            \Utils\YCore::exception(STATUS_SERVER_ERROR, '服务器异常,请稍候重试');
+            \finger\Utils\YCore::exception(STATUS_SERVER_ERROR, '服务器异常,请稍候重试');
         }
     }
 }

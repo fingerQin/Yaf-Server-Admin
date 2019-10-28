@@ -5,9 +5,8 @@
  * @date 2018-08-16
  */
 
-use Utils\YExcel;
+use finger\Utils\YExcel;
 use Models\Event;
-use Services\Event\Producer;
 use Threads\DemoThread;
 
 class IndexController extends \Common\controllers\Cli

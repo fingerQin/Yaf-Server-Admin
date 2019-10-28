@@ -7,8 +7,8 @@
 
 namespace Services\Monitor;
 
-use Utils\YCore;
-use Utils\YCache;
+use finger\Utils\YCore;
+use finger\Utils\YCache;
 use Models\Monitor;
 use finger\Validator;
 

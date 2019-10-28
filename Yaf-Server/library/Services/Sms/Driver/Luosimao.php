@@ -7,8 +7,8 @@
 
 namespace Services\Sms\Driver;
 
-use Utils\YLog;
-use Utils\YCore;
+use finger\Utils\YLog;
+use finger\Utils\YCore;
 
 class Luosimao
 {

@@ -8,7 +8,7 @@
 
 namespace Models;
 
-use Utils\YDate;
+use finger\Utils\YDate;
 use finger\Database\Db;
 
 class News extends AbstractBase

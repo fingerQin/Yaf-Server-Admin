@@ -6,7 +6,7 @@
  * @subpackage PluginsModifier
  */
 
-use Utils\YUrl;
+use finger\Utils\YUrl;
 
 /**
  * 创建一个管理后台的URL。

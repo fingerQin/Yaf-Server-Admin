@@ -8,9 +8,9 @@
 namespace Common\controllers;
 
 use finger\ServiceException;
-use Utils\YCore;
-use Utils\YLog;
-use Utils\YUrl;
+use finger\Utils\YCore;
+use finger\Utils\YLog;
+use finger\Utils\YUrl;
 
 class Error extends \Common\controllers\Common
 {

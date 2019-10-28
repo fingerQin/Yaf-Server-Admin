@@ -10,8 +10,8 @@ namespace Services\Power;
 
 use finger\Validator;
 use finger\Database\Db;
-use Utils\YString;
-use Utils\YCore;
+use finger\Utils\YString;
+use finger\Utils\YCore;
 use Models\AdminUser as AdminUserModel;
 
 class AdminUser extends \Services\AbstractBase

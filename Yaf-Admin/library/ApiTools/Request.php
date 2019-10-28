@@ -12,9 +12,9 @@
 
 namespace ApiTools;
 
-use Utils\YCore;
-use Utils\YCache;
-use Utils\YLog;
+use finger\Utils\YCore;
+use finger\Utils\YCache;
+use finger\Utils\YLog;
 use Services\AbstractBase;
 
 class Request

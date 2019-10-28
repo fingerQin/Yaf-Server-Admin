@@ -8,8 +8,8 @@
 namespace Services\System;
 
 use finger\Validator;
-use Utils\YCore;
-use Utils\YUrl;
+use finger\Utils\YCore;
+use finger\Utils\YUrl;
 use Models\Files;
 
 class Upload extends \Services\AbstractBase

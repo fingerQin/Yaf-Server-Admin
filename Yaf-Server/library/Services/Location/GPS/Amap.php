@@ -8,9 +8,9 @@
 
 namespace Services\Location\GPS;
 
-use Utils\YCore;
-use Utils\YLog;
-use Utils\YCache;
+use finger\Utils\YCore;
+use finger\Utils\YLog;
+use finger\Utils\YCache;
 use Models\District;
 
 class Amap

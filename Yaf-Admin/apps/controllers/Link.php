@@ -5,8 +5,8 @@
  * @date 2017-07-06
  */
 
-use Utils\YCore;
-use Utils\YUrl;
+use finger\Utils\YCore;
+use finger\Utils\YUrl;
 use finger\Paginator;
 use Services\System\Category;
 use Services\System\Link;

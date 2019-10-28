@@ -5,7 +5,7 @@
  * @date 2018-07-11
  */
 
-use Utils\YUrl;
+use finger\Utils\YUrl;
 use finger\Paginator;
 use Services\System\Category;
 use Services\System\Upload;

@@ -7,8 +7,8 @@
 
 namespace Services\Event;
 
-use Utils\YCore;
-use Utils\YCache;
+use finger\Utils\YCore;
+use finger\Utils\YCache;
 use Models\Event;
 use finger\Validator;
 

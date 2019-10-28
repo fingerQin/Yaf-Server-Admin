@@ -8,7 +8,7 @@
 
 namespace Apis;
 
-use Utils\YCore;
+use finger\Utils\YCore;
 
 class DecodeAdapter
 {

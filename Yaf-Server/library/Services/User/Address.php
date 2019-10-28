@@ -7,7 +7,7 @@
 
 namespace Services\User;
 
-use Utils\YCore;
+use finger\Utils\YCore;
 use Models\District;
 use Models\UserAddress;
 use finger\Validator;

@@ -5,7 +5,7 @@
  * @date 2018-07-10
  */
 
-use Utils\YCore;
+use finger\Utils\YCore;
 use finger\Paginator;
 use Services\System\ApiAuth;
 

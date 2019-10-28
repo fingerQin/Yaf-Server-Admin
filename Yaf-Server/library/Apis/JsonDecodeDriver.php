@@ -7,8 +7,8 @@
 
 namespace Apis;
 
-use Utils\YCore;
-use Utils\YInput;
+use finger\Utils\YCore;
+use finger\Utils\YInput;
 
 class JsonDecodeDriver
 {

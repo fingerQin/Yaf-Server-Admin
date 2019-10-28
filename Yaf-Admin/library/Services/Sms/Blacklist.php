@@ -7,8 +7,8 @@
 
 namespace Services\Sms;
 
-use Utils\YCache;
-use Utils\YCore;
+use finger\Utils\YCache;
+use finger\Utils\YCore;
 use Models\SmsBlacklist;
 use finger\Validator;
 use finger\Database\Db;

@@ -8,7 +8,7 @@
 
 namespace Services\User;
 
-use Utils\YCore;
+use finger\Utils\YCore;
 use Services\Sms\Sms;
 
 class User extends \Services\AbstractBase

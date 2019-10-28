@@ -7,7 +7,7 @@
 
 namespace Services\Power;
 
-use Utils\YCore;
+use finger\Utils\YCore;
 use Models\AdminMenu;
 
 class Help extends \Services\AbstractBase

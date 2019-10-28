@@ -7,9 +7,9 @@
 
 namespace Services\User;
 
-use Utils\YCache;
-use Utils\YString;
-use Utils\YCore;
+use finger\Utils\YCache;
+use finger\Utils\YString;
+use finger\Utils\YCore;
 use Models\Event;
 use Models\User as UserModel;
 use finger\Validator;

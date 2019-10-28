@@ -7,9 +7,9 @@
 
 namespace Services\Event;
 
-use Utils\YCache;
-use Utils\YLog;
-use Utils\YCore;
+use finger\Utils\YCache;
+use finger\Utils\YLog;
+use finger\Utils\YCore;
 
 class Consumer extends \Services\Event\AbstractBase
 {

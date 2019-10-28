@@ -1,6 +1,13 @@
 {
     "require": {
         "smarty/smarty": "~3.1",
-        "phpoffice/phpspreadsheet": "^1.7"
+        "phpoffice/phpspreadsheet": "^1.7",
+        "finger/yaflib": "^1"
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
     }
 }

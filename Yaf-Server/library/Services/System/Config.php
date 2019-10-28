@@ -7,8 +7,8 @@
 
 namespace Services\System;
 
-use Utils\YCache;
-use Utils\YCore;
+use finger\Utils\YCache;
+use finger\Utils\YCore;
 use Models\Config as ConfigModel;
 
 class Config extends \Services\AbstractBase

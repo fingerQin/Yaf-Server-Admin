@@ -1369,7 +1369,7 @@ class SmsSendApi extends AbstractApi
 示例代码如下：
 
 ```php
-use Utils\YLog;
+use finger\Utils\YLog;
 
 class LogController extends \common\controllers\Cli
 {

@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use Utils\YCore;
+use finger\Utils\YCore;
 use Models\Category as CategoryModel;
 
 class Category extends \Services\AbstractBase

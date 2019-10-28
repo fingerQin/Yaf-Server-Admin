@@ -9,8 +9,8 @@
 
 namespace Common;
 
-use Utils\YCore;
-use Utils\YCache;
+use finger\Utils\YCore;
+use finger\Utils\YCache;
 
 /**
  * 所有在Bootstrap类中, 以_init开头的方法, 都会被Yaf调用,这些方法,
@@ -35,8 +35,8 @@ class Bootstrap extends \Yaf_Bootstrap_Abstract
     public function _initError()
     {
         ini_set('display_errors', 0);
-        set_error_handler(['\Utils\YCore', 'errorHandler']);
-        register_shutdown_function(['\Utils\YCore', 'registerShutdownFunction']);
+        set_error_handler(['\finger\Utils\YCore', 'errorHandler']);
+        register_shutdown_function(['\finger\Utils\YCore', 'registerShutdownFunction']);
     }
 
     /**

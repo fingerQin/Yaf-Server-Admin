@@ -9,10 +9,10 @@ namespace Services\User;
 
 use finger\Validator;
 use finger\Database\Db;
-use Utils\YCore;
-use Utils\YDate;
-use Utils\YString;
-use Utils\YCache;
+use finger\Utils\YCore;
+use finger\Utils\YDate;
+use finger\Utils\YString;
+use finger\Utils\YCache;
 use Models\User as UserModel;
 
 class User extends \Services\AbstractBase

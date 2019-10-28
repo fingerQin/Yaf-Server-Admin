@@ -5,7 +5,7 @@
  * @date 2018-08-07
  */
 
-use Utils\YUrl;
+use finger\Utils\YUrl;
 use finger\Paginator;
 use Services\System\Ad;
 use Common\controllers\Admin;

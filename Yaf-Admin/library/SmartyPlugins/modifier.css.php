@@ -6,7 +6,7 @@
  * @subpackage PluginsModifier
  */
 
-use Utils\YUrl;
+use finger\Utils\YUrl;
 
 /**
  * 获取静态资源URL。

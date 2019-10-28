@@ -7,7 +7,7 @@
 
 namespace Services\Location;
 
-use Utils\YCore;
+use finger\Utils\YCore;
 
 
 class Location extends \Services\AbstractBase

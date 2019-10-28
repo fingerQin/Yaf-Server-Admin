@@ -8,7 +8,7 @@ namespace Services\System;
 
 use finger\Validator;
 use finger\Database\Db;
-use Utils\YCore;
+use finger\Utils\YCore;
 use Models\News as NewsModel;
 use Models\NewsData;
 use Models\Category as CategoryModel;

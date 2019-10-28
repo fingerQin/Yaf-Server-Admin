@@ -7,9 +7,9 @@
 
 namespace Services\System;
 
-use Utils\YDate;
-use Utils\YCore;
-use Utils\YInput;
+use finger\Utils\YDate;
+use finger\Utils\YCore;
+use finger\Utils\YInput;
 use finger\Database\Db;
 use finger\Validator;
 use Models\User;

@@ -8,8 +8,8 @@
 
 namespace Services\System;
 
-use Utils\YCore;
-use Utils\YCache;
+use finger\Utils\YCore;
+use finger\Utils\YCache;
 use Models\PushDevice;
 
 class Push extends \Services\AbstractBase

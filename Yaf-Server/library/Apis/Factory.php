@@ -8,8 +8,8 @@
 
 namespace Apis;
 
-use Utils\YCore;
-use Utils\YInput;
+use finger\Utils\YCore;
+use finger\Utils\YInput;
 use Services\System\ApiAuth;
 
 class Factory
@@ -97,7 +97,7 @@ class Factory
             '_datetime' => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $reqLog = array_merge($reqLog, $params);
-        \Utils\YLog::writeApiRequestLog($reqLog);
+        \finger\Utils\YLog::writeApiRequestLog($reqLog);
     }
 
     /**

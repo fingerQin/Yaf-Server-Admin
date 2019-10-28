@@ -9,8 +9,8 @@
 namespace Services\System;
 
 use finger\Validator;
-use Utils\YCache;
-use Utils\YCore;
+use finger\Utils\YCache;
+use finger\Utils\YCore;
 use Services\AbstractBase;
 
 class Request extends AbstractBase

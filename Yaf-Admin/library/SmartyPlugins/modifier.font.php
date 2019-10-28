@@ -1,6 +1,6 @@
 <?php
 
-use Utils\YUrl;
+use finger\Utils\YUrl;
 /**
  * Smarty plugin
  *

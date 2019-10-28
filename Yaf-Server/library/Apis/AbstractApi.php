@@ -8,8 +8,8 @@
 
 namespace Apis;
 
-use Utils\YCore;
-use Utils\YInput;
+use finger\Utils\YCore;
+use finger\Utils\YInput;
 use finger\Ip;
 use finger\Validator;
 use Services\AccessForbid\Forbid;
@@ -258,7 +258,7 @@ abstract class AbstractApi
      * 
      * @param  int  $userid  用户ID。等于0的情况则只要可写接口处于关闭状态就不允许访问。
      * 
-     * @return \libs\Utils\ServiceException
+     * @return \finger\ServiceException
      */
     protected function isAllowAccessApi($userid = 0)
     {

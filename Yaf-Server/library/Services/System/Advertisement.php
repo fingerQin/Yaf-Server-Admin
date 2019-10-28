@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use Utils\YCore;
+use finger\Utils\YCore;
 use Models\AdPosition;
 use Models\Ad;
 use Models\User;

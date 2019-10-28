@@ -8,8 +8,8 @@
 namespace Services\AccessForbid;
 
 use Models\ForbidIp;
-use Utils\YCache;
-use Utils\YCore;
+use finger\Utils\YCache;
+use finger\Utils\YCore;
 use finger\RedisMutexLock;
 
 class Forbid extends \Services\AbstractBase

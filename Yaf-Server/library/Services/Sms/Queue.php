@@ -7,9 +7,9 @@
 
 namespace Services\Sms;
 
-use Utils\YCore;
-use Utils\YCache;
-use Utils\YLog;
+use finger\Utils\YCore;
+use finger\Utils\YCache;
+use finger\Utils\YLog;
 
 class Queue extends \Services\Sms\AbstractBase
 {
