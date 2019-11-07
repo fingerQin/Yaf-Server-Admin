@@ -42,7 +42,7 @@ class Sms extends \Services\Sms\AbstractBase
         if (!$isInsideMobile) {
             Verify::checkDayMobileTimes($mobile);
             Verify::checkDayIpTimes($sendIp);
-            Verify::checkSendInterval($mobile);
+            Verify::checkSendInterval($mobile, $smsType);
             if (Verify::isBlacklistMobile($mobile)) {
                 YCore::exception(STATUS_SERVER_ERROR, '您的手机号码暂时无法接收短信');
             }

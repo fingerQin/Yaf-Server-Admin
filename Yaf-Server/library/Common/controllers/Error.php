@@ -28,9 +28,9 @@ class Error extends \Common\controllers\Common
                 // ...... 不记录日志 ......
             } else {
                 if ($errCode == STATUS_ERROR) {
-                    YLog::log($exception->log(), 'errors', 'log');
+                    YLog::log($exception->__toString(), 'errors', 'log');
                 } else {
-                    YLog::log($exception->log(), 'serviceErr', 'log');
+                    YLog::log($exception->__toString(), 'serviceErr', 'log');
                 }
             }
         } else {

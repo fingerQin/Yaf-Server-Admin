@@ -25,12 +25,14 @@ class Verify extends \Services\Sms\AbstractBase
      * 检测两次发送的间隔(用户触发的才需要调用)。
      * 
      * @param  string  $mobile  手机号码。
+     * @param  string  $scene   使用场景。
+     * 
      * @return bool true - 不受时间间隔限制、false - 受时间间隔所限。
      */
-    public static function checkSendInterval($mobile)
+    public static function checkSendInterval($mobile, $scene = '')
     {
         $interval = YCore::appconfig('sms.interval');
-        $cacheKey = "sms_interval:{$mobile}";
+        $cacheKey = "sms_interval_{$scene}:{$mobile}";
         $sendTsp  = YCache::get($cacheKey);
         $time     = time();
         if ($sendTsp > 0 && (($time - $sendTsp) < $interval)) {
