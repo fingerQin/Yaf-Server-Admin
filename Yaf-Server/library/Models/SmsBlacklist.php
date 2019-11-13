@@ -1,6 +1,6 @@
 <?php
 /**
- * APP客户端升级表 Model。
+ * 短信黑名单表 Model。
  * 
  * @author fingerQin
  * @date 2018-06-27

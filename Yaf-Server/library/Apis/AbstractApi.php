@@ -258,7 +258,7 @@ abstract class AbstractApi
      * 
      * @param  int  $userid  用户ID。等于0的情况则只要可写接口处于关闭状态就不允许访问。
      * 
-     * @return \finger\ServiceException
+     * @return \finger\Exception\ServiceException
      */
     protected function isAllowAccessApi($userid = 0)
     {

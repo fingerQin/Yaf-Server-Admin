@@ -7,9 +7,10 @@
 
 namespace Common\controllers;
 
+use finger\Exception\FingerException;
 use finger\Utils\YCore;
 use finger\Utils\YLog;
-use finger\ServiceException;
+use finger\Exception\ServiceException;
 
 class Error extends \Common\controllers\Common
 {
@@ -42,6 +43,8 @@ class Error extends \Common\controllers\Common
                 YLog::log($logContent, 'redis', 'log');
             } elseif ($exception instanceof \PDOException) { // MySQL PDO 报错。
                 YLog::log($logContent, 'pdo', 'log');
+            } else if ($exception instanceof FingerException) {
+                YLog::log($logContent, 'yaflib', 'log');
             } else {
                 YLog::log($logContent, 'errors', 'log');
             }
