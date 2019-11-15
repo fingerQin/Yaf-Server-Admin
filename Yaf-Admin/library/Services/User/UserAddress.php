@@ -7,10 +7,10 @@
 
 namespace services\user;
 
+use models\District;
+use models\UserAddress as AddressModel;
 use finger\Validator;
 use finger\Utils\YCore;
-use models\District;
-use models\MallUserAddress;
 
 class UserAddress extends \services\core\Base
 {
@@ -35,7 +35,7 @@ class UserAddress extends \services\core\Base
             'district_id',
             'is_default'
         ];
-        $AddressModel = new MallUserAddress();
+        $AddressModel = new AddressModel();
         $detail = $AddressModel->fetchOne([], $where);
         if (empty($detail)) {
             YCore::exception(STATUS_ERROR, '收货地址不存在');
@@ -61,7 +61,7 @@ class UserAddress extends \services\core\Base
      */
     public static function getSubmitUserAddressDetail($data)
     {
-        if ($data['address_id'] == MallUserAddress::NONE) { // 如果收货地址是新填写的，则验证有效性。
+        if ($data['address_id'] == AddressModel::NONE) { // 如果收货地址是新填写的，则验证有效性。
             self::checkConsignee($data['realname']);
             self::checkDistrictId($data['district_id']);
             self::checkMobilephone($data['mobilephone']);
@@ -77,9 +77,9 @@ class UserAddress extends \services\core\Base
             $where = [
                 'user_id'    => $data['user_id'],
                 'address_id' => $data['address_id'],
-                'status'     => MallUserAddress::STATUS_NORMAL
+                'status'     => AddressModel::STATUS_NORMAL
             ];
-            $AddressModel = new MallUserAddress();
+            $AddressModel = new AddressModel();
             $addressInfo  = $AddressModel->fetchOne([], $where);
             if (empty($addressInfo)) {
                 YCore::exception(STATUS_ERROR, '您选择的收货地址已经失效');
@@ -140,11 +140,11 @@ class UserAddress extends \services\core\Base
             'mobilephone'  => $mobilephone,
             'district_id'  => $districtId,
             'address'      => $address,
-            'status'       => MallUserAddress::STATUS_NORMAL,
+            'status'       => AddressModel::STATUS_NORMAL,
             'created_time' => date('Y-m-d H:i:s', time())
         ];
 
-        $UserAddressModel = new MallUserAddress();
+        $UserAddressModel = new AddressModel();
         $addressId        = $UserAddressModel->insert($data);
         if ($addressId == 0) {
             YCore::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
@@ -160,10 +160,10 @@ class UserAddress extends \services\core\Base
      */
     public static function getUserAddressCount($userid)
     {
-        $AddressModel = new MallUserAddress();
+        $AddressModel = new AddressModel();
         $where = [
             'user_id' => $userid,
-            'status'  => MallUserAddress::STATUS_NORMAL
+            'status'  => AddressModel::STATUS_NORMAL
         ];
         return $AddressModel->count($where);
     }
@@ -192,12 +192,12 @@ class UserAddress extends \services\core\Base
             YCore::exception(STATUS_ERROR, '地址有误');
         }
         self::isExistUserAddress($addressId, $userid);
-        $UserAddressModel = new MallUserAddress();
+        $UserAddressModel = new AddressModel();
         $data = [
             'realname'      => $realname,
             'district_id'   => $districtId,
             'mobilephone'   => $mobilephone,
-            'status'        => MallUserAddress::STATUS_NORMAL,
+            'status'        => AddressModel::STATUS_NORMAL,
             'modified_time' => date('Y-m-d H:i:s', time()),
             'address'       => $address
         ];
@@ -218,9 +218,9 @@ class UserAddress extends \services\core\Base
     public static function deleteAddress($userid, $addressId)
     {
         self::isExistUserAddress($addressId, $userid);
-        $UserAddressModel = new MallUserAddress();
+        $UserAddressModel = new AddressModel();
         $data = [
-            'status'        => MallUserAddress::STATUS_DELETED,
+            'status'        => AddressModel::STATUS_DELETED,
             'modified_time' => date('Y-m-d H:i:s', time())
         ];
         $where = [
@@ -244,7 +244,7 @@ class UserAddress extends \services\core\Base
     {
         $where = [
             'user_id' => $userid,
-            'status'  => MallUserAddress::STATUS_NORMAL
+            'status'  => AddressModel::STATUS_NORMAL
         ];
         $columns = [
             'address_id',
@@ -253,7 +253,7 @@ class UserAddress extends \services\core\Base
             'district_id',
             'address'
         ];
-        $UserAddressModel = new MallUserAddress();
+        $UserAddressModel = new AddressModel();
         $addressList      = $UserAddressModel->fetchAll($columns, $where, 0, 'is_default DESC,address_id ASC');
         foreach ($addressList as $key => $address) {
             $DistrictModel = new District();
@@ -277,10 +277,10 @@ class UserAddress extends \services\core\Base
     public static function setDefaultAddress($userid, $addressId)
     {
         self::isExistUserAddress($addressId, $userid);
-        $UserAddressModel = new MallUserAddress();
-        $UserAddressModel->update(['is_default' => 0], ['user_id' => $userid, 'status' => MallUserAddress::STATUS_NORMAL]);
+        $UserAddressModel = new AddressModel();
+        $UserAddressModel->update(['is_default' => 0], ['user_id' => $userid, 'status' => AddressModel::STATUS_NORMAL]);
         $data = [
-            'is_default'    => MallUserAddress::DEFAULT_YES,
+            'is_default'    => AddressModel::DEFAULT_YES,
             'modified_time' => date('Y-m-d H:i:s', time())
         ];
         $where = [
@@ -373,10 +373,10 @@ class UserAddress extends \services\core\Base
     {
         $where = [
             'address_id' => $addressId,
-            'status'     => MallUserAddress::STATUS_NORMAL,
+            'status'     => AddressModel::STATUS_NORMAL,
             'user_id'    => $userid
         ];
-        $UserAddressModel = new MallUserAddress();
+        $UserAddressModel = new AddressModel();
         $addressInfo      = $UserAddressModel->fetchOne([], $where);
         if (empty($addressInfo)) {
             $errMsg = (strlen($errMsg) > 0) ? $errMsg : '收货地址不存在';
