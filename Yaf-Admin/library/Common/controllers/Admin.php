@@ -101,6 +101,5 @@ class Admin extends Common
         if (strtolower($ctrlName) != 'public') {
             OperationLog::add($adminid, $realname, $ip, $ctrlName, $actionName, $log);
         }
-        // YLog::log($log, 'accessLog', 'log');
     }
 }
