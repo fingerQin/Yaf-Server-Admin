@@ -1609,9 +1609,10 @@ $sql = 'UPDATE user_cash SET money = money - 100 WHERE money >= 100 AND userid =
 
 
 
-由于并发的问题。我们只需要在上面的 SQL 上加上  `FOR UPDATE` 再按照读取并扣减的方式操作。就一定不会产生这个问题了。仅仅只需要在 SQL 上增加 `FOR UPDATE`。不用做其他任何修改。 
+由于并发的问题。我们只需要在查询的 SQL 上加上  `FOR UPDATE` 再按照读取并扣减的方式操作。就一定不会产生这个问题了。如下所示：
 
 ```sql
+$sql = 'SELECT * FROM user_cash WHERE userid = 1 FOR UPDATE';
 $sql = 'UPDATE user_cash SET money = money - 100 WHERE money >= 100 AND userid = 1 FOR　　UPDATE';
 ```
 
