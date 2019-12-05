@@ -7,6 +7,7 @@
 
 namespace Services\User;
 
+use finger\App;
 use finger\Utils\YCache;
 use finger\Utils\YString;
 use finger\Utils\YCore;
@@ -449,7 +450,7 @@ class Auth extends \Services\AbstractBase
      */
     protected static function createToken($userid, $password, $loginTime, $platform = 0)
     {
-        $env = YCore::appconfig('app.env');
+        $env = App::getConfig('app.env');
         $str = "{$userid}\t{$password}\t{$loginTime}\t{$platform}\t{$env}";
         return YCore::sys_auth($str, 'ENCODE', '', 0);
     }
@@ -490,7 +491,7 @@ class Auth extends \Services\AbstractBase
             'platform'  => $data[3], // 登录平台标识。1-IOS|2-Android|3-H5|4-Web。
             'env'       => $data[4], // Token 所属的环境。
         ];
-        if ($data[4] != YCore::appconfig('app.env')) {
+        if ($data[4] != App::getConfig('app.env')) {
             YCore::exception(STATUS_SERVER_ERROR, 'TOKEN 不属于当前环境,请检查请求的接口地址是否有误或旧环境TOKEN缓存未清除');
         }
 		return $result;

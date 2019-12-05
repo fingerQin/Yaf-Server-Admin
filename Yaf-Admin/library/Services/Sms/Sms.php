@@ -26,8 +26,8 @@ class Sms extends \Services\AbstractBase
         $AdminUserModel = new AdminUser();
         $adminDetail    = $AdminUserModel->fetchOne([], [
             'mobile'      => $mobile, 
-            'user_status' => AdminUser::STATUS_YES]
-        );
+            'user_status' => AdminUser::STATUS_YES
+        ]);
         if (empty($adminDetail)) {
             YCore::exception(STATUS_SERVER_ERROR, '账号不存在');
         }

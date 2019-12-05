@@ -7,6 +7,7 @@
 
 namespace Services\Sms;
 
+use finger\App;
 use finger\Validator;
 use finger\Utils\YCore;
 use finger\Utils\YLog;
@@ -49,7 +50,7 @@ class Sms extends \Services\Sms\AbstractBase
         }
         // [3] 开发机码验证码为 123456.
         $code = rand(100000, 999999);
-        if (YCore::appconfig('app.env') == ENV_DEV) {
+        if (App::getConfig('app.env') == ENV_DEV) {
             $code = 123456;
         }
         // 获取发送模板
@@ -79,7 +80,7 @@ class Sms extends \Services\Sms\AbstractBase
             'id'      => $id,
             'mobile'  => $mobile,
             'content' => $result['content'],
-            'is_send' => YCore::appconfig('sms.is_send_sms', 0)
+            'is_send' => App::getConfig('sms.is_send_sms', 0)
         ];
         Queue::push($queueData);
     }
@@ -123,7 +124,7 @@ class Sms extends \Services\Sms\AbstractBase
             'id'      => $id,
             'mobile'  => $mobile,
             'content' => $result['content'],
-            'is_send' => YCore::appconfig('sms.is_send_sms', 0)
+            'is_send' => App::getConfig('sms.is_send_sms', 0)
         ];
         Queue::push($queueData);
     }
@@ -224,7 +225,7 @@ class Sms extends \Services\Sms\AbstractBase
      */
     private static function verifyTimes($mobile, $smsType)
     {
-        $verifyTimes = YCore::appconfig('sms.verify_times');
+        $verifyTimes = App::getConfig('sms.verify_times');
         $cacheKey    = "sms:{$smsType}-times:{$mobile}";
         $times       = YCache::get($cacheKey);
         if ($times > 0 && $times >= $verifyTimes) {

@@ -7,6 +7,7 @@
 
 namespace Services\System;
 
+use finger\App;
 use finger\Ip;
 use finger\Utils\YCache;
 use finger\Utils\YCore;
@@ -38,7 +39,7 @@ class ApiAuth extends \Services\AbstractBase
             return true;
         }
 
-        $envName = YCore::appconfig('app.env');
+        $envName = App::getConfig('app.env');
         $envName = \strtolower($envName);
         if (!in_array($envName, [ENV_BETA, ENV_PRO])) { // 如果当前环境不是公测/正式。则不做 IP 限制。
             return true;

@@ -7,8 +7,8 @@
 
 namespace Common\controllers;
 
+use finger\App;
 use finger\Exception\FingerException;
-use finger\Utils\YCore;
 use finger\Utils\YLog;
 use finger\Exception\ServiceException;
 
@@ -25,7 +25,7 @@ class Error extends \Common\controllers\Common
         // [1] 参数验证错误
         if ($exception instanceof ServiceException) {
             // 排除正式环境不需要记录日志的错误码。
-            if (!in_array($errCode, NO_RECORD_API_LIST) && YCore::appconfig('app.env') == ENV_PRO) {
+            if (!in_array($errCode, NO_RECORD_API_LIST) && App::getConfig('app.env') == ENV_PRO) {
                 // ...... 不记录日志 ......
             } else {
                 if ($errCode == STATUS_ERROR) {

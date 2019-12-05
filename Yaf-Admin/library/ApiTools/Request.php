@@ -12,7 +12,7 @@
 
 namespace ApiTools;
 
-use finger\Utils\YCore;
+use finger\App;
 use finger\Utils\YCache;
 use finger\Utils\YLog;
 use Services\AbstractBase;
@@ -47,9 +47,9 @@ class Request
      */
     public function __construct()
     {
-        $this->apiKey     = YCore::appconfig('api.admin.key');
-        $this->apiSecret  = YCore::appconfig('api.admin.secret');
-        $this->apiVersion = YCore::appconfig('api.admin.version');
+        $this->apiKey     = App::getConfig('api.admin.key');
+        $this->apiSecret  = App::getConfig('api.admin.secret');
+        $this->apiVersion = App::getConfig('api.admin.version');
     }
 
     /**
@@ -62,7 +62,7 @@ class Request
     public function send($params)
     {
         $params = $this->mergeParams($params);
-        $apiUrl = YCore::appconfig('domain.api');
+        $apiUrl = App::getConfig('domain.api');
         $json   = json_encode($params, JSON_UNESCAPED_UNICODE);
         $sign   = $this->encrypt($json);
         $apiParams = [
@@ -164,12 +164,12 @@ class Request
         }
         $curlErrno = curl_errno($ch);
         $curlError = curl_error($ch);
-        if ($curlErrno != 0) {
-            YLog::log([
-                'url'        => $url, 
-                'curl_error' => $curlErrno, 
-                'curl_errno' => $curlError], 'curl', 'error');
-        }
+        YLog::log([
+            'url'        => $url, 
+            'curl_error' => $curlErrno, 
+            'curl_errno' => $curlError,
+            'data'       => $data,
+        ], 'curl', 'error');
         curl_close($ch);
         return [$result, $curlErrno, $curlError];
     }

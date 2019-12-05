@@ -5,7 +5,7 @@
  * @date 2018-07-10
  */
 
-use finger\Utils\YCore;
+use finger\App;
 use finger\Paginator;
 use Services\System\ApiAuth;
 
@@ -16,7 +16,7 @@ class ApiController extends \Common\controllers\Admin
      */
     public function listAction()
     {
-        $page      = $this->getInt(YCore::appconfig('pager'), 1);
+        $page      = $this->getInt(App::getConfig('pager'), 1);
         $list      = ApiAuth::list($page, 10);
         $paginator = new Paginator($list['total'], 10);
         $pageHtml  = $paginator->backendPageShow();

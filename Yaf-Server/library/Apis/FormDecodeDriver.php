@@ -7,6 +7,7 @@
 
 namespace Apis;
 
+use finger\App;
 use finger\Utils\YCore;
 
 class FormDecodeDriver
@@ -44,7 +45,7 @@ class FormDecodeDriver
         }
         $str    = $str . $apiSecret;
         $okSign = strtoupper(md5($str));
-        if (YCore::appconfig('app.env') != ENV_DEV) {
+        if (App::getConfig('app.env') != ENV_DEV) {
             if (strlen($sign) === 0 || $sign != $okSign) {
                 YCore::exception(STATUS_SERVER_ERROR, 'API signature error');
             }

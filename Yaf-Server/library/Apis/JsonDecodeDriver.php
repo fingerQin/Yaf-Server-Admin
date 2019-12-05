@@ -7,6 +7,7 @@
 
 namespace Apis;
 
+use finger\App;
 use finger\Utils\YCore;
 use finger\Utils\YInput;
 
@@ -40,7 +41,7 @@ class JsonDecodeDriver
     {
         $str    = $params['oriJson'] . $apiSecret;
         $okSign = strtoupper(md5($str));
-        if (YCore::appconfig('app.env') != ENV_DEV) {
+        if (App::getConfig('app.env') != ENV_DEV) {
             if (strlen($params['sign']) === 0 || $params['sign'] != $okSign) {
                 YCore::exception(STATUS_SERVER_ERROR, 'API signature error');
             }

@@ -7,6 +7,7 @@
 
 namespace Services\Sms;
 
+use finger\App;
 use finger\Utils\YCore;
 use finger\Utils\YCache;
 use Models\SmsBlacklist;
@@ -31,7 +32,7 @@ class Verify extends \Services\Sms\AbstractBase
      */
     public static function checkSendInterval($mobile, $scene = '')
     {
-        $interval = YCore::appconfig('sms.interval');
+        $interval = App::getConfig('sms.interval');
         $cacheKey = "sms_interval_{$scene}:{$mobile}";
         $sendTsp  = YCache::get($cacheKey);
         $time     = time();
@@ -51,7 +52,7 @@ class Verify extends \Services\Sms\AbstractBase
      */
     public static function checkDayIpTimes($ip)
     {
-        $ipSendmax = YCore::appconfig('sms.ip_sendmax');
+        $ipSendmax = App::getConfig('sms.ip_sendmax');
         if ($ipSendmax > 0) {
             $datetime = date('Y-m-d 00:00:00', time());
             $sql = 'SELECT COUNT(1) AS count FROM finger_sms_sendlog AS a '
@@ -79,7 +80,7 @@ class Verify extends \Services\Sms\AbstractBase
      */
     public static function checkDayMobileTimes($mobile)
     {
-        $mobileSendmax = YCore::appconfig('sms.mobile_sendmax');
+        $mobileSendmax = App::getConfig('sms.mobile_sendmax');
         if ($mobileSendmax > 0) {
             $datetime = date('Y-m-d 00:00:00', time());
             $where    = [
@@ -104,7 +105,7 @@ class Verify extends \Services\Sms\AbstractBase
      */
     public static function isInsideMobile($mobile)
     {
-        $mobileWhiteList = YCore::appconfig('sms.inside_mobiles');
+        $mobileWhiteList = App::getConfig('sms.inside_mobiles');
         if (strlen($mobileWhiteList) === 0) {
             return false;
         }

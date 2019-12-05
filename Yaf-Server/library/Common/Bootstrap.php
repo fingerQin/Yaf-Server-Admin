@@ -9,7 +9,7 @@
 
 namespace Common;
 
-use finger\Utils\YCore;
+use finger\App;
 use finger\Utils\YCache;
 
 /**
@@ -50,7 +50,7 @@ class Bootstrap extends \Yaf_Bootstrap_Abstract
      */
     public function _initSession(\Yaf_Dispatcher $dispatcher)
     {
-        if (YCore::appconfig('session.status')) {
+        if (App::getConfig('session.status')) {
             $redis   = YCache::getRedisClient();
             $sess    = new \finger\session\redis\SessionHandler($redis, null, 'sess_');
             session_set_save_handler($sess);

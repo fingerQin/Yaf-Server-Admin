@@ -8,6 +8,7 @@
 
 namespace Services\System;
 
+use finger\App;
 use finger\Validator;
 use finger\Utils\YCache;
 use finger\Utils\YCore;
@@ -48,7 +49,7 @@ class Request extends AbstractBase
     public static function verify($userid, $token)
     {
         // 开发环境不做请求 TOKEN 验证。
-        if (YCore::appconfig('app.env') == ENV_DEV) {
+        if (App::getConfig('app.env') == ENV_DEV) {
             return;
         }
         $params = explode(':', $token);
@@ -76,6 +77,6 @@ class Request extends AbstractBase
     {
         $redis   = YCache::getRedisClient();
         $incrVal = $redis->incr('R-Token-UniqueId');
-        return md5(YCore::appconfig('app.key') . $incrVal);
+        return md5(App::getConfig('app.key') . $incrVal);
     }
 }

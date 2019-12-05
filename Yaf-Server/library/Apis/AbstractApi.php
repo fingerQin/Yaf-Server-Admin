@@ -8,10 +8,11 @@
 
 namespace Apis;
 
-use finger\Utils\YCore;
-use finger\Utils\YInput;
+use finger\App;
 use finger\Ip;
 use finger\Validator;
+use finger\Utils\YCore;
+use finger\Utils\YInput;
 use Services\AccessForbid\Forbid;
 
 abstract class AbstractApi
@@ -262,13 +263,13 @@ abstract class AbstractApi
      */
     protected function isAllowAccessApi($userid = 0)
     {
-        $writeApiStatus   = YCore::appconfig('api.write_access');
-        $writeApiCloseMsg = YCore::appconfig('api.write_close_msg');
+        $writeApiStatus   = App::getConfig('api.write_access');
+        $writeApiCloseMsg = App::getConfig('api.write_close_msg');
         if (!$writeApiStatus) {
             if ($userid == 0) {
                 YCore::exception(STATUS_SERVER_ERROR, $writeApiCloseMsg);
             } else {
-                $whitelist = \explode(',', YCore::appconfig('api.write_userids'));
+                $whitelist = \explode(',', App::getConfig('api.write_userids'));
                 $whitelist = array_unique($whitelist);
                 if (!empty($whitelist)) {
                     if (!\in_array($userid, $whitelist)) {

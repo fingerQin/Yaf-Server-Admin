@@ -8,6 +8,7 @@
 
 namespace Apis;
 
+use finger\App;
 use finger\Utils\YCore;
 
 class DecodeAdapter
@@ -27,7 +28,7 @@ class DecodeAdapter
      */
     public static function parse($params)
     {
-        $apiDecodeDriver = YCore::appconfig('api.decode.driver');
+        $apiDecodeDriver = App::getConfig('api.decode.driver');
         switch ($apiDecodeDriver) {
             case self::DECODE_FORM:
                 return FormDecodeDriver::parse($params);
@@ -51,7 +52,7 @@ class DecodeAdapter
      */
     public static function checkSign($params, $apiSecret)
     {
-        $apiDecodeDriver = YCore::appconfig('api.decode.driver');
+        $apiDecodeDriver = App::getConfig('api.decode.driver');
         switch ($apiDecodeDriver) {
             case self::DECODE_FORM:
                 return FormDecodeDriver::checkSign($params, $apiSecret);

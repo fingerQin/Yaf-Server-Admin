@@ -1,0 +1,75 @@
+Array
+(
+    [ErrorTime] => 2019-12-05 09:35:43
+    [bool] => 12
+    [data] => Array
+        (
+            [id] => 4
+            [mobile] => 18575202691
+            [content] => 验证码：123456，请您10分钟内完成验证。【Yaf-Server-Admin】
+            [is_send] => 1
+        )
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:46:05
+    [bool] => 13
+    [data] => Array
+        (
+            [id] => 5
+            [mobile] => 18575202691
+            [content] => 验证码：123456，请您10分钟内完成验证。【Yaf-Server-Admin】
+            [is_send] => 1
+        )
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:47:44
+    [bool] => 14
+    [data] => Array
+        (
+            [id] => 6
+            [mobile] => 18575202691
+            [content] => 验证码：123456，请您10分钟内完成验证。【Yaf-Server-Admin】
+            [is_send] => 1
+        )
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:48:48
+    [bool] => 15
+    [data] => Array
+        (
+            [id] => 7
+            [mobile] => 18575202691
+            [content] => 验证码：123456，请您10分钟内完成验证。【Yaf-Server-Admin】
+            [is_send] => 1
+        )
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 10:37:26
+    [bool] => 16
+    [data] => Array
+        (
+            [id] => 8
+            [mobile] => 18575202691
+            [content] => 验证码：123456，请您10分钟内完成验证。【Yaf-Server-Admin】
+            [is_send] => 1
+        )
+
+)
+
+

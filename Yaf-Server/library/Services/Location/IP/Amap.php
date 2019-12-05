@@ -8,6 +8,7 @@
 
 namespace Services\Location\IP;
 
+use finger\App;
 use finger\Utils\YCore;
 use finger\Utils\YLog;
 use finger\Utils\YCache;
@@ -73,7 +74,7 @@ class Amap
      */
     private function request($ip)
     {
-        $key = YCore::appconfig('location.ip.key');
+        $key = App::getConfig('location.ip.key');
         $url = "http://apis.juhe.cn/ip/ip2addr?ip={$ip}&key={$key}";
         $ch  = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

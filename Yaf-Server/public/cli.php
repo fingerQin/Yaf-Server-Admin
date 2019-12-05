@@ -6,6 +6,8 @@
  * @date 2018-06-27
  */
 
+use finger\App;
+
 error_reporting(0);
 define('TIMESTAMP', time());
 ini_set('default_socket_timeout', -1);
@@ -14,7 +16,16 @@ define('APP_PATH', dirname(dirname(__FILE__)));
 require(APP_PATH . '/vendor/autoload.php');
 require(APP_PATH . '/config/constants.php');
 
-(new \Yaf_Application(APP_PATH . "/config/config.ini", 'conf'))->bootstrap();
+$app = new \Yaf_Application(APP_PATH . "/config/config.ini", 'conf');
+// 根据是否存在 .env 进行配置文件的加载。
+if (file_exists('../.env')) {
+    $cfgObj = new \Yaf_Config_Ini('../.env', '');
+    $config = $cfgObj->toArray();
+} else {
+    $config = $app->getConfig()->toArray();
+}
+(new App($config));
+$app->bootstrap();
 
 if (!isset($argv[1])) {
     exit("Please enter the route to execute. Example: the php cli.php Index/Index!\n");

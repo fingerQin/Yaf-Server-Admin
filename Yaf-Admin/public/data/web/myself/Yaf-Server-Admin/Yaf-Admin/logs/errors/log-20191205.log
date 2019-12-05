@@ -1,0 +1,289 @@
+Array
+(
+    [ErrorTime] => 2019-12-05 09:41:32
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:45:56
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/App.php line 23
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:48:15
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:48:18
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/App.php line 23
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:48:56
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:49:21
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:49:24
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:49:25
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:49:31
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:49:39
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:51:19
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:51:20
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 09:53:48
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 10:23:54
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 10:24:07
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 10:24:09
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 10:24:47
+    [Type] => set_error_handler
+    [ServerIP] => 10.0.2.15
+    [ClientIP] => 10.0.2.2
+    [ErrorFile] => /data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php
+    [ErrorLine] => 216
+    [ErrorMsg] => Undefined index: pager
+    [ErrorNo] => 8
+    [stackTrace] => #/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/App.php line 216
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/vendor/finger/yaflib/src/Paginator.php line 47
+#/data/web/myself/Yaf-Server-Admin/Yaf-Admin/apps/controllers/Config.php line 21
+
+)
+
+

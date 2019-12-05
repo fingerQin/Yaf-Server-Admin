@@ -7,10 +7,10 @@
 
 namespace Services\AccessForbid;
 
+use finger\Lock;
 use Models\ForbidIp;
 use finger\Utils\YCache;
 use finger\Utils\YCore;
-use finger\RedisMutexLock;
 
 class Forbid extends \Services\AbstractBase
 {
@@ -114,7 +114,7 @@ class Forbid extends \Services\AbstractBase
     private static function getRealTimeDbIp()
     {
         $lockKey = 'system_fobid_ip_lock';
-        $status  = RedisMutexLock::lock($lockKey, 3);
+        $status  = Lock::lock($lockKey, 3);
         if ($status) {
             $datetime = date('Y-m-d H:i:s', TIMESTAMP);
             $columns  = ['ip', 'deadline'];
@@ -125,7 +125,7 @@ class Forbid extends \Services\AbstractBase
                 $data[$item['ip']] = $item['deadline'];
             }
             unset($result);
-            RedisMutexLock::release($lockKey);
+            Lock::release($lockKey);
             return $data;
         } else {
             // 这一步看似无限递归。实则是为了锁定时间超时之后，重新再读取一次缓存的值。

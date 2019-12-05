@@ -8,6 +8,7 @@
 
 namespace Services\Location\GPS;
 
+use finger\App;
 use finger\Utils\YCore;
 use finger\Utils\YLog;
 use finger\Utils\YCache;
@@ -71,7 +72,7 @@ class Baidu
      */
     private function request($long, $lat)
     {
-        $key = YCore::appconfig('location.gps.key');
+        $key = App::getConfig('location.gps.key');
         $url = "http://api.map.baidu.com/geocoder/v2/?location={$lat},{$long}&output=json&pois=0&ak={$key}";
         $ch  = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

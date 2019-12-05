@@ -7,6 +7,7 @@
 
 namespace Services\System;
 
+use finger\App;
 use finger\Validator;
 use finger\Utils\YCore;
 use finger\Utils\YUrl;
@@ -46,7 +47,7 @@ class Upload extends \Services\AbstractBase
             'txt', 'pdf', 'dmg'
         ];
         $maxSize           = $fileSize * 1024 * 1024;
-        $rootDir           = YCore::appconfig('upload.save_dir');
+        $rootDir           = App::getConfig('upload.save_dir');
         $rootDir           = $rootDir ? realpath($rootDir) . DIRECTORY_SEPARATOR : ''; // 去除结尾处的目录分隔钱并重新拼接上当前运行系统的目录分隔线。
         $rootPath          = $rootDir . 'images/';
         $upload            = new \finger\Upload(); // 实例化上传类
@@ -96,7 +97,7 @@ class Upload extends \Services\AbstractBase
             YCore::exception(STATUS_SERVER_ERROR, '图片上传有误');
         }
         $maxSize           = $fileSize * 1024 * 1024;
-        $rootDir           = YCore::appconfig('upload.root_dir');
+        $rootDir           = App::getConfig('upload.root_dir');
         $rootDir           = $rootDir ? realpath($rootDir) . DIRECTORY_SEPARATOR : ''; // 去除结尾处的目录分隔钱并重新拼接上当前运行系统的目录分隔线。
         $rootPath          = $rootDir . 'images/';
         $upload            = new \finger\Upload(); // 实例化上传类

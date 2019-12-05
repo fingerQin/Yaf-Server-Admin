@@ -7,6 +7,7 @@
 
 namespace Services\Location;
 
+use finger\App;
 use finger\Utils\YCore;
 
 
@@ -32,7 +33,7 @@ class Location extends \Services\AbstractBase
      */
     public function ip($ip)
     {
-        $ipDriver = YCore::appconfig('location.ip.driver');
+        $ipDriver = App::getConfig('location.ip.driver');
         $ipDriver = "IP-" . strtolower($ipDriver);
         switch ($ipDriver) {
             case self::IP_DRIVER_BAIDU:
@@ -59,7 +60,7 @@ class Location extends \Services\AbstractBase
      */
     public function gps($long, $lat)
     {
-        $GPSDriver = YCore::appconfig('location.gps.driver');
+        $GPSDriver = App::getConfig('location.gps.driver');
         $GPSDriver = "GPS-" . strtolower($GPSDriver);
         switch ($GPSDriver) {
             case self::GPS_DRIVER_BAIDU:

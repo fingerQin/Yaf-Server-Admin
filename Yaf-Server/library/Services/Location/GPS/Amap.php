@@ -8,6 +8,7 @@
 
 namespace Services\Location\GPS;
 
+use finger\App;
 use finger\Utils\YCore;
 use finger\Utils\YLog;
 use finger\Utils\YCache;
@@ -81,7 +82,7 @@ class Amap
      */
     private function request($long, $lat)
     {
-        $key = YCore::appconfig('location.gps.key');
+        $key = App::getConfig('location.gps.key');
         $url = "https://restapi.amap.com/v3/geocode/regeo?output=json&location={$long},{$lat}&key={$key}&extensions=base";
         $ch  = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
