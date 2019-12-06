@@ -7,10 +7,10 @@
 
 namespace Services\Sms;
 
+use finger\Core;
 use Models\SmsTpl;
-use finger\Utils\YDate;
-use finger\Utils\YCore;
 use finger\Database\Db;
+use finger\Date;
 use finger\Validator;
 
 class Tpl extends \Services\AbstractBase
@@ -57,7 +57,7 @@ class Tpl extends \Services\AbstractBase
         $where   = ['id' => $id];
         $data    = $SmsTplModel->fetchOne($columns, $where);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '该模板不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '该模板不存在或已经删除');
         }
         return $data;
     }
@@ -89,7 +89,7 @@ class Tpl extends \Services\AbstractBase
         $sql       = "SELECT {$columns} {$from} {$where} {$orderBy} LIMIT {$offset},{$count}";
         $list      = Db::all($sql, $params);
         foreach ($list as $k => $val) {
-            $val['u_time']             = YDate::formatDateTime($val['u_time']);
+            $val['u_time']             = Date::formatDateTime($val['u_time']);
             $val['trigger_type_label'] = SmsTpl::$triggerTypeDict[$val['trigger_type']];
             $list[$k]                  = $val;
         }
@@ -128,7 +128,7 @@ class Tpl extends \Services\AbstractBase
         ];
         Validator::valido($data, $rules);
         if (self::isExistSendKey($sendKey)) {
-            YCore::exception(STATUS_SERVER_ERROR, '模板 KEY 已经存在，请更换');
+            Core::exception(STATUS_SERVER_ERROR, '模板 KEY 已经存在，请更换');
         }
         $datetime = date('Y-m-d H:i:s', time());
         $data['op_id']        = $adminId;
@@ -138,7 +138,7 @@ class Tpl extends \Services\AbstractBase
         $SmsTplModel = new SmsTpl();
         $status = $SmsTplModel->insert($data);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '添加失败');
+            Core::exception(STATUS_SERVER_ERROR, '添加失败');
         }
     }
 
@@ -171,10 +171,10 @@ class Tpl extends \Services\AbstractBase
         $SmsTplModel = new SmsTpl();
         $detail = $SmsTplModel->fetchOne([], ['id' => $id]);
         if (empty($detail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '模板不存在或已经删除!');
+            Core::exception(STATUS_SERVER_ERROR, '模板不存在或已经删除!');
         }
         if ($detail['send_key'] != $sendKey && self::isExistSendKey($sendKey)) {
-            YCore::exception(STATUS_SERVER_ERROR, '模板 KEY 已经存在，请更换');
+            Core::exception(STATUS_SERVER_ERROR, '模板 KEY 已经存在，请更换');
         }
         $datetime = date('Y-m-d H:i:s', time());
         $data['op_id']        = $adminId;
@@ -183,7 +183,7 @@ class Tpl extends \Services\AbstractBase
         $SmsTplModel = new SmsTpl();
         $status = $SmsTplModel->update($data, ['id' => $id]);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '更新失败');
+            Core::exception(STATUS_SERVER_ERROR, '更新失败');
         }
     }
 

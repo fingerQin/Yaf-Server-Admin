@@ -13,8 +13,7 @@
 namespace ApiTools;
 
 use finger\App;
-use finger\Utils\YCache;
-use finger\Utils\YLog;
+use finger\Cache;
 use Services\AbstractBase;
 
 class Request
@@ -86,7 +85,7 @@ class Request
             'curl_errno' => $curlErrno,
             'curl_error' => $curlError,
         ];
-        YLog::log($logData, 'apis', 'log');
+        App::log($logData, 'apis', 'log');
         return $response;
     }
 
@@ -116,7 +115,7 @@ class Request
      */
     protected function createRequestSn()
     {
-        $redis    = YCache::getRedisClient();
+        $redis    = Cache::getRedisClient();
         $time     = time();
         $YmdHi    = date('YmdHi', $time);
         $cacheKey = 'Yaf-Admin-request-api-cache-key-' . $YmdHi;
@@ -164,7 +163,7 @@ class Request
         }
         $curlErrno = curl_errno($ch);
         $curlError = curl_error($ch);
-        YLog::log([
+        App::log([
             'url'        => $url, 
             'curl_error' => $curlErrno, 
             'curl_errno' => $curlError,

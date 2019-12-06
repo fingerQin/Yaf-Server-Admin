@@ -9,10 +9,10 @@
 namespace Apis;
 
 use finger\App;
+use finger\Core;
+use finger\DataInput;
 use finger\Ip;
 use finger\Validator;
-use finger\Utils\YCore;
-use finger\Utils\YInput;
 use Services\AccessForbid\Forbid;
 
 abstract class AbstractApi
@@ -116,14 +116,14 @@ abstract class AbstractApi
     {
         $reqTsp = $this->params['timestamp'];
         if (!Validator::is_integer($reqTsp)) {
-            YCore::exception(STATUS_SERVER_ERROR, 'timestamp 参数格式不正确');
+            Core::exception(STATUS_SERVER_ERROR, 'timestamp 参数格式不正确');
         }
         if (strlen($reqTsp) != 10) {
-            YCore::exception(STATUS_SERVER_ERROR, 'timestamp 参数必须为 10 位长度的秒值');
+            Core::exception(STATUS_SERVER_ERROR, 'timestamp 参数必须为 10 位长度的秒值');
         }
         $diffSecond = $this->timestamp - $reqTsp;
         if ($diffSecond > 600) {
-            YCore::exception(STATUS_SERVER_ERROR, 'timestamp 已经超时请求');
+            Core::exception(STATUS_SERVER_ERROR, 'timestamp 已经超时请求');
         }
     }
 
@@ -149,7 +149,7 @@ abstract class AbstractApi
     protected function checkApiTypeAuth($appType)
     {
         if (\strtolower($appType) != $this->apiType) {
-            YCore::exception(STATUS_SERVER_ERROR, '您没有调用该接口的权限');
+            Core::exception(STATUS_SERVER_ERROR, '您没有调用该接口的权限');
         }
     }
 
@@ -164,7 +164,7 @@ abstract class AbstractApi
     public function render($code, $msg, $data = null)
     {
         if (!is_int($code)) {
-            YCore::exception(STATUS_ERROR, 'BaseApi render method of code parameter must be an integer');
+            Core::exception(STATUS_ERROR, 'BaseApi render method of code parameter must be an integer');
         }
         $this->result = [
             'code' => $code,
@@ -215,7 +215,7 @@ abstract class AbstractApi
      */
     public function getInt($name, $defaultValue = null)
     {
-        return YInput::getInt($this->params, $name, $defaultValue);
+        return DataInput::getInt($this->params, $name, $defaultValue);
     }
 
     /**
@@ -227,7 +227,7 @@ abstract class AbstractApi
      */
     public function getString($name, $defaultValue = null)
     {
-        return YInput::getString($this->params, $name, $defaultValue);
+        return DataInput::getString($this->params, $name, $defaultValue);
     }
 
     /**
@@ -239,7 +239,7 @@ abstract class AbstractApi
      */
     public function getFloat($name, $defaultValue = null)
     {
-        return YInput::getFloat($this->params, $name, $defaultValue);
+        return DataInput::getFloat($this->params, $name, $defaultValue);
     }
 
     /**
@@ -251,7 +251,7 @@ abstract class AbstractApi
      */
     public function getArray($name, $defaultValue = null)
     {
-        return YInput::getArray($this->params, $name, $defaultValue);
+        return DataInput::getArray($this->params, $name, $defaultValue);
     }
 
     /**
@@ -267,16 +267,16 @@ abstract class AbstractApi
         $writeApiCloseMsg = App::getConfig('api.write_close_msg');
         if (!$writeApiStatus) {
             if ($userid == 0) {
-                YCore::exception(STATUS_SERVER_ERROR, $writeApiCloseMsg);
+                Core::exception(STATUS_SERVER_ERROR, $writeApiCloseMsg);
             } else {
                 $whitelist = \explode(',', App::getConfig('api.write_userids'));
                 $whitelist = array_unique($whitelist);
                 if (!empty($whitelist)) {
                     if (!\in_array($userid, $whitelist)) {
-                        YCore::exception(STATUS_SERVER_ERROR, $writeApiCloseMsg);
+                        Core::exception(STATUS_SERVER_ERROR, $writeApiCloseMsg);
                     }
                 } else {
-                    YCore::exception(STATUS_SERVER_ERROR, $writeApiCloseMsg);
+                    Core::exception(STATUS_SERVER_ERROR, $writeApiCloseMsg);
                 }
             }
         }

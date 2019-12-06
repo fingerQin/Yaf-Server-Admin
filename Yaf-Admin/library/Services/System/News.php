@@ -6,9 +6,9 @@
  */
 namespace Services\System;
 
+use finger\Core;
 use finger\Validator;
 use finger\Database\Db;
-use finger\Utils\YCore;
 use Models\News as NewsModel;
 use Models\NewsData;
 use Models\Category as CategoryModel;
@@ -124,7 +124,7 @@ class News extends \Services\AbstractBase
         $NewsModel = new NewsModel();
         $data      = $NewsModel->fetchOne([], ['code' => $code, 'status' => NewsModel::STATUS_YES]);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
         }
         if ($isGetContent) {
             $NewsDataModel = new NewsData();
@@ -132,7 +132,7 @@ class News extends \Services\AbstractBase
             if ($newsData) {
                 return array_merge($data, $newsData);
             } else {
-                YCore::exception(STATUS_SERVER_ERROR, '文章数据异常');
+                Core::exception(STATUS_SERVER_ERROR, '文章数据异常');
             }
         } else {
             return $data;
@@ -151,7 +151,7 @@ class News extends \Services\AbstractBase
         $NewsModel = new NewsModel();
         $data      = $NewsModel->fetchOne([], ['news_id' => $newsId, 'status' => NewsModel::STATUS_YES]);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
         }
         // 如果已经绑定了分类。则读取父分类 ID。
         if (strlen($data['cat_code']) > 0) {
@@ -167,7 +167,7 @@ class News extends \Services\AbstractBase
             if ($newsData) {
                 return array_merge($data, $newsData);
             } else {
-                YCore::exception(STATUS_SERVER_ERROR, '文章数据异常');
+                Core::exception(STATUS_SERVER_ERROR, '文章数据异常');
             }
         } else {
             return $data;
@@ -210,7 +210,7 @@ class News extends \Services\AbstractBase
                 if ($newsData) {
                     return array_merge($data, $newsData);
                 } else {
-                    YCore::exception(STATUS_ERROR, '文章数据异常');
+                    Core::exception(STATUS_ERROR, '文章数据异常');
                 }
             } else {
                 return $data;
@@ -229,14 +229,14 @@ class News extends \Services\AbstractBase
         $NewsModel = new NewsModel();
         $data      = $NewsModel->fetchOne([], ['code' => $code, 'status' => NewsModel::STATUS_YES]);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
         }
         $NewsDataModel = new NewsData();
         $newsData      = $NewsDataModel->fetchOne([], ['news_id' => $data['news_id']]);
         if ($newsData) {
             return array_merge($data, $newsData);
         } else {
-            YCore::exception(STATUS_SERVER_ERROR, '文章数据异常');
+            Core::exception(STATUS_SERVER_ERROR, '文章数据异常');
         }
     }
 
@@ -259,7 +259,7 @@ class News extends \Services\AbstractBase
         $CategoryModel = new CategoryModel();
         $catInfo       = $CategoryModel->fetchOne([], ['cat_code' => $catCode, 'status' => NewsModel::STATUS_YES]);
         if (empty($catInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
         }
         $data = [
             'title'     => $title,
@@ -296,7 +296,7 @@ class News extends \Services\AbstractBase
             $newsDataModel->insert($data);
             return true;
         } else {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -320,12 +320,12 @@ class News extends \Services\AbstractBase
         $NewsModel  = new NewsModel();
         $newsDetail = $NewsModel->fetchOne([], ['news_id' => $newsId, 'status' => NewsModel::STATUS_YES]);
         if (empty($newsDetail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
         }
         $CategoryModel = new CategoryModel();
         $catInfo       = $CategoryModel->fetchOne([], ['cat_code' => $catCode, 'status' => NewsModel::STATUS_YES]);
         if (empty($catInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
         }
         $data = [
             'title'     => $title,
@@ -358,7 +358,7 @@ class News extends \Services\AbstractBase
             $NewsDataModel->update($data, $where);
             return true;
         } else {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -374,7 +374,7 @@ class News extends \Services\AbstractBase
         $NewsModel  = new NewsModel();
         $NewsDetail = $NewsModel->fetchOne([], ['news_id' => $newsId, 'status' => NewsModel::STATUS_YES]);
         if (empty($NewsDetail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
         }
         $where = [
             'news_id' => $newsId
@@ -386,7 +386,7 @@ class News extends \Services\AbstractBase
         ];
         $ok = $NewsModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -400,7 +400,7 @@ class News extends \Services\AbstractBase
     public static function sort($adminId, $listorders)
     {
         if (empty($listorders)) {
-            YCore::exception(STATUS_SERVER_ERROR, '请选择要排序的文章');
+            Core::exception(STATUS_SERVER_ERROR, '请选择要排序的文章');
         }
         $NewsModel = new NewsModel();
         foreach ($listorders as $newsId => $sortValue) {

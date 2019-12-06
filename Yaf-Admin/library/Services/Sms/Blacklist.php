@@ -7,8 +7,8 @@
 
 namespace Services\Sms;
 
-use finger\Utils\YCache;
-use finger\Utils\YCore;
+use finger\Cache;
+use finger\Core;
 use Models\SmsBlacklist;
 use finger\Validator;
 use finger\Database\Db;
@@ -32,7 +32,7 @@ class Blacklist extends \Services\AbstractBase
     public static function lists($mobile, $page = 1, $count = 20)
     {
         if (strlen($mobile) > 0 && !Validator::is_mobilephone($mobile)) {
-            YCore::exception(STATUS_SERVER_ERROR, '手机号格式不正确');
+            Core::exception(STATUS_SERVER_ERROR, '手机号格式不正确');
         }
         $from    = ' FROM finger_sms_blacklist ';
         $offset  = self::getPaginationOffset($page, $count);
@@ -66,7 +66,7 @@ class Blacklist extends \Services\AbstractBase
      */
     public static function clearCache()
     {
-        $redis = YCache::getRedisClient();
+        $redis = Cache::getRedisClient();
         $redis->del(self::BLACKLIST_MOBILE_CACHE_KEY);
     }
 
@@ -83,7 +83,7 @@ class Blacklist extends \Services\AbstractBase
         $mobiles = explode("\r\n", $mobiles);
         $mobiles = array_unique($mobiles);
         if (empty($mobiles)) {
-            YCore::exception(STATUS_SERVER_ERROR, '没有添加任何手机号码');
+            Core::exception(STATUS_SERVER_ERROR, '没有添加任何手机号码');
         }
         $datetime = date('Y-m-d H:i:s', TIMESTAMP);
         Db::beginTransaction();
@@ -113,7 +113,7 @@ class Blacklist extends \Services\AbstractBase
         $SmsBlacklistModel = new SmsBlacklist();
         $ok = $SmsBlacklistModel->delete(['id' => $id]);
         if (!$ok) {
-            YCore::exception(STATUS_SERVER_ERROR, '删除失败');
+            Core::exception(STATUS_SERVER_ERROR, '删除失败');
         }
         self::clearCache();
     }

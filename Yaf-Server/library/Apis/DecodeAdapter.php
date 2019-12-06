@@ -9,7 +9,7 @@
 namespace Apis;
 
 use finger\App;
-use finger\Utils\YCore;
+use finger\Core;
 
 class DecodeAdapter
 {
@@ -37,7 +37,7 @@ class DecodeAdapter
                 return JsonDecodeDriver::parse($params);
                 break;
             default:
-                YCore::exception(STATUS_SERVER_ERROR, 'API 参数解密驱动配置有误');
+                Core::exception(STATUS_SERVER_ERROR, 'API 参数解密驱动配置有误');
                 break;
         }
     }
@@ -61,7 +61,7 @@ class DecodeAdapter
                 return JsonDecodeDriver::checkSign($params, $apiSecret);
                 break;
             default:
-                YCore::exception(STATUS_SERVER_ERROR, 'API 参数解密驱动配置有误');
+                Core::exception(STATUS_SERVER_ERROR, 'API 参数解密驱动配置有误');
                 break;
         }
     }

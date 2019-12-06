@@ -8,7 +8,7 @@
 
 namespace Services\Power;
 
-use finger\Utils\YCore;
+use finger\Core;
 use finger\Validator;
 use finger\Database\Db;
 use Models\AdminMenu;
@@ -236,7 +236,7 @@ class Menu extends \Services\AbstractBase
         $AdminMenuModel = new AdminMenu();
         $ok = $AdminMenuModel->insert($data);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -278,7 +278,7 @@ class Menu extends \Services\AbstractBase
         $where = ['menuid' => $menuId];
         $ok = $AdminMenuModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -294,12 +294,12 @@ class Menu extends \Services\AbstractBase
         $AdminMenumodel = new AdminMenu();
         $subMenu        = $AdminMenumodel->fetchAll([], ['parentid' => $menuId]);
         if ($subMenu) {
-            YCore::exception(STATUS_SERVER_ERROR, '请先移除该菜单下的子菜单再删除');
+            Core::exception(STATUS_SERVER_ERROR, '请先移除该菜单下的子菜单再删除');
         }
         $where = ['menuid' => $menuId];
         $ok = $AdminMenumodel->delete($where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -318,7 +318,7 @@ class Menu extends \Services\AbstractBase
         foreach ($listorders as $menuId => $sortVal) {
             $ok = $AdminMenuModel->sort($menuId, $sortVal);
             if (!$ok) {
-                return YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+                return Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
             }
         }
     }
@@ -389,7 +389,7 @@ class Menu extends \Services\AbstractBase
         $AdminMenuModel = new AdminMenu();
         $menuInfo       = $AdminMenuModel->fetchOne([], ['menuid' => $menuId]);
         if (empty($menuInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '菜单不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '菜单不存在或已经删除');
         }
         return $menuInfo;
     }

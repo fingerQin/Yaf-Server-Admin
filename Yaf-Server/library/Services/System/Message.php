@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
+use finger\Core;
 use finger\Database\Db;
 use Models\Message as MessageModel;
 
@@ -65,7 +65,7 @@ class Message extends \Services\AbstractBase
         $MessageModel = new MessageModel();
         $message = $MessageModel->fetchOne([], $where);
         if (empty($message)) {
-            YCore::exception(STATUS_SERVER_ERROR, '该条消息不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '该条消息不存在或已经删除');
         }
         $updata = [
             'is_read' => MessageModel::STATUS_YES,
@@ -73,7 +73,7 @@ class Message extends \Services\AbstractBase
         ];
         $status = $MessageModel->update($updata, ['msgid' => $message['msgid']]);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '更新失败');
+            Core::exception(STATUS_SERVER_ERROR, '更新失败');
         }
     }
 }

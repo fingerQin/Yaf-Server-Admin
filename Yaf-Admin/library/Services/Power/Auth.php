@@ -8,9 +8,10 @@
 
 namespace Services\Power;
 
-use finger\Utils\YUrl;
-use finger\Utils\YCore;
-use finger\Utils\YCache;
+use finger\Cache;
+use finger\Core;
+use finger\Url;
+use finger\Crypt;
 use Models\AdminUser;
 use Services\Sms\Sms;
 
@@ -27,16 +28,16 @@ class Auth extends \Services\AbstractBase
     public static function login($username, $password, $code)
     {
         if (strlen($username) === 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '账号不能为空');
+            Core::exception(STATUS_SERVER_ERROR, '账号不能为空');
         }
         if (strlen($password) === 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '密码不能为空');
+            Core::exception(STATUS_SERVER_ERROR, '密码不能为空');
         }
 
         if (strlen($code) == 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '登录短信验证码不能为空');
+            Core::exception(STATUS_SERVER_ERROR, '登录短信验证码不能为空');
         } elseif (!preg_match('/^\d+$/', $code)) {
-            YCore::exception(STATUS_SERVER_ERROR, '请输入正确的登录短信验证码');
+            Core::exception(STATUS_SERVER_ERROR, '请输入正确的登录短信验证码');
         }
 
         $AdminUserModel = new AdminUser();
@@ -45,17 +46,17 @@ class Auth extends \Services\AbstractBase
             'user_status' => AdminUser::STATUS_YES
         ]);
         if (empty($adminInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '账号不存在');
+            Core::exception(STATUS_SERVER_ERROR, '账号不存在');
         }
         $encryptPwd = self::encryptPassword($password, $adminInfo['passwd_salt']);
         if ($encryptPwd != $adminInfo['passwd']) {
-            YCore::exception(STATUS_SERVER_ERROR, '密码不正确');
+            Core::exception(STATUS_SERVER_ERROR, '密码不正确');
         }
         // 验证登录手机验证码
         Sms::verify($username, 'ADMIN_LOGIN_CODE', $code);
         $authToken = self::createToken($adminInfo['adminid'], $encryptPwd);
         self::setAuthToken($adminInfo['adminid'], $authToken, $_SERVER['REQUEST_TIME']);
-        $adminCookieDomain = YUrl::getDomainName(false);
+        $adminCookieDomain = Url::getDomainName(false);
         setcookie('admin_token', $authToken, 0, '/', $adminCookieDomain);
     }
 
@@ -84,32 +85,32 @@ class Auth extends \Services\AbstractBase
         ]);
         if (empty($adminInfo)) {
             self::logout();
-            YCore::exception(STATUS_SERVER_ERROR, '账号不存在或已经被禁用');
+            Core::exception(STATUS_SERVER_ERROR, '账号不存在或已经被禁用');
         }
         if ($password != $adminInfo['passwd']) {
             self::logout();
-            YCore::exception(STATUS_SERVER_ERROR, '您的密码被修改,请重新登录');
+            Core::exception(STATUS_SERVER_ERROR, '您的密码被修改,请重新登录');
         }
         // [3] token 是否赶出了超时时限
         $cacheKeyToken = "admin_token_key_{$adminId}";
-        $cacheToken    = YCache::get($cacheKeyToken);
+        $cacheToken    = Cache::get($cacheKeyToken);
         if ($cacheToken === false) {
             self::logout();
-            YCore::exception(STATUS_NOT_LOGIN, '您还没有登录');
+            Core::exception(STATUS_NOT_LOGIN, '您还没有登录');
         }
         if ($cacheToken === null) {
             self::logout();
-            YCore::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
+            Core::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
         }
         if ($cacheToken != $token) {
             self::logout();
-            YCore::exception(STATUS_OTHER_LOGIN, '您的账号已在其他地方登录');
+            Core::exception(STATUS_OTHER_LOGIN, '您的账号已在其他地方登录');
         }
         // [4] 默认的 IndexController 不进行角色权限验证。
         if (strtolower($ctrlName) != 'index') {
             $ok = Menu::checkMenuPower($adminInfo['roleid'], $ctrlName, $actionName);
             if (!$ok) {
-                YCore::exception(STATUS_SERVER_ERROR, '您没有权限执行此操作');
+                Core::exception(STATUS_SERVER_ERROR, '您没有权限执行此操作');
             }
         }
         self::setAuthToken($adminId, $token);
@@ -129,7 +130,7 @@ class Auth extends \Services\AbstractBase
      */
     public static function logout()
     {
-        $adminCookieDomain = YUrl::getDomainName(false);
+        $adminCookieDomain = Url::getDomainName(false);
         $validTime = $_SERVER['REQUEST_TIME'] - 3600;
         setcookie('admin_token', '', $validTime, '/', $adminCookieDomain);
     }
@@ -144,7 +145,7 @@ class Auth extends \Services\AbstractBase
     private static function setAuthToken($adminId, $authToken)
     {
         $cacheKey = "admin_token_key_{$adminId}";
-        YCache::set($cacheKey, $authToken, 3600);
+        Cache::set($cacheKey, $authToken, 3600);
     }
 
     /**
@@ -155,10 +156,10 @@ class Auth extends \Services\AbstractBase
      */
     private static function parseToken($token)
     {
-        $data = YCore::sys_auth($token, 'DECODE');
+        $data = Crypt::sys_auth($token, 'DECODE');
         $data = explode("\t", $data);
         if (count($data) != 2) {
-            YCore::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
+            Core::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
         }
         $result = [
             'adminid'  => $data[0], // 用户ID。
@@ -177,7 +178,7 @@ class Auth extends \Services\AbstractBase
     private static function createToken($adminId, $password)
     {
         $str = "{$adminId}\t{$password}";
-        return YCore::sys_auth($str, 'ENCODE', '', 0);
+        return Crypt::sys_auth($str, 'ENCODE', '', 0);
     }
 
     /**

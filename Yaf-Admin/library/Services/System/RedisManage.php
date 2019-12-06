@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use finger\Utils\YCache;
+use finger\Cache;
 
 class RedisManage extends \Services\AbstractBase
 {
@@ -33,7 +33,7 @@ class RedisManage extends \Services\AbstractBase
      */
     public static function delete($keys)
     {
-        $redis = YCache::getRedisClient();
+        $redis = Cache::getRedisClient();
         $redis->del($keys);
     }
 }

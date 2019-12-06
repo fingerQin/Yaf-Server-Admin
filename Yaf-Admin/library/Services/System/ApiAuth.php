@@ -7,8 +7,8 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
-use finger\Utils\YCache;
+use finger\Cache;
+use finger\Core;
 use finger\Validator;
 use finger\Database\Db;
 use Models\ApiAuth as ApiAuthModel;
@@ -45,7 +45,7 @@ class ApiAuth extends \Services\AbstractBase
         $ApiAuthModel = new ApiAuthModel();
         $appinfo      = $ApiAuthModel->fetchOne($columns, $where);
         if (empty($appinfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '应用不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '应用不存在或已经删除');
         }
         $appinfo['ip_scope'] = str_replace('|', "\r\n", $appinfo['ip_scope']);
         $appinfo['ip_pool']  = str_replace('|', "\r\n", $appinfo['ip_pool']);
@@ -89,7 +89,7 @@ class ApiAuth extends \Services\AbstractBase
         ];
         Validator::valido($data, $rules); // 验证不通过会抛异常。
         if (!in_array($apiType, self::$apiTypeDict)) {
-            YCore::exception(STATUS_SERVER_ERROR, 'APP类型不合法');
+            Core::exception(STATUS_SERVER_ERROR, 'APP类型不合法');
         }
         // [2] 记录存在与否。
         $where = [
@@ -99,7 +99,7 @@ class ApiAuth extends \Services\AbstractBase
         $ApiAuthModel = new ApiAuthModel();
         $appinfo      = $ApiAuthModel->fetchOne([], $where);
         if (empty($appinfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '记录不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '记录不存在或已经删除');
         }
         // [3] 更新。
         $data['u_time']   = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
@@ -107,7 +107,7 @@ class ApiAuth extends \Services\AbstractBase
         $data['ip_pool']  = self::ipPoolFormatterToSave($ipPool);
         $ok = $ApiAuthModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -147,7 +147,7 @@ class ApiAuth extends \Services\AbstractBase
         ];
         Validator::valido($data, $rules); // 验证不通过会抛异常。
         if (!in_array($apiType, self::$apiTypeDict)) {
-            YCore::exception(STATUS_SERVER_ERROR, '应用类型不合法');
+            Core::exception(STATUS_SERVER_ERROR, '应用类型不合法');
         }
         $data['c_time']   = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
         $data['u_time']   = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
@@ -156,7 +156,7 @@ class ApiAuth extends \Services\AbstractBase
         $ApiAuthModel     = new ApiAuthModel();
         $id = $ApiAuthModel->insert($data);
         if ($id == 0) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -176,7 +176,7 @@ class ApiAuth extends \Services\AbstractBase
         $appModel = new ApiAuthModel();
         $appinfo  = $appModel->fetchOne([], $where);
         if (empty($appinfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '应用不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '应用不存在或已经删除');
         }
         $updata = [
             'api_status' => ApiAuthModel::STATUS_DELETED,
@@ -184,7 +184,7 @@ class ApiAuth extends \Services\AbstractBase
         ];
         $ok = $appModel->update($updata, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '删除失败');
+            Core::exception(STATUS_ERROR, '删除失败');
         }
         self::clearCache();
     }
@@ -290,7 +290,7 @@ class ApiAuth extends \Services\AbstractBase
      */
     public static function clearCache()
     {
-        $redis = YCache::getRedisClient();
+        $redis = Cache::getRedisClient();
         $redis->del(self::API_AUTH_CACHE_KEY);
     }
 }

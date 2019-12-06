@@ -6,7 +6,7 @@
  * @subpackage PluginsModifier
  */
 
-use finger\Utils\YUrl;
+use finger\Url;
 
 /**
  * 获取静态资源URL。
@@ -17,5 +17,5 @@ use finger\Utils\YUrl;
  */
 function smarty_modifier_image($fileRelativePath)
 {
-    return YUrl::assets('image', $fileRelativePath);
+    return Url::assets('image', $fileRelativePath);
 }

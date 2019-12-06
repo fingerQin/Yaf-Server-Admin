@@ -5,7 +5,7 @@
  * @date 2018-06-27
  */
 
-use finger\Utils\YUrl;
+use finger\Url;
 use Services\Power\Menu;
 use Services\Power\Help;
 use Services\System\Upload;
@@ -94,7 +94,7 @@ class IndexController extends \Common\controllers\Admin
         $ctrlName        = $this->getString('c');
         $actionName      = $this->getString('a');
         $helpstr         = Help::get($ctrlName, $actionName);
-        $filesDomainDame = YUrl::getFilesDomainName();
+        $filesDomainDame = Url::getFilesDomainName();
         $this->assign('c', $ctrlName);
         $this->assign('a', $actionName);
         $this->assign('files_domain_name', $filesDomainDame);

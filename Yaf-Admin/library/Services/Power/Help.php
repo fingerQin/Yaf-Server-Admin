@@ -7,7 +7,7 @@
 
 namespace Services\Power;
 
-use finger\Utils\YCore;
+use finger\Core;
 use Models\AdminMenu;
 
 class Help extends \Services\AbstractBase
@@ -48,7 +48,7 @@ class Help extends \Services\AbstractBase
         $MenuModel = new AdminMenu();
         $detail    = $MenuModel->fetchOne(['helpstr'], $where);
         if (empty($detail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '添加失败');
+            Core::exception(STATUS_SERVER_ERROR, '添加失败');
         } else {
             return $MenuModel->update(['helpstr' => $content], $where);
         }

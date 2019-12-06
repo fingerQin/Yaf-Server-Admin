@@ -7,10 +7,10 @@
 
 namespace Services\AccessForbid;
 
+use finger\Cache;
+use finger\Core;
 use finger\Lock;
 use Models\ForbidIp;
-use finger\Utils\YCache;
-use finger\Utils\YCore;
 
 class Forbid extends \Services\AbstractBase
 {
@@ -52,7 +52,7 @@ class Forbid extends \Services\AbstractBase
     {
         $date     = date('Ymd', TIMESTAMP);
         $cacheKey = "system_forbin_ip:{$position}_{$date}";
-        $redis    = YCache::getRedisClient();
+        $redis    = Cache::getRedisClient();
         $int      = $redis->incr($cacheKey);
         if ($int == 1) {
             $redis->expire($cacheKey, $lockTime * 60);
@@ -76,14 +76,14 @@ class Forbid extends \Services\AbstractBase
     {
         $date     = date('Ymd', TIMESTAMP);
         $cacheKey = self::IP_LOCK_KEY . ":{$date}";
-        $redis    = YCache::getRedisClient();
+        $redis    = Cache::getRedisClient();
         $lockTime = $redis->get($cacheKey);
         if ($lockTime != FALSE && $lockTime > date('Y-m-d H:i:s', TIMESTAMP)) {
-            YCore::exception(STATUS_ACCESS_FORBID_IP, "您所在网络被禁止访问，解封时间：{$lockTime}");
+            Core::exception(STATUS_ACCESS_FORBID_IP, "您所在网络被禁止访问，解封时间：{$lockTime}");
         }
         $ips = self::getAllIp();
         if (array_key_exists($ip, $ips)) {
-            YCore::exception(STATUS_ACCESS_FORBID_IP, "您所在网络被禁止访问，解封时间：{$ips[$ip]}");
+            Core::exception(STATUS_ACCESS_FORBID_IP, "您所在网络被禁止访问，解封时间：{$ips[$ip]}");
         }
     }
 
@@ -95,7 +95,7 @@ class Forbid extends \Services\AbstractBase
     private static function getAllIp()
     {
         $cacheKey = 'system_forbid_ip_list';
-        $redis    = YCache::getRedisClient();
+        $redis    = Cache::getRedisClient();
         $result   = $redis->get($cacheKey);
         if ($result !== false ) {
             return json_decode($result, true);

@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
+use finger\Core;
 use finger\Database\Db;
 use Models\Monitor as MonitorModel;
 
@@ -76,10 +76,10 @@ class Monitor extends \Services\AbstractBase
         $MonitorModel = new MonitorModel();
         $monitor      = $MonitorModel->fetchOne([], ['id' => $id]);
         if (empty($monitor)) {
-            YCore::exception(STATUS_SERVER_ERROR, '该告警记录不存在');
+            Core::exception(STATUS_SERVER_ERROR, '该告警记录不存在');
         }
         if ($monitor['status'] == MonitorModel::STATUS_PROCESSED) {
-            YCore::exception(STATUS_SERVER_ERROR, '已处理，请勿重复操作！');
+            Core::exception(STATUS_SERVER_ERROR, '已处理，请勿重复操作！');
         }
         $updata = [
             'status' => MonitorModel::STATUS_PROCESSED,
@@ -87,7 +87,7 @@ class Monitor extends \Services\AbstractBase
         ];
         $status = $MonitorModel->update($updata, ['id' => $id]);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '处理失败');
+            Core::exception(STATUS_SERVER_ERROR, '处理失败');
         }
     }
 
@@ -103,7 +103,7 @@ class Monitor extends \Services\AbstractBase
         $MonitorModel = new MonitorModel();
         $monitor      = $MonitorModel->fetchOne([], ['id' => $id]);
         if (empty($monitor)) {
-            YCore::exception(STATUS_SERVER_ERROR, '该告警记录不存在');
+            Core::exception(STATUS_SERVER_ERROR, '该告警记录不存在');
         }
         $monitor['status_label'] = MonitorModel::$statusDict[$monitor['status']];
         $monitor['code_label']   = MonitorModel::$codeDict[$monitor['code']];

@@ -7,9 +7,9 @@
 
 namespace Services\System;
 
+use finger\Core;
 use finger\Validator;
 use finger\Database\Db;
-use finger\Utils\YCore;
 use Models\Link as LinkModel;
 
 class Link extends \Services\AbstractBase
@@ -67,7 +67,7 @@ class Link extends \Services\AbstractBase
         $LinkModel = new LinkModel();
         $data = $LinkModel->fetchOne([], ['link_id' => $linkId, 'status' => LinkModel::STATUS_YES]);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '友情链接不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '友情链接不存在或已经删除');
         }
         return $data;
     }
@@ -106,7 +106,7 @@ class Link extends \Services\AbstractBase
         $data['c_time'] = date('Y-m-d H:i:s', time());
         $ok = $LinkModel->insert($data);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -131,7 +131,7 @@ class Link extends \Services\AbstractBase
         ];
         $linkDetail = $LinkModel->fetchOne([], $where);
         if (empty($linkDetail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '友情链接不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '友情链接不存在或已经删除');
         }
         $data = [
             'link_name' => $linkName,
@@ -152,7 +152,7 @@ class Link extends \Services\AbstractBase
         $data['u_time'] = date('Y-m-d H:i:s', time());
         $ok = $LinkModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -172,7 +172,7 @@ class Link extends \Services\AbstractBase
         ];
         $linkDetail = $LinkModel->fetchOne([], $where);
         if (empty($linkDetail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '友情链接不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '友情链接不存在或已经删除');
         }
         $data = [
             'status' => LinkModel::STATUS_DELETED,
@@ -181,7 +181,7 @@ class Link extends \Services\AbstractBase
         ];
         $ok = $LinkModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -200,7 +200,7 @@ class Link extends \Services\AbstractBase
             $LinkModel = new LinkModel();
             $ok = $LinkModel->sortLink($linkId, $sortval);
             if (!$ok) {
-                return YCore::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
+                return Core::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
             }
         }
     }

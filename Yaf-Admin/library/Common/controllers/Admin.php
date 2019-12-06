@@ -10,8 +10,9 @@
 
 namespace Common\controllers;
 
-use finger\Utils\YCore;
-use finger\Utils\YUrl;
+use finger\Core;
+use finger\Ip;
+use finger\Url;
 use Services\Power\Auth;
 use Services\System\OperationLog;
 
@@ -64,12 +65,12 @@ class Admin extends Common
         } catch (\Exception $e) {
             if ($e->getCode() == STATUS_LOGIN_TIMEOUT || $e->getCode() == STATUS_NOT_LOGIN || $e->getCode() == STATUS_OTHER_LOGIN) {
                 if ($this->_request->isXmlHttpRequest()) {
-                    YCore::exception($e->getCode(), $e->getMessage());
+                    Core::exception($e->getCode(), $e->getMessage());
                 } else {
-                    $this->redirect(YUrl::createBackendUrl('Public', 'Login'));
+                    $this->redirect(Url::createBackendUrl('Public', 'Login'));
                 }
             } else {
-                YCore::exception($e->getCode(), $e->getMessage());
+                Core::exception($e->getCode(), $e->getMessage());
             }
         }
         \Yaf_Registry::set('admin_user_roleid', $this->roleid);
@@ -92,12 +93,12 @@ class Admin extends Common
     {
         $log = [
             'mobile'     => $mobile,
-            'url'        => YUrl::getUrl(),
+            'url'        => Url::getUrl(),
             'isAjax'     => $this->_request->isXmlHttpRequest() ? 1 : 0,
             'isPost'     => $this->_request->isPost() ? 1 : 0,
             'params'     => $this->_request->getPost()
         ];
-        $ip = YCore::ip();
+        $ip = Ip::ip();
         if (strtolower($ctrlName) != 'public') {
             OperationLog::add($adminid, $realname, $ip, $ctrlName, $actionName, $log);
         }

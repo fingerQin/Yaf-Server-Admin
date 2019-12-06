@@ -380,11 +380,11 @@ Stack trace:
 
 除了这些系统固定会产生的日志之外，我们还会在不同的模块及不同业务中打印业务相关的日志。比如：支付。
 
-那么，我们要怎样才能实现将日志输出到自定义的目录呢？我们通过 `Utils\YLog::log()` 方法进行日志输出。具体的方法使用介绍请查看该方法的方法注释。
+那么，我们要怎样才能实现将日志输出到自定义的目录呢？我们通过 `finger\App::log()` 方法进行日志输出。具体的方法使用介绍请查看该方法的方法注释。
 
 ```php
-$ip         = YCore::ip();
-$url        = YUrl::getUrl();
+$ip         = Ip::ip();
+$url        = Url::getUrl();
 $postParams = $request->getPost();
 YLog::log(['ip' => $ip, 'url' => $url, 'params' => $postParams], 'accessLog', 'log');
 ```
@@ -393,7 +393,7 @@ YLog::log(['ip' => $ip, 'url' => $url, 'params' => $postParams], 'accessLog', 'l
 
 #### 6.3 MongoDB 存储
 
-我们每次调用 `Utils\YLog::log()` 方法的时候，都会向指定的 `Redis` 队列写入这些日志数据。然后，通过命令行`php cli.php Log/writeMongDb ` 启动常驻进程写入 `MongoDB`。
+我们每次调用 `finger\App::log()` 方法的时候，都会向指定的 `Redis` 队列写入这些日志数据。然后，通过命令行`php cli.php Log/writeMongDb ` 启动常驻进程写入 `MongoDB`。
 
 
 
@@ -435,13 +435,13 @@ public function _initError()
 {
 	$config = \Yaf_Registry::get('config');
 	ini_set('display_errors', $config->get('error.display.errors'));
-	set_error_handler(['\Utils\YCore', 'errorHandler']);
-	register_shutdown_function(['\Utils\YCore', 'registerShutdownFunction']);
+	set_error_handler(['\finger\Core', 'errorHandler']);
+	register_shutdown_function(['\finger\Core', 'registerShutdownFunction']);
 }
 ......
 ```
 
-通过以上代码，我们可以知道，在应用启动中，我们调用了 `set_error_handler`、`register_shutdown_function` 方法调用了 `\Utils\YCore::errorhandler` 和 `\Utils\YCore::registerShutdownFunction` 方法。以此来实现当 `PHP` 当中有任何错误的时候，调用 `YCore::exception` 方法抛出自定义异常。当然，直接调用该方法也可以抛出自定义异常。
+通过以上代码，我们可以知道，在应用启动中，我们调用了 `set_error_handler`、`register_shutdown_function` 方法调用了 `\finger\Core::errorhandler` 和 `\finger\Core::registerShutdownFunction` 方法。以此来实现当 `PHP` 当中有任何错误的时候，调用 `Core::exception` 方法抛出自定义异常。当然，直接调用该方法也可以抛出自定义异常。
 
 ### 8 数据库
 

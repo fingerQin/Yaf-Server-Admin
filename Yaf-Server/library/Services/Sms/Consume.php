@@ -7,13 +7,13 @@
 
 namespace Services\Sms;
 
-use finger\Utils\YCache;
-use finger\Utils\YLog;
-use finger\Utils\YCore;
-use finger\Utils\YInput;
-use Models\SmsSendLog;
-use Models\SmsConf;
+use finger\App;
+use finger\Cache;
+use finger\Core;
 use finger\Database\Db;
+use finger\DataInput;
+use Models\SmsConf;
+use Models\SmsSendLog;
 use Services\Sms\Driver\Luosimao;
 
 class Consume extends \Services\Sms\AbstractBase
@@ -26,7 +26,7 @@ class Consume extends \Services\Sms\AbstractBase
     public static function sendSms()
     {
         // [1]
-        $redis    = YCache::getRedisClient();
+        $redis    = Cache::getRedisClient();
         $queueKey = self::SMS_QUEUE_KEY;
         $queueIng = $queueKey . '-ing';
         $arrValue = [];
@@ -37,7 +37,7 @@ class Consume extends \Services\Sms\AbstractBase
             while (true) {
                 $str = $redis->bRPopLPush($queueKey, $queueIng, 1);
                 if (!empty($str)) {
-                    YLog::log(['data' => $str], 'sms', 'consume');
+                    App::log(['data' => $str], 'sms', 'consume');
                     $arrValue = json_decode($str, true);
                     try {
                         self::send($arrValue['is_send'], $arrValue['id'], $arrValue['mobile'], $arrValue['content']);
@@ -48,12 +48,12 @@ class Consume extends \Services\Sms\AbstractBase
                             'sms'    => $arrValue,
                             'errmsg' => $e->getMessage()
                         ];
-                        YLog::log($log, 'sms', 'error');
+                        App::log($log, 'sms', 'error');
                         self::updateSendStatus($arrValue['id'], 0, $e->getCode(), $e->getMessage(), false);
                     }
                 } else {
                     Db::ping();
-                    YCache::ping();
+                    Cache::ping();
                 }
             }
         } catch (\Throwable $e) {
@@ -67,7 +67,7 @@ class Consume extends \Services\Sms\AbstractBase
                 'sms'    => $arrValue,
                 'errmsg' => $errorMsg
             ];
-            YLog::log($log, 'sms', 'error');
+            App::log($log, 'sms', 'error');
             if (!empty($arrValue)) {
                 self::updateSendStatus($arrValue['id'], 0, $e->getCode(), $e->getMessage(), false);
             }
@@ -94,11 +94,11 @@ class Consume extends \Services\Sms\AbstractBase
                 // 防止修改表优先级无效，因此放到循环中
                 $channelConf = self::getSmsChannelConf();
                 self::sendRealSms($mobile, $content, $channelConf);
-                YLog::log("sms::mobile::{$mobile}:{$content}:ok", 'sms', 'sys_send_consume');
+                App::log("sms::mobile::{$mobile}:{$content}:ok", 'sms', 'sys_send_consume');
             } else {
-                YLog::log("sms:: 短信配置关闭状态,短信不会真实发送", 'sms', 'sys_send_consume');
+                App::log("sms:: 短信配置关闭状态,短信不会真实发送", 'sms', 'sys_send_consume');
             }
-            $channelId = YInput::getInt($channelConf, 'channel_id', 0);
+            $channelId = DataInput::getInt($channelConf, 'channel_id', 0);
             self::updateSendStatus($id, $channelId, 0, '发送成功', true);
             return true;
         } catch (\Exception $e) {
@@ -129,7 +129,7 @@ class Consume extends \Services\Sms\AbstractBase
         ];
         $affectRows = (new SmsSendLog())->update($updata, ['id' => $id]);
         if ($affectRows == 0) {
-            YLog::log("短信记录更新失败:id->{$id}", 'sms', 'sms_log_table');
+            App::log("短信记录更新失败:id->{$id}", 'sms', 'sms_log_table');
         }
     }
 
@@ -143,7 +143,7 @@ class Consume extends \Services\Sms\AbstractBase
         $SmsConfModel = new SmsConf();
         $config = $SmsConfModel->fetchOne([], ['status' => SmsConf::STATUS_YES], 'level ASC');
         if (empty($config)) {
-            YCore::exception(STATUS_SERVER_ERROR, '当前无可用短信通道');
+            Core::exception(STATUS_SERVER_ERROR, '当前无可用短信通道');
         }
         return [
             'channel_id'     => $config['id'],       // 通过ID。
@@ -171,7 +171,7 @@ class Consume extends \Services\Sms\AbstractBase
                 $sendObj->send($mobile, $content);
                 break;
             default:
-                YCore::exception(STATUS_SERVER_ERROR, '当前通道对应发送程序不支持');
+                Core::exception(STATUS_SERVER_ERROR, '当前通道对应发送程序不支持');
                 break;
         }
     }

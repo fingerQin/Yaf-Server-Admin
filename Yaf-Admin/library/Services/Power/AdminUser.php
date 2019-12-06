@@ -8,10 +8,10 @@
 
 namespace Services\Power;
 
+use finger\Core;
+use finger\Strings;
 use finger\Validator;
 use finger\Database\Db;
-use finger\Utils\YString;
-use finger\Utils\YCore;
 use Models\AdminUser as AdminUserModel;
 
 class AdminUser extends \Services\AbstractBase
@@ -69,23 +69,23 @@ class AdminUser extends \Services\AbstractBase
     public static function forbid($opAdminId, $adminId, $status)
     {
         if ($adminId == ROOT_ADMIN_ID) {
-            YCore::exception(STATUS_SERVER_ERROR, '我是超级管理员您不能这样对我噢');
+            Core::exception(STATUS_SERVER_ERROR, '我是超级管理员您不能这样对我噢');
         }
         $AdminUserModel  = new AdminUserModel();
         $adminUserDetail = $AdminUserModel->fetchOne([], ['adminid' => $adminId]);
         if (empty($adminUserDetail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '该管理员不存在');
+            Core::exception(STATUS_SERVER_ERROR, '该管理员不存在');
         }
         if ($adminUserDetail['user_status'] == AdminUserModel::STATUS_DELETED) {
-            YCore::exception(STATUS_SERVER_ERROR, '该管理已经被删除');
+            Core::exception(STATUS_SERVER_ERROR, '该管理已经被删除');
         }
         if ($status == AdminUserModel::STATUS_YES) {
             if ($adminUserDetail['user_status'] == AdminUserModel::STATUS_YES) {
-                YCore::exception(STATUS_SERVER_ERROR, '该账号已经是正常登录状态');
+                Core::exception(STATUS_SERVER_ERROR, '该账号已经是正常登录状态');
             }
         } else {
             if ($adminUserDetail['user_status'] == AdminUserModel::STATUS_INVALID) {
-                YCore::exception(STATUS_SERVER_ERROR, '该账号已经是禁用状态');
+                Core::exception(STATUS_SERVER_ERROR, '该账号已经是禁用状态');
             }
         }
         $updata = [
@@ -95,7 +95,7 @@ class AdminUser extends \Services\AbstractBase
         ];
         $status = $AdminUserModel->update($updata, ['adminid' => $adminId]);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '操作失败,请稍候重试');
+            Core::exception(STATUS_SERVER_ERROR, '操作失败,请稍候重试');
         }
     }
 
@@ -119,7 +119,7 @@ class AdminUser extends \Services\AbstractBase
         self::isExistMobile($mobilephone, true);
         Role::isExist($roleid);
 
-        $salt = YString::randomstr(6);
+        $salt = Strings::randomstr(6);
         $md5Password = Auth::encryptPassword($password, $salt);
         $data = [
             'real_name'   => $realname,
@@ -134,7 +134,7 @@ class AdminUser extends \Services\AbstractBase
         $AdminUserModel = new AdminUserModel();
         $status         = $AdminUserModel->insert($data);
         if (!$status) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -153,7 +153,7 @@ class AdminUser extends \Services\AbstractBase
     {
         // [1]
         if ($adminId == ROOT_ADMIN_ID && $opAdminId != $adminId) {
-            YCore::exception(STATUS_SERVER_ERROR, '超级管理员账号只能 TA 自己编辑哟');
+            Core::exception(STATUS_SERVER_ERROR, '超级管理员账号只能 TA 自己编辑哟');
         }
         // [2]
         self::checkRealname($realname);
@@ -169,7 +169,7 @@ class AdminUser extends \Services\AbstractBase
             'u_by'      => $opAdminId
         ];
         if (strlen($password) > 0) {
-            $salt                = YString::randomstr(6);
+            $salt                = Strings::randomstr(6);
             $md5Password         = Auth::encryptPassword($password, $salt);
             $data['passwd']      = $md5Password;
             $data['passwd_salt'] = $salt;
@@ -180,7 +180,7 @@ class AdminUser extends \Services\AbstractBase
         $AdminUserModel = new AdminUserModel();
         $status         = $AdminUserModel->update($data, $where);
         if (!$status) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -196,7 +196,7 @@ class AdminUser extends \Services\AbstractBase
     public static function delete($opAdminId, $adminId)
     {
         if ($adminId == ROOT_ADMIN_ID) {
-            YCore::exception(STATUS_SERVER_ERROR, '超级管理员账号不能删除');
+            Core::exception(STATUS_SERVER_ERROR, '超级管理员账号不能删除');
         }
         $data = [
             'user_status' => AdminUserModel::STATUS_DELETED,
@@ -209,7 +209,7 @@ class AdminUser extends \Services\AbstractBase
         $AdminUserModel  = new AdminUserModel();
         $ok = $AdminUserModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -224,27 +224,27 @@ class AdminUser extends \Services\AbstractBase
     public static function editPwd($adminId, $oldPwd, $newPwd)
     {
         if (strlen($oldPwd) === 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '旧密码必须填写');
+            Core::exception(STATUS_SERVER_ERROR, '旧密码必须填写');
         }
         if (strlen($newPwd) === 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '新密码必须填写');
+            Core::exception(STATUS_SERVER_ERROR, '新密码必须填写');
         }
         $AdminUserModel = new AdminUserModel();
         $adminInfo      = $AdminUserModel->fetchOne([], ['adminid' => $adminId]);
         if (empty($adminInfo) || $adminInfo['user_status'] != AdminUserModel::STATUS_YES) {
-            YCore::exception(STATUS_SERVER_ERROR, '管理员不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '管理员不存在或已经删除');
         }
         if (!Validator::is_len($newPwd, 6, 20, true)) {
-            YCore::exception(STATUS_SERVER_ERROR, '新密码长度必须6~20之间');
+            Core::exception(STATUS_SERVER_ERROR, '新密码长度必须6~20之间');
         }
         if (!Validator::is_alpha_dash($newPwd)) {
-            YCore::exception(STATUS_SERVER_ERROR, '新密码格式不正确');
+            Core::exception(STATUS_SERVER_ERROR, '新密码格式不正确');
         }
         $oldPwdEncrypt = Auth::encryptPassword($oldPwd, $adminInfo['passwd_salt']);
         if ($oldPwdEncrypt != $adminInfo['passwd']) {
-            YCore::exception(STATUS_SERVER_ERROR, '旧密码不正确!');
+            Core::exception(STATUS_SERVER_ERROR, '旧密码不正确!');
         }
-        $salt = YString::randomstr(6);
+        $salt = Strings::randomstr(6);
         $encryptPassword = Auth::encryptPassword($newPwd, $salt);
         $data = [
             'passwd'      => $encryptPassword,
@@ -256,7 +256,7 @@ class AdminUser extends \Services\AbstractBase
         ];
         $ok = $AdminUserModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '密码修改失败');
+            Core::exception(STATUS_ERROR, '密码修改失败');
         }
     }
 
@@ -271,7 +271,7 @@ class AdminUser extends \Services\AbstractBase
         $AdminUserModel = new AdminUserModel();
         $adminDetail    = $AdminUserModel->fetchOne([], ['adminid' => $adminId]);
         if (empty($adminDetail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '管理员账号不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '管理员账号不存在或已经删除');
         }
         return $adminDetail;
     }
@@ -288,7 +288,7 @@ class AdminUser extends \Services\AbstractBase
         $AdminUserModel = new AdminUserModel();
         $data = $AdminUserModel->fetchOne([], ['adminid' => $adminId]);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '管理员不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '管理员不存在或已经删除');
         }
         return $data;
     }
@@ -311,7 +311,7 @@ class AdminUser extends \Services\AbstractBase
         if (!empty($adminInfo)) {
             if ($isNewCreate) {
                 if ($adminInfo['adminid'] != $adminId) {
-                    YCore::exception(STATUS_SERVER_ERROR, '手机号码已经存在');
+                    Core::exception(STATUS_SERVER_ERROR, '手机号码已经存在');
                 }
             }
         }
@@ -398,7 +398,7 @@ class AdminUser extends \Services\AbstractBase
         $adminDetail    = $AdminUserModel->fetchOne([], ['username' => $username, 'status' => AdminUser::STATUS_YES]);
         if (!empty($adminDetail)) {
             $errMsg = (strlen($errMsg) > 0) ? $errMsg : '管理员账号已经存在';
-            YCore::exception(STATUS_SERVER_ERROR, $errMsg);
+            Core::exception(STATUS_SERVER_ERROR, $errMsg);
         }
         return $adminDetail;
     }

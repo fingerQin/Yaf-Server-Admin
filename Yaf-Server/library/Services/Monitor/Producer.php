@@ -7,8 +7,9 @@
 
 namespace Services\Monitor;
 
-use finger\Utils\YCore;
-use finger\Utils\YCache;
+use finger\App;
+use finger\Cache;
+use finger\Core;
 use Models\Monitor;
 use finger\Validator;
 
@@ -26,14 +27,14 @@ class Producer extends \Services\Monitor\AbstractBase
     {
         // [1]
         if (empty($message)) {
-            YCore::exception(STATUS_SERVER_ERROR, '消息内容不能为空');
+            Core::exception(STATUS_SERVER_ERROR, '消息内容不能为空');
         }
         if (!isset($message['code'])) {
-            YCore::exception(STATUS_SERVER_ERROR, '监控位置 CODE 必须设置');
+            Core::exception(STATUS_SERVER_ERROR, '监控位置 CODE 必须设置');
         }
         $code = strtolower($message['code']);
         if (!in_array($code, Monitor::$codeDict)) {
-            YCore::exception(STATUS_SERVER_ERROR, '监控位置 CODE 错误');
+            Core::exception(STATUS_SERVER_ERROR, '监控位置 CODE 错误');
         }
         self::checkFrequency($message['code'], $frequency);
         // [2]
@@ -41,10 +42,10 @@ class Producer extends \Services\Monitor\AbstractBase
         self::{"check{$code}Monitor"}($message);
         // [3] 写入 Redis 队列。
         $message['serial_no'] = self::serialNo();
-        $redis  = YCache::getRedisClient();
+        $redis  = Cache::getRedisClient();
         $status = $redis->lPush(self::MONITOR_QUEUE_KEY, json_encode($message, JSON_UNESCAPED_UNICODE));
         if ($status === false) {
-            YCore::log($message, 'monitor', 'queue-error');
+            App::log($message, 'monitor', 'queue-error');
         }
     }
 
@@ -57,7 +58,7 @@ class Producer extends \Services\Monitor\AbstractBase
     {
         $date   = date('YmdHi', TIMESTAMP);
         $key    = "monitor-{$date}";
-        $redis  = YCache::getRedisClient();
+        $redis  = Cache::getRedisClient();
         $intVal = $redis->incr($key);
         if ($intVal == 1) {
             $redis->expire($key, 120);
@@ -79,7 +80,7 @@ class Producer extends \Services\Monitor\AbstractBase
             return true;
         } else {
             $frequencyKey = "monitor-frequency-{$code}";
-            $redis        = YCache::getRedisClient();
+            $redis        = Cache::getRedisClient();
             $status       = $redis->set($frequencyKey, 1, ['NX', 'EX' => $frequency * 60]);
             return $status ? true : false;
         }

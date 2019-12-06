@@ -8,8 +8,8 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
-use finger\Utils\YCache;
+use finger\App;
+use finger\Cache;
 use Models\PushDevice;
 
 class Push extends \Services\AbstractBase
@@ -23,10 +23,10 @@ class Push extends \Services\AbstractBase
      */
     protected static function send($msgType, $data)
     {
-        $redis  = YCache::getRedisClient();
+        $redis  = Cache::getRedisClient();
         $status = $redis->publish($msgType, json_encode($data, JSON_UNESCAPED_UNICODE));
         $status = intval($status);
-        YCore::log(['status' => $status, 'msgType' => $msgType, 'data' => $data], 'push', 'log');
+        App::log(['status' => $status, 'msgType' => $msgType, 'data' => $data], 'push', 'log');
     }
 
     /**

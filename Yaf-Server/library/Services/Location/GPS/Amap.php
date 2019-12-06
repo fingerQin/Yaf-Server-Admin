@@ -9,9 +9,8 @@
 namespace Services\Location\GPS;
 
 use finger\App;
-use finger\Utils\YCore;
-use finger\Utils\YLog;
-use finger\Utils\YCache;
+use finger\Cache;
+use finger\Core;
 use Models\District;
 
 class Amap
@@ -29,17 +28,17 @@ class Amap
     public function get($long, $lat)
     {
         $cacheKey  = "loc-gps:{$long},{$lat}";
-        $locResult = YCache::get($cacheKey);
+        $locResult = Cache::get($cacheKey);
         if ($locResult !== FALSE) {
             return $locResult;
         } else {
             $result = $this->request($long, $lat);
             if (empty($result)) {
-                YCore::exception(STATUS_SERVER_ERROR, '定位失败');
+                Core::exception(STATUS_SERVER_ERROR, '定位失败');
             }
             if ($result['status'] != 1) {
-                YLog::log(['position' => 'amap-gps', 'long' => $long, 'lat' => $lat], 'location', 'log');
-                YCore::exception(STATUS_SERVER_ERROR, '定位失败');
+                App::log(['position' => 'amap-gps', 'long' => $long, 'lat' => $lat], 'location', 'log');
+                Core::exception(STATUS_SERVER_ERROR, '定位失败');
             }
             // @todo 后续将所有的地区数据放入缓存当中。加速定位的速度。
             $cityName = $result['regeocode']['addressComponent']['city'];
@@ -50,8 +49,8 @@ class Amap
                     'lat'      => $lat, 
                     'address'  => $result['regeocode']['addressComponent']
                 ];
-                YLog::log($log, 'location', 'log');
-                YCore::exception(STATUS_SERVER_ERROR, '定位失败');
+                App::log($log, 'location', 'log');
+                Core::exception(STATUS_SERVER_ERROR, '定位失败');
             }
             $DistrictModel = new District();
             $district      = $DistrictModel->fetchOne([], [
@@ -59,7 +58,7 @@ class Amap
                 'region_type' => District::REGION_TYPE_CITY
             ]);
             if (empty($district)) {
-                YCore::exception(STATUS_SERVER_ERROR, '定位失败');
+                Core::exception(STATUS_SERVER_ERROR, '定位失败');
             }
             $locResult = [
                 'province_name' => $district['province_name'],
@@ -67,7 +66,7 @@ class Amap
                 'city_name'     => $district['city_name'],
                 'city_code'     => $district['city_code']
             ];
-            YCache::set($cacheKey, $locResult, 1800);
+            Cache::set($cacheKey, $locResult, 1800);
             return $locResult;
         }
     }
@@ -103,7 +102,7 @@ class Amap
                 'long'       => $long, 
                 'lat'        => $lat
             ];
-            YLog::log($log, 'curl', 'amap-gps');
+            App::log($log, 'curl', 'amap-gps');
         }
         curl_close($ch);
         return $result;

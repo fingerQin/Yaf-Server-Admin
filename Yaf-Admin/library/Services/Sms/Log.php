@@ -7,11 +7,11 @@
 
 namespace Services\Sms;
 
-use finger\Utils\YCore;
-use finger\Utils\YDate;
-use finger\Utils\YInput;
 use Models\SmsSendLog;
+use finger\Core;
+use finger\Date;
 use finger\Validator;
+use finger\DataInput;
 use finger\Database\Db;
 
 class Log extends \Services\AbstractBase
@@ -33,13 +33,13 @@ class Log extends \Services\AbstractBase
     public static function lists($mobile, $status = -1, $tplId = -1, $channelId = -1, $startTime = '', $endTime = '', $page = 1, $count = 20)
     {
         if (strlen($mobile) > 0 && !Validator::is_mobilephone($mobile)) {
-            YCore::exception(STATUS_SERVER_ERROR, '手机号格式不正确');
+            Core::exception(STATUS_SERVER_ERROR, '手机号格式不正确');
         }
         if (strlen($startTime) > 0 && !Validator::is_date($startTime)) {
-            YCore::exception(STATUS_SERVER_ERROR, '开始时间格式不对');
+            Core::exception(STATUS_SERVER_ERROR, '开始时间格式不对');
         }
         if (strlen($endTime) > 0 && !Validator::is_date($endTime)) {
-            YCore::exception(STATUS_SERVER_ERROR, '截止时间格式不对');
+            Core::exception(STATUS_SERVER_ERROR, '截止时间格式不对');
         }
         $from    = ' FROM finger_sms_sendlog ';
         $offset  = self::getPaginationOffset($page, $count);
@@ -79,10 +79,10 @@ class Log extends \Services\AbstractBase
         $tpls      = Tpl::dict();
         $channels  = Channel::dict();
         foreach ($list as $k => $val) {
-            $val['s_time']       = YDate::formatDateTime($val['s_time']);
+            $val['s_time']       = Date::formatDateTime($val['s_time']);
             $val['platform']     = self::$platformLabel[$val['platform']];
-            $val['tpl_name']     = YInput::getString($tpls, $val['tpl_id'], '-');
-            $val['channel_name'] = YInput::getString($channels, $val['channel_id'], '-');
+            $val['tpl_name']     = DataInput::getString($tpls, $val['tpl_id'], '-');
+            $val['channel_name'] = DataInput::getString($channels, $val['channel_id'], '-');
             $val['sms_status']   = SmsSendLog::$statusDict[$val['sms_status']];
             $list[$k]            = $val;
         }

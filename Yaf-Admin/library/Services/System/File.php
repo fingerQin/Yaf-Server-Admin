@@ -7,11 +7,11 @@
 
 namespace Services\System;
 
-use finger\Validator;
-use finger\Utils\YCore;
 use Models\Files;
 use Models\AdminUser;
 use Models\User;
+use finger\Core;
+use finger\Validator;
 
 class File extends \Services\AbstractBase
 {
@@ -51,10 +51,10 @@ class File extends \Services\AbstractBase
                 break;
         } 
         if (strlen($startTime) > 0 && !Validator::is_date($startTime, 'Y-m-d H:i:s')) {
-            YCore::exception(STATUS_SERVER_ERROR, '开始时间查询有误');
+            Core::exception(STATUS_SERVER_ERROR, '开始时间查询有误');
         }
         if (strlen($endTime) > 0 && !Validator::is_date($endTime, 'Y-m-d H:i:s')) {
-            YCore::exception(STATUS_SERVER_ERROR, '结束时间查询有误');
+            Core::exception(STATUS_SERVER_ERROR, '结束时间查询有误');
         }
         $FilesModel = new Files();
         $result     = $FilesModel->getList($userType, $userid, $fileMd5, $fileType, $startTime, $endTime, $page, $count);
@@ -90,11 +90,11 @@ class File extends \Services\AbstractBase
         $FilesModel = new Files();
         $file = $FilesModel->fetchOne([], ['file_id' => $fileId, 'status' => Files::STATUS_YES]);
         if (empty($file)) {
-            YCore::exception(STATUS_SERVER_ERROR, '文件不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '文件不存在或已经删除');
         }
         $ok = $FilesModel->deleteFile($fileId);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 }

@@ -7,8 +7,9 @@
 
 namespace Services\Event;
 
-use finger\Utils\YCore;
-use finger\Utils\YCache;
+use finger\App;
+use finger\Cache;
+use finger\Core;
 use Models\Event;
 use finger\Validator;
 
@@ -25,14 +26,14 @@ class Producer extends \Services\Event\AbstractBase
     {
         // [1]
         if (empty($message)) {
-            YCore::exception(STATUS_SERVER_ERROR, '消息内容不能为空');
+            Core::exception(STATUS_SERVER_ERROR, '消息内容不能为空');
         }
         if (!isset($message['code'])) {
-            YCore::exception(STATUS_SERVER_ERROR, '消息 CODE 必须设置');
+            Core::exception(STATUS_SERVER_ERROR, '消息 CODE 必须设置');
         }
         $code = strtolower($message['code']);
         if (!in_array($code, Event::$codeDict)) {
-            YCore::exception(STATUS_SERVER_ERROR, '事件 CODE 错误');
+            Core::exception(STATUS_SERVER_ERROR, '事件 CODE 错误');
         }
         // [2]
         $code = ucfirst($code);
@@ -50,16 +51,16 @@ class Producer extends \Services\Event\AbstractBase
         $EventModel = new Event();
         $id = $EventModel->insert($data);
         if (!$id) {
-            YCore::exception(STATUS_SERVER_ERROR, '系统繁忙,请稍候重试');
+            Core::exception(STATUS_SERVER_ERROR, '系统繁忙,请稍候重试');
         }
         // [4] 写入 Redis 队列。
         $message['event_id']    = $id;
         $message['retry_count'] = 0; // 重试次数。用于队列重试时使用。
         $message['last_time']   = 0; // 最后重试的时间。0 代表还未重试
-        $redis  = YCache::getRedisClient();
+        $redis  = Cache::getRedisClient();
         $status = $redis->lPush(self::EVENT_QUEUE_KEY, json_encode($message, JSON_UNESCAPED_UNICODE));
         if ($status === false) {
-            YCore::log($message, 'event', 'queue-error');
+            App::log($message, 'event', 'queue-error');
         }
     }
 

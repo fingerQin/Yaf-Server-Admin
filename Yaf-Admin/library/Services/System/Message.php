@@ -7,10 +7,10 @@
 
 namespace Services\System;
 
-use finger\Utils\YDate;
-use finger\Utils\YCore;
-use finger\Utils\YInput;
+use finger\Core;
 use finger\Database\Db;
+use finger\DataInput;
+use finger\Date;
 use finger\Validator;
 use Models\User;
 use Models\Message as MessageModel;
@@ -54,9 +54,9 @@ class Message extends \Services\AbstractBase
         $sql     = "SELECT {$columns} {$from} {$whereList} {$orderBy} LIMIT {$offset},{$count}";
         $list    = Db::all($sql, $params);
         foreach ($list as $k => $val) {
-            $val['u_time']         = YDate::formatDateTime($val['u_time']);
+            $val['u_time']         = Date::formatDateTime($val['u_time']);
             $val['read_label']     = MessageModel::$readDict[$val['is_read']];
-            $val['msg_type_label'] = YInput::getString(MessageModel::$msgTypeDict, $val['msg_type'], '-');
+            $val['msg_type_label'] = DataInput::getString(MessageModel::$msgTypeDict, $val['msg_type'], '-');
             $list[$k]              = $val;
         }
         $result = [
@@ -100,7 +100,7 @@ class Message extends \Services\AbstractBase
         $UserModel = new User();
         $userinfo  = $UserModel->fetchOne([], ['mobile' => $mobile]);
         if (empty($userinfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '手机账号不存在');
+            Core::exception(STATUS_SERVER_ERROR, '手机账号不存在');
         }
         unset($data['mobile']);
         $datetime = date('Y-m-d H:i:s', time());
@@ -110,7 +110,7 @@ class Message extends \Services\AbstractBase
         $MessageModel   = new MessageModel();
         $status = $MessageModel->insert($data);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '发送失败');
+            Core::exception(STATUS_SERVER_ERROR, '发送失败');
         }
     }
 
@@ -127,16 +127,16 @@ class Message extends \Services\AbstractBase
         $MessageModel = new MessageModel();
         $message = $MessageModel->fetchOne([], ['msgid' => $msgid]);
         if (empty($message)) {
-            YCore::exception(STATUS_SERVER_ERROR, '消息不存在');
+            Core::exception(STATUS_SERVER_ERROR, '消息不存在');
         }
         if ($message['status'] == MessageModel::STATUS_DELETED) {
-            YCore::exception(STATUS_SERVER_ERROR, '已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '已经删除');
         }
         $updata = ['status' => MessageModel::STATUS_DELETED, 'u_time' => date('Y-m-d H:i:s', time())];
         $where  = ['msgid' => $msgid];
         $status = $MessageModel->update($updata, $where);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '删除失败');
+            Core::exception(STATUS_SERVER_ERROR, '删除失败');
         }
     }
 }

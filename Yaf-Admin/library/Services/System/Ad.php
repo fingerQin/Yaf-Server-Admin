@@ -7,10 +7,10 @@
 
 namespace Services\System;
 
+use finger\Url;
+use finger\Core;
 use finger\Validator;
 use finger\Database\Db;
-use finger\Utils\YCore;
-use finger\Utils\YUrl;
 use Models\Ad as AdModel;
 use Models\AdPosition;
 
@@ -124,7 +124,7 @@ class Ad extends \Services\AbstractBase
         self::checkAdStartTime($startTime);
         self::checkAdEndTime($endTime);
         if ($endTime <= $startTime) {
-            YCore::exception(STATUS_SERVER_ERROR, '广告生效开始时间必须小于结束时间');
+            Core::exception(STATUS_SERVER_ERROR, '广告生效开始时间必须小于结束时间');
         }
     }
 
@@ -138,11 +138,11 @@ class Ad extends \Services\AbstractBase
     public static function checkTerminal($terminal)
     {
         if (empty($terminal)) {
-            YCore::exception(STATUS_SERVER_ERROR, '必须选择显示终端');
+            Core::exception(STATUS_SERVER_ERROR, '必须选择显示终端');
         }
         foreach ($terminal as $tt) {
             if (!array_key_exists($tt, self::$terminalDict)) {
-                YCore::exception(STATUS_SERVER_ERROR, '显示终端值有误');
+                Core::exception(STATUS_SERVER_ERROR, '显示终端值有误');
             }
         }
     }
@@ -242,7 +242,7 @@ class Ad extends \Services\AbstractBase
         $adPosition     = new AdPosition();
         $positionDetail = $adPosition->fetchOne([], $where);
         if (empty($positionDetail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '无效的广告位置编码');
+            Core::exception(STATUS_SERVER_ERROR, '无效的广告位置编码');
         }
         $sql = "SELECT ad_id,ad_name,ad_image_url,ad_url FROM ms_ad WHERE pos_id = :pos_id "
              . "AND start_time <= :start_time AND end_time >= :end_time "
@@ -257,7 +257,7 @@ class Ad extends \Services\AbstractBase
         ];
         $list = Db::all($sql, $params);
         foreach ($list as $k => $v) {
-            $v['ad_image_url'] = YUrl::filePath($v['ad_image_url']);
+            $v['ad_image_url'] = Url::filePath($v['ad_image_url']);
             $list[$k] = $v;
         }
         return $list;
@@ -288,7 +288,7 @@ class Ad extends \Services\AbstractBase
         $AdPostionModel = new AdPosition();
         $data = $AdPostionModel->fetchOne([], ['pos_id' => $posId, 'status' => AdPosition::STATUS_YES]);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '广告位置不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '广告位置不存在或已经删除');
         }
         return $data;
     }
@@ -310,7 +310,7 @@ class Ad extends \Services\AbstractBase
         $AdPosModel  = new AdPosition();
         $adPosDetail = $AdPosModel->fetchOne([], ['pos_code' => $posCode, 'status' => AdPosition::STATUS_YES]);
         if ($adPosDetail) {
-            YCore::exception(STATUS_SERVER_ERROR, '广告编码已经存在请更换');
+            Core::exception(STATUS_SERVER_ERROR, '广告编码已经存在请更换');
         }
         $data = [
             'pos_name'     => $posName,
@@ -322,7 +322,7 @@ class Ad extends \Services\AbstractBase
         ];
         $ok = $AdPosModel->insert($data);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -350,7 +350,7 @@ class Ad extends \Services\AbstractBase
         ];
         $adPosDetail = $AdPosModel->fetchOne([], $where);
         if ($adPosDetail && $adPosDetail['pos_id'] != $posId) {
-            YCore::exception(STATUS_SERVER_ERROR, '广告编码已经被占用请更换');
+            Core::exception(STATUS_SERVER_ERROR, '广告编码已经被占用请更换');
         }
         $data = [
             'pos_name'     => $posName,
@@ -361,7 +361,7 @@ class Ad extends \Services\AbstractBase
         ];
         $ok = $AdPosModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -378,7 +378,7 @@ class Ad extends \Services\AbstractBase
         $AdModel = new AdModel();
         $adCount = $AdModel->count(['pos_id' => $posId, 'status' => AdModel::STATUS_YES]);
         if ($adCount > 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '请先清空该广告位置下的广告');
+            Core::exception(STATUS_SERVER_ERROR, '请先清空该广告位置下的广告');
         }
         $data = [
             'status' => AdPosition::STATUS_DELETED,
@@ -392,7 +392,7 @@ class Ad extends \Services\AbstractBase
         $AdPositionModel = new AdPosition();
         $ok = $AdPositionModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -423,7 +423,7 @@ class Ad extends \Services\AbstractBase
         $AdModel = new AdModel();
         $data    = $AdModel->fetchOne([], ['ad_id' => $adId, 'status' => AdPosition::STATUS_YES]);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '广告不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '广告不存在或已经删除');
         }
         return $data;
     }
@@ -477,7 +477,7 @@ class Ad extends \Services\AbstractBase
         $AdModel = new AdModel();
         $ok      = $AdModel->insert($data);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -529,7 +529,7 @@ class Ad extends \Services\AbstractBase
         $AdModel = new AdModel();
         $ok      = $AdModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -555,7 +555,7 @@ class Ad extends \Services\AbstractBase
         $AdModel  = new AdModel();
         $ok = $AdModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -574,7 +574,7 @@ class Ad extends \Services\AbstractBase
             $AdModel = new AdModel();
             $ok = $AdModel->sortAd($adId, $sortVal);
             if (!$ok) {
-                return YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+                return Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
             }
         }
     }

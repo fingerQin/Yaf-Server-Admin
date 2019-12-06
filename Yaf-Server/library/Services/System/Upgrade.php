@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
+use finger\Core;
 use Models\AppUpgrade;
 
 class Upgrade extends \Services\AbstractBase
@@ -34,7 +34,7 @@ class Upgrade extends \Services\AbstractBase
     public static function upgrade($userid, $platform, $appV, $channel = '')
     {
         if (!self::allowPlatform($platform)) {
-            YCore::exception(STATUS_SERVER_ERROR, 'APP 类型有误');
+            Core::exception(STATUS_SERVER_ERROR, 'APP 类型有误');
         }
         $appinfo = self::getAppInfo($platform, $appV, $channel);
         if (empty($appinfo)) {
@@ -64,7 +64,7 @@ class Upgrade extends \Services\AbstractBase
                 return self::getAppReturn(AppUpgrade::UPGRADE_WAY_CLOSE, '', '', '', '', 0, $appV);
                 break;
             default:
-                YCore::exception(STATUS_SERVER_ERROR, 'APP 升级类型异常');
+                Core::exception(STATUS_SERVER_ERROR, 'APP 升级类型异常');
                 break;
         }
     }

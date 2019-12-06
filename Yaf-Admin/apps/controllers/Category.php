@@ -5,7 +5,6 @@
  * @date 2018-07-08
  */
 
-use finger\Utils\YCore;
 use Services\System\Category;
 
 class CategoryController extends \Common\controllers\Admin

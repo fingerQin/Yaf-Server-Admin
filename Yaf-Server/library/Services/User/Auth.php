@@ -8,12 +8,14 @@
 namespace Services\User;
 
 use finger\App;
-use finger\Utils\YCache;
-use finger\Utils\YString;
-use finger\Utils\YCore;
+use finger\Cache;
+use finger\Core;
+use finger\Crypt;
+use finger\Ip;
+use finger\Strings;
+use finger\Validator;
 use Models\Event;
 use Models\User as UserModel;
-use finger\Validator;
 use Services\Sms\Sms;
 use Services\System\Push;
 use Services\Event\Producer;
@@ -47,13 +49,13 @@ class Auth extends \Services\AbstractBase
         $userinfo = (new UserModel())->fetchOne([], ['mobile' => $mobile]);
         if (empty($userinfo)) {
             Forbid::position(Forbid::POSITION_LOGIN, 50, 30);
-            YCore::exception(STATUS_UNREGISTERD, '账号不存在!');
+            Core::exception(STATUS_UNREGISTERD, '账号不存在!');
         }
         if ($userinfo['cur_status'] == UserModel::STATUS_INVALID) {
-            YCore::exception(STATUS_SERVER_ERROR, '账号不存在或已经注销!');
+            Core::exception(STATUS_SERVER_ERROR, '账号不存在或已经注销!');
         }
         if ($userinfo['cur_status'] == UserModel::STATUS_LOCKED) {
-            YCore::exception(STATUS_SERVER_ERROR, '您的账号被锁定!');
+            Core::exception(STATUS_SERVER_ERROR, '您的账号被锁定!');
         }
         if ($loginType == self::LOGIN_TYPE_SMS) {
             self::loginSmsCodeVerify($mobile, $code, $loginType);
@@ -102,7 +104,7 @@ class Auth extends \Services\AbstractBase
                 Forbid::position(Forbid::POSITION_LOGIN, 50, 30);
                 self::loginPwdErrCounter($mobile, $loginType);
             }
-            YCore::exception($e->getCode(), $e->getMessage());
+            Core::exception($e->getCode(), $e->getMessage());
         }
     }
 
@@ -118,13 +120,13 @@ class Auth extends \Services\AbstractBase
     private static function loginUserPwdVerify($password, $userinfo, $loginType)
     {
         if (strlen($password) === 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '密码必须填写!');
+            Core::exception(STATUS_SERVER_ERROR, '密码必须填写!');
         }
         $password = self::encryptPwd($password, $userinfo['salt']);
         if ($password != $userinfo['pwd']) {
             Forbid::position(Forbid::POSITION_LOGIN, 50, 30);
             self::loginPwdErrCounter($userinfo['mobile'], $loginType);
-            YCore::exception(STATUS_SERVER_ERROR, '密码不正确!');
+            Core::exception(STATUS_SERVER_ERROR, '密码不正确!');
         }
     }
 
@@ -141,7 +143,7 @@ class Auth extends \Services\AbstractBase
     private static function loginPwdErrCounter($mobile, $loginType)
     {
         $counter = "login_account_lock_{$mobile}";
-        $redis   = YCache::getRedisClient();
+        $redis   = Cache::getRedisClient();
         $redis->set($counter, 0, ['NX', 'EX' => LOGIN_PWD_ERROR_LOCK_TIME]);
         $int     = $redis->incr($counter);
         if ($int >= LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK) {
@@ -149,9 +151,9 @@ class Auth extends \Services\AbstractBase
             $datetime = date('Y-m-d H:i:s', TIMESTAMP + LOGIN_PWD_ERROR_LOCK_TIME);
             $redis->set($lastDeadlineKey, $datetime, LOGIN_PWD_ERROR_LOCK_TIME);
             if ($loginType == 1) {
-                YCore::exception(STATUS_lOGIN_PWD_ERR_FORBID, "验证码错误" . LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK . "次被禁止登录,解禁时间：{$datetime}");
+                Core::exception(STATUS_lOGIN_PWD_ERR_FORBID, "验证码错误" . LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK . "次被禁止登录,解禁时间：{$datetime}");
             } else {
-                YCore::exception(STATUS_lOGIN_PWD_ERR_FORBID, "账号密码错误" . LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK . "次被禁止登录,解禁时间：{$datetime}");
+                Core::exception(STATUS_lOGIN_PWD_ERR_FORBID, "账号密码错误" . LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK . "次被禁止登录,解禁时间：{$datetime}");
             }
         }
     }
@@ -165,7 +167,7 @@ class Auth extends \Services\AbstractBase
     private static function clearLoginPwdErrCounter($mobile)
     {
         $counter = "login_account_lock_{$mobile}";
-        $redis   = YCache::getRedisClient();
+        $redis   = Cache::getRedisClient();
         $redis->del($counter);
     }
 
@@ -179,15 +181,15 @@ class Auth extends \Services\AbstractBase
     private static function checkLoginPwdErrForbidLogin($mobile)
     {
         $counter = "login_account_lock_{$mobile}";
-        $redis   = YCache::getRedisClient();
+        $redis   = Cache::getRedisClient();
         $int     = $redis->get($counter);
         if ($int >= LOGIN_ACCOUNT_PWD_ERROR_TIMES_LOCK) {
             $lastDeadlineKey = "login_account_unlock_date_{$mobile}";
             $deadline = $redis->get($lastDeadlineKey);
             if ($deadline !== FALSE) {
-                YCore::exception(STATUS_lOGIN_PWD_ERR_FORBID, "账号已冻结登录，解禁时间：{$deadline}");
+                Core::exception(STATUS_lOGIN_PWD_ERR_FORBID, "账号已冻结登录，解禁时间：{$deadline}");
             } else {
-                YCore::exception(STATUS_lOGIN_PWD_ERR_FORBID, "您的账号被禁止登录,请明天重试");
+                Core::exception(STATUS_lOGIN_PWD_ERR_FORBID, "您的账号被禁止登录,请明天重试");
             }
         }
     }
@@ -235,12 +237,12 @@ class Auth extends \Services\AbstractBase
         Validator::valido($data, $rules);
         // [2]
         if (self::isRegister($mobile)) {
-            YCore::exception(STATUS_ALREADY_REGISTER, '您的账号已经被占用!');
+            Core::exception(STATUS_ALREADY_REGISTER, '您的账号已经被占用!');
         }
         Sms::verify($mobile, $code, Sms::SMS_TYPE_REGISTER);
         $datetime = date('Y-m-d H:i:s', TIMESTAMP);
-        $nickname = YString::asterisk($mobile, 3, 4);
-        $salt     = YString::randomstr(6);
+        $nickname = Strings::asterisk($mobile, 3, 4);
+        $salt     = Strings::randomstr(6);
         $openid   = self::makeUserOpenId($mobile);
         $MUser    = new UserModel();
         $data     = [
@@ -254,11 +256,11 @@ class Auth extends \Services\AbstractBase
             'cur_status'      => UserModel::STATUS_YES,
             'c_time'          => $datetime,
             'last_login_time' => $datetime,
-            'last_login_ip'   => YCore::ip()
+            'last_login_ip'   => Ip::ip()
         ];
         $userid = $MUser->insert($data);
         if (!$userid) {
-            YCore::exception(STATUS_SERVER_ERROR, '注册失败');
+            Core::exception(STATUS_SERVER_ERROR, '注册失败');
         }
         $token = self::createToken($userid, TIMESTAMP, $platform);
         self::setAuthTokenLastAccessTime($userid, $token, $platform);
@@ -322,7 +324,7 @@ class Auth extends \Services\AbstractBase
     {
         $loginType     = self::isAppCall($platform) ? 1 : 0;
         $cacheKeyToken = "u_t_k:{$loginType}:{$userid}";
-        YCache::delete($cacheKeyToken);
+        Cache::delete($cacheKeyToken);
         Push::clearUserAssocDeviceToken($userid);
     }
 
@@ -338,7 +340,7 @@ class Auth extends \Services\AbstractBase
     {
         // [1] 参数判断。
         if (strlen($token) === 0) {
-            YCore::exception(STATUS_NOT_LOGIN, '账号未登录');
+            Core::exception(STATUS_NOT_LOGIN, '账号未登录');
         }
         // [2] token解析
         $tokenParams = self::parseToken($token);
@@ -348,29 +350,29 @@ class Auth extends \Services\AbstractBase
         // [3] 用户存在与否判断
         $userinfo = (new UserModel())->fetchOne([], ['userid' => $userid]);
         if (empty($userinfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '系统异常!');
+            Core::exception(STATUS_SERVER_ERROR, '系统异常!');
         }
         if ($userinfo['cur_status'] == UserModel::STATUS_INVALID) {
-            YCore::exception(STATUS_SERVER_ERROR, '账号不存在或已经注销!');
+            Core::exception(STATUS_SERVER_ERROR, '账号不存在或已经注销!');
         }
         if ($userinfo['cur_status'] == UserModel::STATUS_LOCKED) {
-            YCore::exception(STATUS_SERVER_ERROR, '您的账号被锁定!');
+            Core::exception(STATUS_SERVER_ERROR, '您的账号被锁定!');
         }
         // [4] token 是否超出了超时时限
         $loginType     = self::isAppCall($platform) ? 1 : 0; // 1 APP 客户端登录、0 - 非 APP 客户端登录。
         $cacheKeyToken = "u_t_k:{$loginType}:{$userid}";
-        $cacheToken    = YCache::get($cacheKeyToken);
+        $cacheToken    = Cache::get($cacheKeyToken);
         if ($cacheToken === false) {
-            YCore::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
+            Core::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
         }
         if ($cacheToken === null) {
-            YCore::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
+            Core::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
         }
         if ($token != $cacheToken) {
-            YCore::exception(STATUS_OTHER_LOGIN, '您的账号在其它地方登录');
+            Core::exception(STATUS_OTHER_LOGIN, '您的账号在其它地方登录');
         }
         if ($userinfo['pwd'] != $password) {
-            YCore::exception(STATUS_PASSWORD_EDIT, '您的密码已经修改,请重新登录!');
+            Core::exception(STATUS_PASSWORD_EDIT, '您的密码已经修改,请重新登录!');
         }
         self::setAuthTokenLastAccessTime($userid, $token, $platform);
         return [
@@ -452,7 +454,7 @@ class Auth extends \Services\AbstractBase
     {
         $env = App::getConfig('app.env');
         $str = "{$userid}\t{$password}\t{$loginTime}\t{$platform}\t{$env}";
-        return YCore::sys_auth($str, 'ENCODE', '', 0);
+        return Crypt::sys_auth($str, 'ENCODE', '', 0);
     }
 
     /**
@@ -468,7 +470,7 @@ class Auth extends \Services\AbstractBase
         $loginType = self::isAppCall($platform) ? 1 : 0;    // 1 APP 客户端登录、0 非 APP 客户端登录。
         $cacheTime = $loginType ? 30 * 86400 : 1800;
         $cacheKey  = "u_t_k:{$loginType}:{$userid}";        // 用户保存 auth_token 的缓存键。
-        YCache::set($cacheKey, $authToken, $cacheTime);
+        Cache::set($cacheKey, $authToken, $cacheTime);
     }
 
     /**
@@ -479,10 +481,10 @@ class Auth extends \Services\AbstractBase
 	 */
 	protected static function parseToken($token)
 	{
-		$data = YCore::sys_auth($token, 'DECODE');
+		$data = Crypt::sys_auth($token, 'DECODE');
 		$data = explode("\t", $data);
 		if (count($data) != 5) {
-			YCore::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
+			Core::exception(STATUS_LOGIN_TIMEOUT, '登录超时,请重新登录');
 		}
 		$result = [
             'userid'    => $data[0], // 用户ID。
@@ -492,7 +494,7 @@ class Auth extends \Services\AbstractBase
             'env'       => $data[4], // Token 所属的环境。
         ];
         if ($data[4] != App::getConfig('app.env')) {
-            YCore::exception(STATUS_SERVER_ERROR, 'TOKEN 不属于当前环境,请检查请求的接口地址是否有误或旧环境TOKEN缓存未清除');
+            Core::exception(STATUS_SERVER_ERROR, 'TOKEN 不属于当前环境,请检查请求的接口地址是否有误或旧环境TOKEN缓存未清除');
         }
 		return $result;
     }
@@ -538,6 +540,4 @@ class Auth extends \Services\AbstractBase
         ];
         Validator::valido($data, $rules);
     }
-
-
 }

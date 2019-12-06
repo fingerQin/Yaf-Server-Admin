@@ -7,11 +7,11 @@
 
 namespace Services\System;
 
-use finger\Utils\YDate;
-use finger\Utils\YCore;
+use finger\Core;
 use Models\Notice as NoticeModel;
-use finger\Database\Db;
 use finger\Validator;
+use finger\Database\Db;
+use finger\Date;
 
 class Notice extends \Services\AbstractBase
 {
@@ -49,7 +49,7 @@ class Notice extends \Services\AbstractBase
         $sql     = "SELECT {$columns} {$from} {$where} {$orderBy} LIMIT {$offset},{$count}";
         $list    = Db::all($sql, $params);
         foreach ($list as $k => $val) {
-            $val['u_time']         = YDate::formatDateTime($val['u_time']);
+            $val['u_time']         = Date::formatDateTime($val['u_time']);
             $val['status_label']   = NoticeModel::$statusDict[$val['cur_status']];
             $val['terminal_label'] = self::terminalConvert($val['terminal']);
             $list[$k]              = $val;
@@ -107,7 +107,7 @@ class Notice extends \Services\AbstractBase
         $NoticeModel = new NoticeModel();
         $status = $NoticeModel->insert($data);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '');
+            Core::exception(STATUS_SERVER_ERROR, '');
         }
     }
 
@@ -148,7 +148,7 @@ class Notice extends \Services\AbstractBase
         $NoticeModel = new NoticeModel();
         $notice = $NoticeModel->fetchOne([], ['noticeid' => $noticeid]);
         if (empty($notice) || $notice['cur_status'] == NoticeModel::STATUS_DELETED) {
-            YCore::exception(STATUS_SERVER_ERROR, '公告不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '公告不存在或已经删除');
         }
         $data['terminal']   = self::sumTerminal($terminal);
         $data['cur_status'] = NoticeModel::STATUS_YES;
@@ -156,7 +156,7 @@ class Notice extends \Services\AbstractBase
         $data['u_by']       = $adminId;
         $status = $NoticeModel->update($data, ['noticeid' => $noticeid]);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '更新失败');
+            Core::exception(STATUS_SERVER_ERROR, '更新失败');
         }
     }
 
@@ -170,15 +170,15 @@ class Notice extends \Services\AbstractBase
     protected static function checkTerminal($terminal)
     {
         if (strlen($terminal) == 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '终端值未设置');
+            Core::exception(STATUS_SERVER_ERROR, '终端值未设置');
         }
         $arrTerminal = explode(',', $terminal);
         foreach ($arrTerminal as $t) {
             if (!is_numeric($t)) {
-                YCore::exception(STATUS_SERVER_ERROR, '终端值格式不正确');
+                Core::exception(STATUS_SERVER_ERROR, '终端值格式不正确');
             }
             if (!array_key_exists($t, self::$terminalDict)) {
-                YCore::exception(STATUS_SERVER_ERROR, '所属终端值有误');
+                Core::exception(STATUS_SERVER_ERROR, '所属终端值有误');
             }
         }
     }
@@ -199,7 +199,7 @@ class Notice extends \Services\AbstractBase
             'cur_status' => ['!=', NoticeModel::STATUS_DELETED]]
         );
         if (empty($detail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '公告不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '公告不存在或已经删除');
         }
         $detail['terminal_str'] = self::splitTerminal($detail['terminal']);
         return $detail;
@@ -220,14 +220,14 @@ class Notice extends \Services\AbstractBase
         $NoticeModel = new NoticeModel();
         $notice      = $NoticeModel->fetchOne([], ['noticeid' => $noticeid]);
         if (empty($notice) || $notice['cur_status'] == NoticeModel::STATUS_DELETED) {
-            YCore::exception(STATUS_SERVER_ERROR, '公告不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '公告不存在或已经删除');
         }
         $data['cur_status'] = $status;
         $data['u_time']     = date('Y-m-d H:i:s', time());
         $data['u_by']       = $adminId;
         $status = $NoticeModel->update($data, ['noticeid' => $noticeid]);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '更新失败');
+            Core::exception(STATUS_SERVER_ERROR, '更新失败');
         }
     }
 

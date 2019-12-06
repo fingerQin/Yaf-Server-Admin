@@ -2,7 +2,7 @@
     "require": {
         "smarty/smarty": "~3.1",
         "phpoffice/phpspreadsheet": "^1.7",
-        "finger/yaflib": "^1"
+        "finger/yaflib": "^2"
     },
     "repositories": {
         "packagist": {

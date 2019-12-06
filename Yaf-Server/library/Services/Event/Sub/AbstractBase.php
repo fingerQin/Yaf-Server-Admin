@@ -8,10 +8,9 @@
 
 namespace Services\Event\Sub;
 
+use finger\App;
+use finger\Cache;
 use finger\Database\Db;
-use finger\Utils\YLog;
-use finger\Utils\YCache;
-use finger\Utils\YCore;
 use Models\Event;
 
 abstract class AbstractBase extends \finger\Thread\Thread
@@ -106,7 +105,7 @@ abstract class AbstractBase extends \finger\Thread\Thread
     public function run($threadNum, $num, $startTimeTsp)
     {
         // [1]
-        $redis            = YCache::getRedisClient();
+        $redis            = Cache::getRedisClient();
         $eventQueueKey    = \Services\Event\AbstractBase::EVENT_PREFIX . '_' . $this->code;
         $eventQueueIngKey = "{$eventQueueKey}-{$num}-ing";
 
@@ -126,13 +125,13 @@ abstract class AbstractBase extends \finger\Thread\Thread
                     // [2.3] 验证事件是否已存在。
                     $eventDetail = $EventModel->fetchOne([], ['id' => $arrEventVal['event_id']], '', '', true);
                     if (empty($eventDetail)) {
-                        YLog::log(['data' => $arrEventVal, 'errMsg' => 'The database query does not exist!'], 'event', "{$this->code}-fail");
+                        App::log(['data' => $arrEventVal, 'errMsg' => 'The database query does not exist!'], 'event', "{$this->code}-fail");
                         $redis->lRem($eventQueueIngKey, $strEventVal, 1);
                         continue;
                     }
                     // [2.4] 验证事件是否已经被消费。
                     if ($eventDetail['status'] != Event::STATUS_INIT) {
-                        YLog::log(['data' => $arrEventVal, 'errMsg' => 'Message has been processed!'], 'event', "{$this->code}-fail");
+                        App::log(['data' => $arrEventVal, 'errMsg' => 'Message has been processed!'], 'event', "{$this->code}-fail");
                         $redis->lRem($eventQueueIngKey, $strEventVal, 1);
                         continue;
                     } else {
@@ -153,7 +152,7 @@ abstract class AbstractBase extends \finger\Thread\Thread
                             $EventModel->update($updata, ['id' => $arrEventVal['event_id']]);
                             // [4] 处理成功将当前正在处理的删除。
                             $redis->lRem($eventQueueIngKey, $strEventVal, 1);
-                            YLog::log($arrEventVal, 'event', "{$this->code}-success");
+                            App::log($arrEventVal, 'event', "{$this->code}-success");
                         } catch (\Exception $e) {
                             // [4] 如果是业务错误。不进行第二次消费。如：卡券数量不足。
                             if ($e->getCode() == STATUS_SERVER_ERROR) {
@@ -170,7 +169,7 @@ abstract class AbstractBase extends \finger\Thread\Thread
                     }
                 } else {
                     Db::ping();
-                    YCache::ping();
+                    Cache::ping();
                 }
                 $this->isExit($startTimeTsp);
             }
@@ -206,7 +205,7 @@ abstract class AbstractBase extends \finger\Thread\Thread
             'code'  => $errCode,
             'msg'   => $errMsg
         ];
-        YLog::log($log, 'event', "{$code}-fail");
+        App::log($log, 'event', "{$code}-fail");
         unset($EventModel, $updata, $log);
     }
 
@@ -227,7 +226,7 @@ abstract class AbstractBase extends \finger\Thread\Thread
             'code'  => $errCode,
             'msg'   => $errMsg
         ];
-        YLog::log($log, 'event', "{$code}-error");
+        App::log($log, 'event', "{$code}-error");
         $datetime = date('Y-m-d H:i:s', time());
         exit("ErrorTime:{$datetime}\nErrorMsg:{$errMsg}\n");
     }

@@ -10,6 +10,12 @@ use Services\Sms\Sms;
 
 class PublicController extends \Common\controllers\Guest
 {
+    public function indexAction()
+    {
+        echo $username;
+        $this->end();
+    }
+
     /**
      * 登录。
      */

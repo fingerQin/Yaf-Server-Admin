@@ -9,9 +9,9 @@
 namespace Services\System;
 
 use finger\App;
+use finger\Cache;
+use finger\Core;
 use finger\Validator;
-use finger\Utils\YCache;
-use finger\Utils\YCore;
 use Services\AbstractBase;
 
 class Request extends AbstractBase
@@ -27,13 +27,13 @@ class Request extends AbstractBase
     public static function token($userid, $number = 1, $expireTime = 1800)
     {
         if (!Validator::is_number_between($number, 1, 5)) {
-            YCore::exception(STATUS_SERVER_ERROR, '令牌数量必须1~5之间');
+            Core::exception(STATUS_SERVER_ERROR, '令牌数量必须1~5之间');
         }
         $tokens = [];
         for ($i = 1; $i <= $number; $i++) {
             $key   = "R-U-Token:{$userid}{$i}";
             $token = self::createToken();
-            YCache::set($key, $token, $expireTime);
+            Cache::set($key, $token, $expireTime);
             $tokens["{$i}"] = "{$i}:{$token}";
         }
         return $tokens;
@@ -54,18 +54,18 @@ class Request extends AbstractBase
         }
         $params = explode(':', $token);
         if (count($params) != 2) {
-            YCore::exception(STATUS_SERVER_ERROR, '服务器发生一个错误,请退出重试!');
+            Core::exception(STATUS_SERVER_ERROR, '服务器发生一个错误,请退出重试!');
         }
         list($index, $token) = $params;
         $key    = "R-U-Token:{$userid}{$index}";
-        $cToken = YCache::get($key);
+        $cToken = Cache::get($key);
         if (!$cToken) {
-            YCore::exception(STATUS_SERVER_ERROR, '您的操作已经过期!请退出重新操作!');
+            Core::exception(STATUS_SERVER_ERROR, '您的操作已经过期!请退出重新操作!');
         }
         if ($cToken != $token) {
-            YCore::exception(STATUS_SERVER_ERROR, '您的提交出现异常!请退出重新操作!');
+            Core::exception(STATUS_SERVER_ERROR, '您的提交出现异常!请退出重新操作!');
         }
-        YCache::delete($key);
+        Cache::delete($key);
     }
 
     /**
@@ -75,7 +75,7 @@ class Request extends AbstractBase
      */
     private static function createToken()
     {
-        $redis   = YCache::getRedisClient();
+        $redis   = Cache::getRedisClient();
         $incrVal = $redis->incr('R-Token-UniqueId');
         return md5(App::getConfig('app.key') . $incrVal);
     }

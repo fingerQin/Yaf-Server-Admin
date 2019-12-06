@@ -7,8 +7,6 @@
 
 namespace Services;
 
-use finger\Utils\YCore;
-
 abstract class AbstractBase
 {
     /**

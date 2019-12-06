@@ -334,3 +334,64 @@ Array
 )
 
 
+Array
+(
+    [ErrorTime] => 2019-12-05 14:43:08
+    [request] => Array
+        (
+            [_datetime] => 2019-12-05 14:43:08
+            [_ip] => 127.0.0.1
+            [_userid] => 0
+            [appid] => admin_api_call
+            [key] => ADMIN_LOGIN_CODE
+            [method] => sms.send
+            [mobile] => 18575202691
+            [oriJson] => {"v":"1.0.0","appid":"admin_api_call","platform":5,"request_no":"Req-2019120514430000000001","timestamp":1575528188,"method":"sms.send","mobile":"18575202691","key":"ADMIN_LOGIN_CODE"}
+            [platform] => 5
+            [request_no] => Req-2019120514430000000001
+            [sign] => 4BBD22505034BCA26A3A3BD18177F392
+            [timestamp] => 1575528188
+            [v] => 1.0.0
+            [_response_date] => 2019-12-05 14:43:08
+        )
+
+    [response] => Array
+        (
+            [code] => 200
+            [msg] => 发送成功
+        )
+
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-05 14:43:11
+    [request] => Array
+        (
+            [_datetime] => 2019-12-05 14:43:11
+            [_ip] => 127.0.0.1
+            [_userid] => 0
+            [appid] => admin_api_call
+            [code] => 123456
+            [key] => ADMIN_LOGIN_CODE
+            [method] => sms.verify
+            [mobile] => 18575202691
+            [oriJson] => {"v":"1.0.0","appid":"admin_api_call","platform":5,"request_no":"Req-2019120514430000000002","timestamp":1575528191,"method":"sms.verify","mobile":"18575202691","key":"ADMIN_LOGIN_CODE","code":"123456"}
+            [platform] => 5
+            [request_no] => Req-2019120514430000000002
+            [sign] => 5C6993F147F328A9AB3DF89D4C400C41
+            [timestamp] => 1575528191
+            [v] => 1.0.0
+            [_response_date] => 2019-12-05 14:43:11
+        )
+
+    [response] => Array
+        (
+            [code] => 200
+            [msg] => 验证码正确
+        )
+
+)
+
+

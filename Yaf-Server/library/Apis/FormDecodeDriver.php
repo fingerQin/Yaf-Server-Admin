@@ -8,7 +8,7 @@
 namespace Apis;
 
 use finger\App;
-use finger\Utils\YCore;
+use finger\Core;
 
 class FormDecodeDriver
 {
@@ -47,7 +47,7 @@ class FormDecodeDriver
         $okSign = strtoupper(md5($str));
         if (App::getConfig('app.env') != ENV_DEV) {
             if (strlen($sign) === 0 || $sign != $okSign) {
-                YCore::exception(STATUS_SERVER_ERROR, 'API signature error');
+                Core::exception(STATUS_SERVER_ERROR, 'API signature error');
             }
         }
     }

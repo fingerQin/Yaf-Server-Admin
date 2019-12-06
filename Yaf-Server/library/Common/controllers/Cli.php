@@ -7,6 +7,9 @@
 
 namespace Common\controllers;
 
+use finger\App;
+use finger\Core;
+
 class Cli extends Common
 {
     /**
@@ -17,8 +20,8 @@ class Cli extends Common
     {
         parent::init();
         $this->end();
-        if (PHP_SAPI != 'cli') { // 非 CLI 模式运行则报错。
-            \finger\Utils\YCore::exception(STATUS_SERVER_ERROR, '服务器异常,请稍候重试');
+        if (App::isCli()) { // 非 CLI 模式运行则报错。
+            Core::exception(STATUS_SERVER_ERROR, '不是 Cli 模式');
         }
     }
 }

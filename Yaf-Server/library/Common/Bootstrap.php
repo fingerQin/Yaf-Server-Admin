@@ -10,7 +10,6 @@
 namespace Common;
 
 use finger\App;
-use finger\Utils\YCache;
 
 /**
  * 所有在Bootstrap类中, 以_init开头的方法, 都会被Yaf调用,这些方法,
@@ -24,9 +23,7 @@ class Bootstrap extends \Yaf_Bootstrap_Abstract
      */
     public function _initConfig()
     {
-        $config = \Yaf_Application::app()->getConfig();
-        \Yaf_Registry::set('config', $config);
-        date_default_timezone_set($config->get('app.timezone'));
+        date_default_timezone_set(App::getConfig('app.timezone'));
     }
 
     /**
@@ -34,29 +31,9 @@ class Bootstrap extends \Yaf_Bootstrap_Abstract
      */
     public function _initError()
     {
-        ini_set('display_errors', 0);
-        set_error_handler(['\finger\Utils\YCore', 'errorHandler']);
-        register_shutdown_function(['\finger\Utils\YCore', 'registerShutdownFunction']);
-    }
-
-    /**
-     * 初始化 session 到 reids 中。
-     * --------------------------------------
-     * 1、实现 SessionHandlerInterface 接口,将 session 保存到 reids 中。
-     * 2、重新开启 session,让默认的 session 切换到自已的 session 接口。
-     * 3、第二步中直接影响 \Yaf_Session 的工作方式。
-     * 4、或者直接关闭 SESSION 的使用。
-     * --------------------------------------
-     */
-    public function _initSession(\Yaf_Dispatcher $dispatcher)
-    {
-        if (App::getConfig('session.status')) {
-            $redis   = YCache::getRedisClient();
-            $sess    = new \finger\session\redis\SessionHandler($redis, null, 'sess_');
-            session_set_save_handler($sess);
-            $session = \Yaf_Session::getInstance();
-            \Yaf_Registry::set('session', $session);
-        }
+        ini_set('display_errors', 1);
+        set_error_handler(['\finger\Core', 'errorHandler']);
+        register_shutdown_function(['\finger\Core', 'registerShutdownFunction']);
     }
 
     /**

@@ -108,17 +108,4 @@ class AdminController extends \Common\controllers\Admin
             $this->assign('admin_info', $adminInfo);
         }
     }
-
-    /**
-     * 登录历史。
-     */
-    public function loginHistoryAction()
-    {
-        $page      = $this->getString('page', 1);
-        $result    = AdminService::getAdminLoginHistoryList($this->adminId, $page, 20);
-        $paginator = new Paginator($result['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
-        $this->assign('pageHtml', $pageHtml);
-        $this->assign('list', $result['list']);
-    }
 }

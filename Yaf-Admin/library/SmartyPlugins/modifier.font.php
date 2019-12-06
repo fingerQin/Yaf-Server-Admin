@@ -1,12 +1,12 @@
 <?php
-
-use finger\Utils\YUrl;
 /**
  * Smarty plugin
  *
  * @package    Smarty
  * @subpackage PluginsModifier
  */
+
+use finger\Url;
 
 /**
  * 获取静态资源URL。
@@ -17,5 +17,5 @@ use finger\Utils\YUrl;
  */
 function smarty_modifier_font($fileRelativePath)
 {
-    return YUrl::assets('font', $fileRelativePath);
+    return Url::assets('font', $fileRelativePath);
 }

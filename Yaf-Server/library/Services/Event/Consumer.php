@@ -7,9 +7,8 @@
 
 namespace Services\Event;
 
-use finger\Utils\YCache;
-use finger\Utils\YLog;
-use finger\Utils\YCore;
+use finger\App;
+use finger\Cache;
 
 class Consumer extends \Services\Event\AbstractBase
 {
@@ -24,7 +23,7 @@ class Consumer extends \Services\Event\AbstractBase
     public static function dispatcher()
     {
         // [1]
-        $redis            = YCache::getRedisClient();
+        $redis            = Cache::getRedisClient();
         $eventQueueKey    = self::EVENT_QUEUE_KEY;
         $eventQueueIngKey = self::EVENT_QUEUE_KEY . '-ing';
 
@@ -43,13 +42,13 @@ class Consumer extends \Services\Event\AbstractBase
                     $subEventkey = self::EVENT_PREFIX . '_' . $arrEventVal['code']; // 子事件队列 KEY。
                     $redis->lPush($subEventkey, $strEventVal); // 将正在处理的事件放入对应子事件池队列中。
                     $redis->lRem($eventQueueIngKey, $strEventVal, 1); // 从正在处理的队列中移除这个值。
-                    YLog::log($arrEventVal, 'event', 'dispatcher-success');
+                    App::log($arrEventVal, 'event', 'dispatcher-success');
                 } else {
-                    YCache::ping();
+                    Cache::ping();
                 }
             }
         } catch (\Exception $e) {
-            YLog::log($e->getMessage(), 'event', 'dispatcher-error');
+            App::log($e->getMessage(), 'event', 'dispatcher-error');
             $datetime = date('Y-m-d H:i:s', time());
             exit("Error Time:{$datetime}\nAn exception occurred in the event program!\n" . $e->getMessage() . "\n");
         }

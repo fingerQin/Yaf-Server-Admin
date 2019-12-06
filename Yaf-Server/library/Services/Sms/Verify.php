@@ -7,12 +7,12 @@
 
 namespace Services\Sms;
 
-use finger\App;
-use finger\Utils\YCore;
-use finger\Utils\YCache;
 use Models\SmsBlacklist;
 use Models\SmsSendLog;
 use Models\SmsTpl;
+use finger\App;
+use finger\Cache;
+use finger\Core;
 use finger\Database\Db;
 
 class Verify extends \Services\Sms\AbstractBase
@@ -34,12 +34,12 @@ class Verify extends \Services\Sms\AbstractBase
     {
         $interval = App::getConfig('sms.interval');
         $cacheKey = "sms_interval_{$scene}:{$mobile}";
-        $sendTsp  = YCache::get($cacheKey);
+        $sendTsp  = Cache::get($cacheKey);
         $time     = time();
         if ($sendTsp > 0 && (($time - $sendTsp) < $interval)) {
-            YCore::exception(STATUS_SERVER_ERROR, "两次发送间隔不能小于{$interval}秒!");
+            Core::exception(STATUS_SERVER_ERROR, "两次发送间隔不能小于{$interval}秒!");
         } else {
-            YCache::set($cacheKey, $time, $interval); // 记录最后一次发送的时间。
+            Cache::set($cacheKey, $time, $interval); // 记录最后一次发送的时间。
             return true;
         }
     }
@@ -66,7 +66,7 @@ class Verify extends \Services\Sms\AbstractBase
             $result = Db::one($sql, $params);
             $count  = $result ? $result['count'] : 0;
             if ($count >= $ipSendmax) {
-                YCore::exception(STATUS_SERVER_ERROR, "您的IP今日发送超过上限!");
+                Core::exception(STATUS_SERVER_ERROR, "您的IP今日发送超过上限!");
             }
         }
         return true;
@@ -89,7 +89,7 @@ class Verify extends \Services\Sms\AbstractBase
             ];
             $count = (new SmsSendLog())->count($where);
             if ($count >= $mobileSendmax) {
-                YCore::exception(STATUS_SERVER_ERROR, "您的号码今天已发送超过{$mobileSendmax}次!");
+                Core::exception(STATUS_SERVER_ERROR, "您的号码今天已发送超过{$mobileSendmax}次!");
             }
         }
         return true;
@@ -138,7 +138,7 @@ class Verify extends \Services\Sms\AbstractBase
      */
     protected static function allBlacklistMobileResult()
     {
-        $redis = YCache::getRedisClient();
+        $redis = Cache::getRedisClient();
         $cache = $redis->get(self::BLACKLIST_MOBILE_CACHE_KEY);
         if ($cache === false || $cache === null) {
             $result  = (new SmsBlacklist())->fetchAll(['mobile']);

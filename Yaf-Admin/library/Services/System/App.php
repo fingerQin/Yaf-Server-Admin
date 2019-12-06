@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
+use finger\Core;
 use finger\Validator;
 use finger\Database\Db;
 use Models\AppUpgrade;
@@ -94,7 +94,7 @@ class App extends \Services\AbstractBase
         $model   = new AppUpgrade();
         $appinfo = $model->fetchOne([], $where);
         if (empty($appinfo)) {
-            YCore::exception(1000000, 'APP应用不存在或已经删除');
+            Core::exception(1000000, 'APP应用不存在或已经删除');
         }
         return $appinfo;
     }
@@ -148,13 +148,13 @@ class App extends \Services\AbstractBase
         $model   = new AppUpgrade();
         $appinfo = $model->fetchOne([], $where);
         if (empty($appinfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '记录不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '记录不存在或已经删除');
         }
         // [3] 更新。
         $data['u_time'] = date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
         $ok = $model->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -203,7 +203,7 @@ class App extends \Services\AbstractBase
         $model              = new AppUpgrade();
         $aupgradeid         = $model->insert($data);
         if ($aupgradeid == 0) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -223,7 +223,7 @@ class App extends \Services\AbstractBase
         $appModel = new AppUpgrade();
         $appinfo  = $appModel->fetchOne([], $where);
         if (empty($appinfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '应用不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '应用不存在或已经删除');
         }
         $updata = [
             'app_status' => AppUpgrade::STATUS_DELETED,
@@ -231,7 +231,7 @@ class App extends \Services\AbstractBase
         ];
         $ok = $appModel->update($updata, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '删除失败');
+            Core::exception(STATUS_ERROR, '删除失败');
         }
     }
 
@@ -318,7 +318,7 @@ class App extends \Services\AbstractBase
     private static function checkAppType($appType)
     {
         if (!in_array($appType, self::$appTypeDict)) {
-            YCore::exception(STATUS_SERVER_ERROR, 'APP 客户端类型有误!');
+            Core::exception(STATUS_SERVER_ERROR, 'APP 客户端类型有误!');
         }
     }
 
@@ -331,7 +331,7 @@ class App extends \Services\AbstractBase
     private static function checkAppUpgradeWay($upgradeWay)
     {
         if (!in_array($upgradeWay, self::$upgradeWayDict)) {
-            YCore::exception(STATUS_SERVER_ERROR, 'APP 客户端升级方式有误!');
+            Core::exception(STATUS_SERVER_ERROR, 'APP 客户端升级方式有误!');
         }
     }
 }

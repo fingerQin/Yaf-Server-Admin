@@ -7,10 +7,10 @@
 
 namespace Services\System;
 
+use finger\Cache;
+use finger\Core;
 use finger\Validator;
 use finger\Database\Db;
-use finger\Utils\YCore;
-use finger\Utils\YCache;
 use Models\Config as ConfigModel;
 
 class Config extends \Services\AbstractBase
@@ -46,7 +46,7 @@ class Config extends \Services\AbstractBase
             foreach ($result as $val) {
                 $configs[$val['cfg_key']] = $val['cfg_value'];
             }
-            YCache::set(self::CONFIG_CACHE_KEY, json_encode($configs, JSON_UNESCAPED_UNICODE));
+            Cache::set(self::CONFIG_CACHE_KEY, json_encode($configs, JSON_UNESCAPED_UNICODE));
             \Yaf_Registry::set(self::CONFIG_CACHE_KEY, $configs);
             return $configs;
         } else {
@@ -90,7 +90,7 @@ class Config extends \Services\AbstractBase
      */
     public static function clearCache()
     {
-        YCache::delete(self::CONFIG_CACHE_KEY);
+        Cache::delete(self::CONFIG_CACHE_KEY);
         \Yaf_Registry::del(self::CONFIG_CACHE_KEY);
     }
 
@@ -162,7 +162,7 @@ class Config extends \Services\AbstractBase
         $ConfigModel        = new ConfigModel();
         $configId           = $ConfigModel->insert($data);
         if ($configId == 0) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
         self::clearCache();
     }
@@ -201,13 +201,13 @@ class Config extends \Services\AbstractBase
         ];
         $configDetail = $ConfigModel->fetchOne([], $where);
         if (empty($configDetail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '该配置不存在');
+            Core::exception(STATUS_SERVER_ERROR, '该配置不存在');
         }
         self::clearCache();
         $data['u_by'] = $adminId;
         $ok = $ConfigModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -222,7 +222,7 @@ class Config extends \Services\AbstractBase
     {
         $ConfigModel = new ConfigModel();
         if (!Validator::is_len($cfgValue, 1, 255, true)) {
-            YCore::exception(STATUS_SERVER_ERROR, '配置值必须小于255个字符');
+            Core::exception(STATUS_SERVER_ERROR, '配置值必须小于255个字符');
         }
         $update = [
             'cfg_value' => $cfgValue,
@@ -234,7 +234,7 @@ class Config extends \Services\AbstractBase
         ];
         $ok = $ConfigModel->update($update, $where);
         if (!$ok) {
-            YCore::exception(STATUS_SERVER_ERROR, '配置更新失败');
+            Core::exception(STATUS_SERVER_ERROR, '配置更新失败');
         }
         self::clearCache();
     }
@@ -255,7 +255,7 @@ class Config extends \Services\AbstractBase
         ];
         $configDetail = $ConfigModel->fetchOne([], $where);
         if (empty($configDetail) || $configDetail['cfg_status'] != ConfigModel::STATUS_YES) {
-            YCore::exception(STATUS_SERVER_ERROR, '配置不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '配置不存在或已经删除');
         }
         $data = [
             'cfg_status' => ConfigModel::STATUS_DELETED,
@@ -265,7 +265,7 @@ class Config extends \Services\AbstractBase
         self::clearCache();
         $ok = $ConfigModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -280,7 +280,7 @@ class Config extends \Services\AbstractBase
         $ConfigModel = new ConfigModel();
         $detail = $ConfigModel->fetchOne([], ['configid' => $configId]);
         if (empty($detail) || $detail['cfg_status'] != ConfigModel::STATUS_YES) {
-            YCore::exception(STATUS_SERVER_ERROR, '配置不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '配置不存在或已经删除');
         }
         return $detail;
     }

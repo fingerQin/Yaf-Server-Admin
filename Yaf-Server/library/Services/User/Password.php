@@ -7,9 +7,9 @@
 
 namespace Services\User;
 
+use finger\Core;
+use finger\Strings;
 use finger\Validator;
-use finger\Utils\YString;
-use finger\Utils\YCore;
 use Models\User;
 use Services\Sms\Sms;
 
@@ -26,22 +26,22 @@ class Password extends \Services\AbstractBase
     public static function edit($userid, $oldPwd, $newPwd)
     {
         if (strlen($oldPwd) === 0) {
-            YCore::exception(STATUS_ERROR, '原密码必须填写');
+            Core::exception(STATUS_ERROR, '原密码必须填写');
         }
         if (strlen($newPwd) === 0) {
-            YCore::exception(STATUS_ERROR, '新密码必须填写');
+            Core::exception(STATUS_ERROR, '新密码必须填写');
         }
         if ($oldPwd == $newPwd) {
-            YCore::exception(STATUS_ERROR, '新密码不能与原密码相同');
+            Core::exception(STATUS_ERROR, '新密码不能与原密码相同');
         }
         Auth::checkPassword($newPwd);
         $UserModel = new User();
         $userinfo  = $UserModel->fetchOne([], ['userid' => $userid]);
         $password  = Auth::encryptPwd($oldPwd, $userinfo['salt']);
         if ($password != $userinfo['pwd']) {
-            YCore::exception(STATUS_ERROR, '原密码不正确');
+            Core::exception(STATUS_ERROR, '原密码不正确');
         }
-        $salt     = YString::randomstr(6);
+        $salt     = Strings::randomstr(6);
         $password = Auth::encryptPwd($newPwd, $salt);
         $updata   = [
             'salt'   => $salt,
@@ -50,7 +50,7 @@ class Password extends \Services\AbstractBase
         ];
         $ok = $UserModel->update($updata, ['userid' => $userid]);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '密码修改失败');
+            Core::exception(STATUS_ERROR, '密码修改失败');
         }
         return true;
     }
@@ -69,7 +69,7 @@ class Password extends \Services\AbstractBase
         Auth::checkCaptcha($code);
         Auth::checkPassword($newPwd);
         Sms::verify($mobile, $code, 'USER_FIND_PWD');
-        $salt     = YString::randomstr(6);
+        $salt     = Strings::randomstr(6);
         $password = Auth::encryptPwd($newPwd, $salt);
         $updata   = [
             'pwd'    => $password,
@@ -79,7 +79,7 @@ class Password extends \Services\AbstractBase
         $UserModel = new User();
         $ok = $UserModel->update($updata, ['mobile' => $mobile]);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 }

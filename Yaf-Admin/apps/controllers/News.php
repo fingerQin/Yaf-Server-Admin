@@ -5,7 +5,7 @@
  * @date 2018-07-11
  */
 
-use finger\Utils\YUrl;
+use finger\Url;
 use finger\Paginator;
 use Services\System\Category;
 use Services\System\Upload;
@@ -54,8 +54,8 @@ class NewsController extends \Common\controllers\Admin
             $this->json(true, '操作成功');
         } else {
             $newsCatList     = Category::list(0, Category::CAT_NEWS, true);
-            $frontendUrl     = YUrl::getDomainName();
-            $filesDomainName = YUrl::getFilesDomainName();
+            $frontendUrl     = Url::getDomainName();
+            $filesDomainName = Url::getFilesDomainName();
             $this->assign('files_domain_name', $filesDomainName);
             $this->assign('news_cat_list', $newsCatList);
             $this->assign('frontend_url', $frontendUrl);
@@ -83,8 +83,8 @@ class NewsController extends \Common\controllers\Admin
             $newsId          = $this->getInt('news_id');
             $detail          = News::detail($newsId, true);
             $newsCatList     = Category::list(0, 1);
-            $frontendUrl     = YUrl::getDomainName();
-            $filesDomainName = YUrl::getFilesDomainName();
+            $frontendUrl     = Url::getDomainName();
+            $filesDomainName = Url::getFilesDomainName();
             $this->assign('files_domain_name', $filesDomainName);
             $this->assign('news_cat_list', $newsCatList);
             $this->assign('detail', $detail);

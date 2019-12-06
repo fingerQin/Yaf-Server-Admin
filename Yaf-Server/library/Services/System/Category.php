@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
+use finger\Core;
 use Models\Category as CategoryModel;
 
 class Category extends \Services\AbstractBase
@@ -23,7 +23,7 @@ class Category extends \Services\AbstractBase
         $CategoryModel = new CategoryModel();
         $catInfo = $CategoryModel->fetchOne([], ['cat_code' => $catCode]);
         if (empty($catInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '文章对应的分类不存在');
+            Core::exception(STATUS_SERVER_ERROR, '文章对应的分类不存在');
         }
         return $catInfo;
     }
@@ -131,7 +131,7 @@ class Category extends \Services\AbstractBase
         $CategoryModel = new CategoryModel();
         $data = $CategoryModel->fetchOne([], ['cat_id' => $catId, 'status' => CategoryModel::STATUS_YES]);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
         }
         return $data;
     }
@@ -144,7 +144,7 @@ class Category extends \Services\AbstractBase
      * 
      * @return array
      */
-    protected static function all($catType = self::CAT_NEWS, $isFilter = false)
+    protected static function all($catType = '', $isFilter = false)
     {
         $cacheKey = 'categorys';
         if (\Yaf_Registry::has($cacheKey)) {

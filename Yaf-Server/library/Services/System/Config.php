@@ -7,8 +7,8 @@
 
 namespace Services\System;
 
-use finger\Utils\YCache;
-use finger\Utils\YCore;
+use finger\Cache;
+use finger\Core;
 use Models\Config as ConfigModel;
 
 class Config extends \Services\AbstractBase
@@ -55,11 +55,11 @@ class Config extends \Services\AbstractBase
         foreach ($configs as $config) {
             $recomConfigs[$config['cfg_key']] = $config['cfg_value'];
         }
-        YCache::set(self::CONFIG_CACHE_KEY, json_encode($recomConfigs, JSON_UNESCAPED_UNICODE));
+        Cache::set(self::CONFIG_CACHE_KEY, json_encode($recomConfigs, JSON_UNESCAPED_UNICODE));
         if (isset($recomConfigs[$cfgKey])) {
             return $recomConfigs[$cfgKey];
         } else {
-            YCore::exception(STATUS_SERVER_ERROR, '系统配置出错,请联系客服');
+            Core::exception(STATUS_SERVER_ERROR, '系统配置出错,请联系客服');
         }
     }
 
@@ -72,7 +72,7 @@ class Config extends \Services\AbstractBase
      */
     private static function readRedisConfig($cfgKey)
     {
-        $configs = YCache::get(self::CONFIG_CACHE_KEY);
+        $configs = Cache::get(self::CONFIG_CACHE_KEY);
         if ($configs === false) {
             return null;
         } else {

@@ -9,9 +9,8 @@
 namespace Services\Location\IP;
 
 use finger\App;
-use finger\Utils\YCore;
-use finger\Utils\YLog;
-use finger\Utils\YCache;
+use finger\Cache;
+use finger\Core;
 use Models\District;
 
 class Baidu
@@ -28,17 +27,17 @@ class Baidu
     public function get($ip)
     {
         $cacheKey  = "loc-ip:{$ip}";
-        $locResult = YCache::get($cacheKey);
+        $locResult = Cache::get($cacheKey);
         if ($locResult !== FALSE) {
             return $locResult;
         } else {
             $result = $this->request($ip);
             if (empty($result)) {
-                YCore::exception(STATUS_SERVER_ERROR, '定位失败');
+                Core::exception(STATUS_SERVER_ERROR, '定位失败');
             }
             if ($result['status'] != 0) {
-                YLog::log(['position' => 'baidu-ip', 'ip' => $ip], 'location', 'log');
-                YCore::exception(STATUS_SERVER_ERROR, '定位失败');
+                App::log(['position' => 'baidu-ip', 'ip' => $ip], 'location', 'log');
+                Core::exception(STATUS_SERVER_ERROR, '定位失败');
             }
             // @todo 后续将所有的地区数据放入缓存当中。加速定位的速度。
             $cityName      = $result['content']['address_detail']['city'];
@@ -48,7 +47,7 @@ class Baidu
                 'region_type' => District::REGION_TYPE_CITY
             ]);
             if (empty($district)) {
-                YCore::exception(STATUS_SERVER_ERROR, '定位失败');
+                Core::exception(STATUS_SERVER_ERROR, '定位失败');
             }
             $locResult = [
                 'province_name' => $district['province_name'],
@@ -56,7 +55,7 @@ class Baidu
                 'city_name'     => $district['city_name'],
                 'city_code'     => $district['city_code']
             ];
-            YCache::set($cacheKey, $locResult, 1800);
+            Cache::set($cacheKey, $locResult, 1800);
             return $locResult;
         }
     }
@@ -90,7 +89,7 @@ class Baidu
                 'curl_errno' => $curlError,
                 'ip'         => $ip
             ];
-            YLog::log($log, 'curl', 'baidu-ip');
+            App::log($log, 'curl', 'baidu-ip');
         }
         curl_close($ch);
         return $result;

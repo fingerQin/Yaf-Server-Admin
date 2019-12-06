@@ -7,7 +7,7 @@
 
 namespace Services\User;
 
-use finger\Utils\YCore;
+use finger\Core;
 use Models\District;
 use Models\UserAddress;
 use finger\Validator;
@@ -39,7 +39,7 @@ class Address extends \Services\AbstractBase
         $AddressModel = new UserAddress();
         $detail = $AddressModel->fetchOne($columns, $where);
         if (empty($detail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '收货地址不存在');
+            Core::exception(STATUS_SERVER_ERROR, '收货地址不存在');
         }
         return $detail;
     }
@@ -62,7 +62,7 @@ class Address extends \Services\AbstractBase
         $AddressModel = new UserAddress();
         $addressInfo  = $AddressModel->fetchOne([], $where);
         if (empty($addressInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '您选择的收货地址已经失效');
+            Core::exception(STATUS_SERVER_ERROR, '您选择的收货地址已经失效');
         }
         $DistrictModel = new District();
         $districtInfo  = $DistrictModel->fetchOne([], [
@@ -70,7 +70,7 @@ class Address extends \Services\AbstractBase
             'status'     => District::STATUS_YES
         ]);
         if (empty($districtInfo)) {
-            YCore::exception(STATUS_ERROR, '您的收货地址的区县已经失效');
+            Core::exception(STATUS_ERROR, '您的收货地址的区县已经失效');
         }
         $provinceName = $districtInfo['province_name'];
         $cityName     = $districtInfo['city_name'];
@@ -111,11 +111,11 @@ class Address extends \Services\AbstractBase
             'status'     => District::STATUS_YES
         ]);
         if (empty($districtInfo) || $districtInfo['region_type'] < 3) {
-            YCore::exception(STATUS_ERROR, '地址有误');
+            Core::exception(STATUS_ERROR, '地址有误');
         }
         $addressCount = self::getUserAddressCount($userid);
         if ($addressCount >= USER_ADDRESS_MAX_COUNT) {
-            YCore::exception(STATUS_SERVER_ERROR, "最多允许创建" . USER_ADDRESS_MAX_COUNT . "个收货地址");
+            Core::exception(STATUS_SERVER_ERROR, "最多允许创建" . USER_ADDRESS_MAX_COUNT . "个收货地址");
         }
         $data = [
             'realname'   => $realname,
@@ -129,7 +129,7 @@ class Address extends \Services\AbstractBase
         $UserAddressModel = new UserAddress();
         $addressId        = $UserAddressModel->insert($data);
         if ($addressId == 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
         }
         return $addressId;
     }
@@ -173,7 +173,7 @@ class Address extends \Services\AbstractBase
             'status'     => District::STATUS_YES
         ]);
         if (empty($districtInfo) || $districtInfo['region_type'] < 3) {
-            YCore::exception(STATUS_ERROR, '地址有误');
+            Core::exception(STATUS_ERROR, '地址有误');
         }
         self::isExistUserAddress($addressId, $userid);
         $UserAddressModel = new UserAddress();
@@ -187,7 +187,7 @@ class Address extends \Services\AbstractBase
         ];
         $ok = $UserAddressModel->update($data, ['addressid' => $addressId]);
         if (!$ok) {
-            YCore::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
         }
         return true;
     }
@@ -213,7 +213,7 @@ class Address extends \Services\AbstractBase
         ];
         $ok = $UserAddressModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
         }
         return true;
     }
@@ -263,7 +263,7 @@ class Address extends \Services\AbstractBase
         ];
         $ok = $UserAddressModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_SERVER_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -327,7 +327,7 @@ class Address extends \Services\AbstractBase
             'status'     => District::STATUS_YES
         ]);
         if (empty($districtInfo)) {
-            YCore::exception(STATUS_ERROR, '区县ID有误');
+            Core::exception(STATUS_ERROR, '区县ID有误');
         }
     }
 
@@ -349,7 +349,7 @@ class Address extends \Services\AbstractBase
         $addressInfo      = $UserAddressModel->fetchOne([], $where, '', '', true);
         if (empty($addressInfo)) {
             $errMsg = (strlen($errMsg) > 0) ? $errMsg : '收货地址不存在';
-            YCore::exception(STATUS_SERVER_ERROR, $errMsg);
+            Core::exception(STATUS_SERVER_ERROR, $errMsg);
         }
     }
 }

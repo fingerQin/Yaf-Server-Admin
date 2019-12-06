@@ -8,8 +8,10 @@
 
 namespace Apis;
 
-use finger\Utils\YCore;
-use finger\Utils\YInput;
+use finger\Core;
+use finger\DataInput;
+use finger\Ip;
+use finger\Log;
 use Services\System\ApiAuth;
 
 class Factory
@@ -32,16 +34,16 @@ class Factory
 
         // [2]
         if (!isset($reqParams['method']) || strlen($reqParams['method']) === 0) {
-            YCore::exception(STATUS_METHOD_NOT_EXISTS, 'method does not exist');
+            Core::exception(STATUS_METHOD_NOT_EXISTS, 'method does not exist');
         }
         if (!isset($reqParams['v']) || strlen($reqParams['v']) === 0) {
-            YCore::exception(STATUS_VERSION_NOT_EXISTS, 'version number is wrong');
+            Core::exception(STATUS_VERSION_NOT_EXISTS, 'version number is wrong');
         }
         if (!isset($reqParams['appid']) || strlen($reqParams['appid']) === 0) {
-            YCore::exception(STATUS_APPID_NOT_EXISTS, 'appid parameters cannot be empty');
+            Core::exception(STATUS_APPID_NOT_EXISTS, 'appid parameters cannot be empty');
         }
         if (!isset($reqParams['timestamp']) || strlen($reqParams['timestamp']) === 0) {
-            YCore::exception(STATUS_TIMESTAMP_NOT_EXISTS, 'timestamp parameters cannot be empty');
+            Core::exception(STATUS_TIMESTAMP_NOT_EXISTS, 'timestamp parameters cannot be empty');
         }
 
         // [3] 将 method 参数转换为实际的接口类名称。
@@ -64,10 +66,10 @@ class Factory
         $apiDetail = self::getApiDetail($reqParams['appid']);
 
         // [6] IP 限制判断。
-        $ip   = YCore::ip();
+        $ip   = Ip::ip();
         $bool = ApiAuth::checkIpAllowAccess($apiDetail, $ip);
         if ($bool == false) {
-            YCore::exception(STATUS_IP_FORBID, '受限 IP 不允许访问');
+            Core::exception(STATUS_IP_FORBID, '受限 IP 不允许访问');
         }
 
         // [7] 映射接口类。
@@ -76,7 +78,7 @@ class Factory
         if (strlen($apiName) && class_exists($classname)) {
             return new $classname($reqParams, $apiDetail['api_type'], $apiDetail['api_key'], $apiDetail['api_secret']);
         } else {
-            YCore::exception(STATUS_API_NOT_EXISTS, '您的 APP 太旧请升级!');
+            Core::exception(STATUS_API_NOT_EXISTS, '您的 APP 太旧请升级!');
         }
     }
 
@@ -90,14 +92,14 @@ class Factory
      */
     private static function writeRequestLog(&$oriReqData, &$params)
     {
-        $token  = YInput::getString($params, 'token', '');
+        $token  = DataInput::getString($params, 'token', '');
         $reqLog = [
             '_userid'   => \Services\User\Auth::getTokenUserId($token),
-            '_ip'       => YCore::ip(),
+            '_ip'       => Ip::ip(),
             '_datetime' => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $reqLog = array_merge($reqLog, $params);
-        \finger\Utils\YLog::writeApiRequestLog($reqLog);
+        Log::writeApiRequestLog($reqLog);
     }
 
     /**
@@ -110,7 +112,7 @@ class Factory
     {
         $detail = ApiAuth::getApiDetail($appid);
         if (empty($detail)) {
-            YCore::exception(STATUS_SERVER_ERROR, 'Bad Request');
+            Core::exception(STATUS_SERVER_ERROR, 'Bad Request');
         }
         return $detail;
     }

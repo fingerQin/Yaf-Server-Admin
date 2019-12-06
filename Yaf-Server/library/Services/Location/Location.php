@@ -8,8 +8,7 @@
 namespace Services\Location;
 
 use finger\App;
-use finger\Utils\YCore;
-
+use finger\Core;
 
 class Location extends \Services\AbstractBase
 {
@@ -45,7 +44,7 @@ class Location extends \Services\AbstractBase
                 $result = $AmapIP->get($ip);
                 break;
             default:
-                YCore::exception(STATUS_SERVER_ERROR, '定位驱动设置错误');
+                Core::exception(STATUS_SERVER_ERROR, '定位驱动设置错误');
                 break;
         }
         return $result;
@@ -72,7 +71,7 @@ class Location extends \Services\AbstractBase
                 $result = $AmapIP->get($long, $lat);
                 break;
             default:
-                YCore::exception(STATUS_SERVER_ERROR, '定位驱动设置错误');
+                Core::exception(STATUS_SERVER_ERROR, '定位驱动设置错误');
                 break;
         }
         return $result;

@@ -7,10 +7,10 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
 use Models\AdPosition;
 use Models\Ad;
 use Models\User;
+use finger\Core;
 use finger\Database\Db;
 
 class Advertisement extends \Services\AbstractBase
@@ -35,7 +35,7 @@ class Advertisement extends \Services\AbstractBase
     public static function single($posCode, $appV = '', $userid = 0, $platform = 0)
     {
         $list = self::list($posCode, $appV, $userid, $platform);
-        return $list ? $list[0] : YCore::getNullObject();
+        return $list ? $list[0] : Core::getNullObject();
     }
 
     /**
@@ -53,7 +53,7 @@ class Advertisement extends \Services\AbstractBase
         $AdPosModel  = new AdPosition();
         $adPosDetail = $AdPosModel->fetchOne([], ['pos_code' => $posCode, 'status' => AdPosition::STATUS_YES]);
         if (empty($adPosDetail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '该广告不存在或已经下线');
+            Core::exception(STATUS_SERVER_ERROR, '该广告不存在或已经下线');
         }
         $bitVal = self::getUserBitConditionVal($userid);
         $count  = $adPosDetail['pos_ad_count'] > self::MAX_COUNT ? MAX_COUNT : $adPosDetail['pos_ad_count'];

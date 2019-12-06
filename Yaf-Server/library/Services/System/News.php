@@ -7,6 +7,7 @@
 
 namespace Services\System;
 
+use finger\Core;
 use finger\Database\Db;
 use Models\News as NewsModel;
 
@@ -65,7 +66,7 @@ class News extends \Services\AbstractBase
         ];
         $detail = Db::one($sql, $params);
         if (empty($detail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '文章不存在或已经删除');
         }
         return $detail;
     }

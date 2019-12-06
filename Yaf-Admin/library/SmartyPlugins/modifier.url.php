@@ -6,7 +6,7 @@
  * @subpackage PluginsModifier
  */
 
-use finger\Utils\YUrl;
+use finger\Url;
 
 /**
  * 创建一个管理后台的URL。
@@ -18,5 +18,5 @@ use finger\Utils\YUrl;
  */
 function smarty_modifier_url($controllerName, $actionName = '', $params = [])
 {
-    return YUrl::createBackendUrl($controllerName, $actionName, $params);
+    return Url::createBackendUrl($controllerName, $actionName, $params);
 }

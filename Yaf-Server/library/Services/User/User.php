@@ -8,7 +8,7 @@
 
 namespace Services\User;
 
-use finger\Utils\YCore;
+use finger\Core;
 use Services\Sms\Sms;
 
 class User extends \Services\AbstractBase
@@ -43,15 +43,15 @@ class User extends \Services\AbstractBase
         $UserModel = new \Models\User();
         $userinfo  = $UserModel->fetchOne(['mobile', 'salt', 'pwd'], ['userid' => $userid]);
         if ($userinfo['mobile'] == $mobile) {
-            YCore::exception(STATUS_SERVER_ERROR, '手机号未变化');
+            Core::exception(STATUS_SERVER_ERROR, '手机号未变化');
         }
         $detail = $UserModel->fetchOne(['userid'], ['mobile' => $mobile]);
         if (!empty($detail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '该手机号已经被占用');
+            Core::exception(STATUS_SERVER_ERROR, '该手机号已经被占用');
         }
         $md5Pwd = Auth::encryptPwd($password, $userinfo['salt']);
         if ($md5Pwd != $userinfo['pwd']) {
-            YCore::exception(STATUS_SERVER_ERROR, '密码不正确');
+            Core::exception(STATUS_SERVER_ERROR, '密码不正确');
         }
         Sms::verify($mobile, $code, 'CHANGE_MOBILE_OLD');
         $updata = [
@@ -60,7 +60,7 @@ class User extends \Services\AbstractBase
         ];
         $status = $UserModel->update($updata, ['userid' => $userid]);
         if (!$status) {
-            YCore::exception(STATUS_SERVER_ERROR, '手机号更改失败');
+            Core::exception(STATUS_SERVER_ERROR, '手机号更改失败');
         }
     }
 }

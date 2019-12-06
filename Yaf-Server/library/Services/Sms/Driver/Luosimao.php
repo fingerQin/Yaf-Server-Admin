@@ -7,8 +7,8 @@
 
 namespace Services\Sms\Driver;
 
-use finger\Utils\YLog;
-use finger\Utils\YCore;
+use finger\App;
+use finger\Core;
 
 class Luosimao
 {
@@ -30,7 +30,7 @@ class Luosimao
     public function __construct($config)
     {
         if (!isset($config['channel_secret'])) {
-            YCore::exception(STATUS_SERVER_ERROR, '短信配置不正确');
+            Core::exception(STATUS_SERVER_ERROR, '短信配置不正确');
         }
         $this->key = $config['channel_secret'];
     }
@@ -46,10 +46,10 @@ class Luosimao
     public function send($mobile, $message)
     {
         if (strlen($mobile) === 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '请设置接收短信的手机号');
+            Core::exception(STATUS_SERVER_ERROR, '请设置接收短信的手机号');
         }
         if (strlen($message) === 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '请设置短信内容');
+            Core::exception(STATUS_SERVER_ERROR, '请设置短信内容');
         }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'http://sms-api.luosimao.com/v1/send.json');
@@ -65,20 +65,20 @@ class Luosimao
         $errMsg   = curl_error($ch);
         $errCode  = curl_errno($ch);
         if ($errCode > 0) {
-            YLog::log(['errMsg' => $errMsg, 'errCode' => $errCode], 'curl', 'sms-lousimao-send');
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            App::log(['errMsg' => $errMsg, 'errCode' => $errCode], 'curl', 'sms-lousimao-send');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
         curl_close($ch);
         if ($response === FALSE) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
-        YLog::log(['mobile' => $mobile, 'message' => $message, 'response' => $response], 'sms', 'lousimao');
+        App::log(['mobile' => $mobile, 'message' => $message, 'response' => $response], 'sms', 'lousimao');
         $result = json_decode($response, TRUE);
         if (!is_array($result)) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
         if ($result['error'] != 0) {
-            YCore::exception(STATUS_SERVER_ERROR, "{$result['error']}:{$result['msg']}");
+            Core::exception(STATUS_SERVER_ERROR, "{$result['error']}:{$result['msg']}");
         }
     }
 
@@ -94,10 +94,10 @@ class Luosimao
     public function batchSend(array $mobile, $message, $time = '')
     {
         if (empty($mobile)) {
-            YCore::exception(STATUS_SERVER_ERROR, '请设置接收短信的手机号');
+            Core::exception(STATUS_SERVER_ERROR, '请设置接收短信的手机号');
         }
         if (strlen($message) === 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '请设置短信内容');
+            Core::exception(STATUS_SERVER_ERROR, '请设置短信内容');
         }
         $postData = ['mobile' => implode(',', $mobile), 'message' => $message];
         if (strlen($time) > 0) {
@@ -117,19 +117,19 @@ class Luosimao
         $errMsg   = curl_error($ch);
         $errCode  = curl_errno($ch);
         if ($errCode > 0) {
-            YLog::log(['errMsg' => $errMsg, 'errCode' => $errCode], 'curl', 'sms-lousimao-batch');
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            App::log(['errMsg' => $errMsg, 'errCode' => $errCode], 'curl', 'sms-lousimao-batch');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
         curl_close($ch);
         if ($response === FALSE) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
         $result = json_decode($response, TRUE);
         if (!is_array($result)) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
         if ($result['error'] != 0) {
-            YCore::exception(STATUS_SERVER_ERROR, $result['msg']);
+            Core::exception(STATUS_SERVER_ERROR, $result['msg']);
         }
     }
 }

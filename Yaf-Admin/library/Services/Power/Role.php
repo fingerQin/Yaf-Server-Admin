@@ -8,7 +8,7 @@
 
 namespace Services\Power;
 
-use finger\Utils\YCore;
+use finger\Core;
 use finger\Validator;
 use finger\Database\Db;
 use Models\AdminRole;
@@ -65,7 +65,7 @@ class Role extends \Services\AbstractBase
         $AdminRoleModel = new AdminRole();
         $roleid = $AdminRoleModel->insert($data);
         if ($roleid == 0) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -95,7 +95,7 @@ class Role extends \Services\AbstractBase
         $AdminRoleModel = new AdminRole();
         $ok = $AdminRoleModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -109,7 +109,7 @@ class Role extends \Services\AbstractBase
     {
         $roleInfo = self::isExist($roleid);
         if ($roleInfo['is_default'] == AdminUser::STATUS_YES || $roleid == ROOT_ROLE_ID) {
-            YCore::exception(STATUS_SERVER_ERROR, '此角色不能删除!');
+            Core::exception(STATUS_SERVER_ERROR, '此角色不能删除!');
         }
         $AdminUserModel = new AdminUser();
         $adminCount     = $AdminUserModel->count([
@@ -128,7 +128,7 @@ class Role extends \Services\AbstractBase
             ];
             return $AdminRoleModel->update($updata, $where);
         } else {
-            YCore::exception(STATUS_SERVER_ERROR, '请将该角色下的管理员移动到其它角色下');
+            Core::exception(STATUS_SERVER_ERROR, '请将该角色下的管理员移动到其它角色下');
         }
     }
 
@@ -155,7 +155,7 @@ class Role extends \Services\AbstractBase
         $AdminRoleModel = new AdminRole();
         $roleInfo       = $AdminRoleModel->fetchOne([], ['roleid' => $roleid, 'role_status' => AdminRole::STATUS_YES]);
         if (empty($roleInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '角色不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '角色不存在或已经删除');
         }
         return $roleInfo;
     }
@@ -171,7 +171,7 @@ class Role extends \Services\AbstractBase
     public static function setPermission($adminId, $roleid, $arrMenuIds)
     {
         if (self::isRootRole($roleid)) {
-            YCore::exception(STATUS_SERVER_ERROR, '超级管理员角色不需要设置');
+            Core::exception(STATUS_SERVER_ERROR, '超级管理员角色不需要设置');
         }
         Db::beginTransaction();
         // [1] 角色判断。
@@ -185,7 +185,7 @@ class Role extends \Services\AbstractBase
             $ok = $AdminRolePrivModel->addRolePriv($adminId, $roleid, $menuId);
             if (!$ok) {
                 Db::rollBack();
-                YCore::exception(STATUS_SERVER_ERROR, '权限添加失败，请重试');
+                Core::exception(STATUS_SERVER_ERROR, '权限添加失败，请重试');
             }
         }
         Db::commit();

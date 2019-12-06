@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
+use finger\Core;
 use finger\Database\Db;
 use Models\News;
 use Models\Category as CategoryModel;
@@ -40,7 +40,7 @@ class Category extends \Services\AbstractBase
         $CategoryModel = new CategoryModel();
         $catInfo = $CategoryModel->fetchOne([], ['cat_code' => $catCode]);
         if (empty($catInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '对应的分类不存在');
+            Core::exception(STATUS_SERVER_ERROR, '对应的分类不存在');
         }
         return $catInfo;
     }
@@ -75,7 +75,7 @@ class Category extends \Services\AbstractBase
      * @param  bool  $isFilter   是否过滤无用字段。
      * @return array
      */
-    public static function getByParentToCategory($parentid, $catType = self::CAT_DOC, $isGetHide = true, $isFilter = false)
+    public static function getByParentToCategory($parentid, $catType = self::CAT_NEWS, $isGetHide = true, $isFilter = false)
     {
         $allCategorys = self::getAllCategorys($catType, $isFilter);
         $categorys    = [];
@@ -108,9 +108,9 @@ class Category extends \Services\AbstractBase
      * @param  int  $catType   分类类型。
      * @return array
      */
-    public static function getCategoryKeyValueList($parentid = 0, $catType = self::CAT_DOC)
+    public static function getCategoryKeyValueList($parentid = 0, $catType = self::CAT_NEWS)
     {
-        $list    = self::getCategoryList($parentid, $catType);
+        $list    = self::list($parentid, $catType);
         $newList = [];
         foreach ($list as $cat) {
             $newList[$cat['cat_id']] = $cat['cat_name'];
@@ -126,7 +126,7 @@ class Category extends \Services\AbstractBase
      * @param  int  $catType   分类类型。
      * @return array
      */
-    public static function getCategoryCatCodeOrNameKeyValueList($parentid = 0, $catType = self::CAT_DOC)
+    public static function getCategoryCatCodeOrNameKeyValueList($parentid = 0, $catType = self::CAT_NEWS)
     {
         $list    = self::list($parentid, $catType);
         $newList = [];
@@ -156,7 +156,7 @@ class Category extends \Services\AbstractBase
         if ($parentid != 0) {
             $parentCatInfo = $CategoryModel->fetchOne([], ['cat_id' => $parentid, 'status' => CategoryModel::STATUS_YES]);
             if (empty($parentCatInfo)) {
-                YCore::exception(STATUS_SERVER_ERROR, '父分类不存在或已经删除');
+                Core::exception(STATUS_SERVER_ERROR, '父分类不存在或已经删除');
             }
             $lv = $parentCatInfo['lv'] + 1;
             // 当是添加子分类的时候。子分类的分类类型继续父分类的类型。
@@ -178,7 +178,7 @@ class Category extends \Services\AbstractBase
         ];
         $ok = $CategoryModel->insert($data);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -198,7 +198,7 @@ class Category extends \Services\AbstractBase
         $CategoryModel = new CategoryModel();
         $catInfo       = $CategoryModel->fetchOne([], ['cat_id' => $catId, 'status' => 1]);
         if (empty($catInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
         }
         $data = [
             'cat_name'   => $catName,
@@ -212,7 +212,7 @@ class Category extends \Services\AbstractBase
         ];
         $ok = $CategoryModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -229,13 +229,13 @@ class Category extends \Services\AbstractBase
         $CategoryModel = new CategoryModel();
         $catInfo       = $CategoryModel->fetchOne([], ['cat_id' => $catId, 'status' => CategoryModel::STATUS_YES]);
         if (empty($catInfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
         }
         // [2] 目前只检查文章与友情链接，后续如果关联了其他功能，这里要做适当调整。
         $NewsModel = new News();
         $newsCount = $NewsModel->count(['cat_code' => $catInfo['cat_code'], 'status' => News::STATUS_YES]);
         if ($newsCount > 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '请先清空该分类下的文章');
+            Core::exception(STATUS_SERVER_ERROR, '请先清空该分类下的文章');
         }
         $where = [
             'cat_id' => $catId
@@ -247,7 +247,7 @@ class Category extends \Services\AbstractBase
         ];
         $ok = $CategoryModel->update($data, $where);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+            Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }
     }
 
@@ -262,7 +262,7 @@ class Category extends \Services\AbstractBase
         $CategoryModel = new CategoryModel();
         $data = $CategoryModel->fetchOne([], ['cat_id' => $catId, 'status' => CategoryModel::STATUS_YES]);
         if (empty($data)) {
-            YCore::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '分类不存在或已经删除');
         }
         return $data;
     }
@@ -282,7 +282,7 @@ class Category extends \Services\AbstractBase
         foreach ($listorders as $catId => $sortVal) {
             $ok = $CategoryModel->sort($catId, $sortVal);
             if (!$ok) {
-                return YCore::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
+                return Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
             }
         }
     }
@@ -327,7 +327,7 @@ class Category extends \Services\AbstractBase
         } else {
             $catInfo = $CategoryModel->fetchOne([], ['cat_id' => $parentid, 'status' => CategoryModel::STATUS_YES]);
             if (empty($catInfo)) {
-                YCore::exception(STATUS_SERVER_ERROR, '父分类不存在或已经删除');
+                Core::exception(STATUS_SERVER_ERROR, '父分类不存在或已经删除');
             }
             $codePrefix = substr($catInfo['cat_code'], 0, $catInfo['lv'] * 3);
             $sql        = 'SELECT * FROM finger_category WHERE cat_code LIKE :cat_code ORDER BY cat_code DESC LIMIT 1';
@@ -350,7 +350,7 @@ class Category extends \Services\AbstractBase
      * 
      * @return array
      */
-    protected static function getAllCategorys($catType = self::CAT_DOC, $isFilter = false)
+    protected static function getAllCategorys($catType = self::CAT_NEWS, $isFilter = false)
     {
         $cacheKey = 'Yaf-Admin-all-categorys';
         if (\Yaf_Registry::has($cacheKey)) {

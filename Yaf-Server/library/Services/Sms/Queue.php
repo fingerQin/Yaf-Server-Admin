@@ -7,9 +7,9 @@
 
 namespace Services\Sms;
 
-use finger\Utils\YCore;
-use finger\Utils\YCache;
-use finger\Utils\YLog;
+use finger\App;
+use finger\Cache;
+use finger\Core;
 
 class Queue extends \Services\Sms\AbstractBase
 {
@@ -25,13 +25,13 @@ class Queue extends \Services\Sms\AbstractBase
      */
     public static function push(array $data)
     {
-        $redis = YCache::getRedisClient();
+        $redis = Cache::getRedisClient();
         $bool  = $redis->lPush(self::SMS_QUEUE_KEY, json_encode($data, JSON_UNESCAPED_UNICODE));
         if ($bool === false) {
-            YLog::log($data, 'sms', 'push_queue_error');
-            YCore::exception(STATUS_SERVER_ERROR, '短信发送失败');
+            App::log($data, 'sms', 'push_queue_error');
+            Core::exception(STATUS_SERVER_ERROR, '短信发送失败');
         } else {
-            YLog::log(['bool' => $bool, 'data' => $data], 'sms', 'push_queue_ok');
+            App::log(['bool' => $bool, 'data' => $data], 'sms', 'push_queue_ok');
         }
     }
 }

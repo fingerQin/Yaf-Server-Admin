@@ -7,12 +7,12 @@
 
 namespace Services\User;
 
+use finger\Cache;
+use finger\Core;
 use finger\Validator;
 use finger\Database\Db;
-use finger\Utils\YCore;
-use finger\Utils\YDate;
-use finger\Utils\YString;
-use finger\Utils\YCache;
+use finger\Date;
+use finger\Strings;
 use Models\User as UserModel;
 
 class User extends \Services\AbstractBase
@@ -30,10 +30,10 @@ class User extends \Services\AbstractBase
     public static function list($mobile = '', $starttime = '', $endtime = '', $page = 1, $count = 20)
     {
         if (strlen($starttime) > 0 && !Validator::is_date($starttime)) {
-            YCore::exception(STATUS_SERVER_ERROR, '开始注册时间格式不对');
+            Core::exception(STATUS_SERVER_ERROR, '开始注册时间格式不对');
         }
         if (strlen($endtime) > 0 && !Validator::is_date($endtime)) {
-            YCore::exception(STATUS_SERVER_ERROR, '截止注册时间格式不对');
+            Core::exception(STATUS_SERVER_ERROR, '截止注册时间格式不对');
         }
         $from    = ' FROM finger_user ';
         $offset  = self::getPaginationOffset($page, $count);
@@ -59,8 +59,8 @@ class User extends \Services\AbstractBase
         $sql       = "SELECT {$columns} {$from} {$where} {$orderBy} LIMIT {$offset},{$count}";
         $list      = Db::all($sql, $params);
         foreach ($list as $k => $val) {
-            $val['c_time']          = YDate::formatDateTime($val['c_time']);
-            $val['last_login_time'] = YDate::formatDateTime($val['last_login_time']);
+            $val['c_time']          = Date::formatDateTime($val['c_time']);
+            $val['last_login_time'] = Date::formatDateTime($val['last_login_time']);
             $val['platform']        = self::$platformLabel[$val['platform']];
             $val['cur_status']      = UserModel::$statusLabel[$val['cur_status']];
             $list[$k]               = $val;
@@ -93,7 +93,7 @@ class User extends \Services\AbstractBase
         ];
         $userinfo = Db::one($sql, $params);
         if (empty($userinfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '用户不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '用户不存在或已经删除');
         }
         return $userinfo;
     }
@@ -108,16 +108,16 @@ class User extends \Services\AbstractBase
     public static function editPwd($userid, $password)
     {
         if (strlen($password) === 0) {
-            YCore::exception(STATUS_ERROR, '密码必须填写');
+            Core::exception(STATUS_ERROR, '密码必须填写');
         }
         if (!Validator::is_alpha_dash($password)) {
-            YCore::exception(STATUS_ERROR, '新密码格式不正确');
+            Core::exception(STATUS_ERROR, '新密码格式不正确');
         }
         if (!Validator::is_len($password, 6, 20)) {
-            YCore::exception(STATUS_ERROR, '新密码长度必须6~20位之间');
+            Core::exception(STATUS_ERROR, '新密码长度必须6~20位之间');
         }
         $UserModel = new UserModel();
-        $salt      = YString::randomstr(6);
+        $salt      = Strings::randomstr(6);
         $password  = self::encryptPassword($password, $salt);
         $updata    = [
             'salt'   => $salt,
@@ -126,7 +126,7 @@ class User extends \Services\AbstractBase
         ];
         $ok = $UserModel->update($updata, ['userid' => $userid]);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '密码修改失败');
+            Core::exception(STATUS_ERROR, '密码修改失败');
         }
         return true;
     }
@@ -141,7 +141,7 @@ class User extends \Services\AbstractBase
     public static function editStatus($userid, $status)
     {
         if (!array_key_exists($status, UserModel::$statusLabel)) {
-            YCore::exception(STATUS_SERVER_ERROR, '状态设置不正确');
+            Core::exception(STATUS_SERVER_ERROR, '状态设置不正确');
         }
         $UserModel = new UserModel();
         $updata    = [
@@ -150,7 +150,7 @@ class User extends \Services\AbstractBase
         ];
         $ok = $UserModel->update($updata, ['userid' => $userid]);
         if (!$ok) {
-            YCore::exception(STATUS_ERROR, '密码修改失败');
+            Core::exception(STATUS_ERROR, '密码修改失败');
         }
         return true;
     }
@@ -178,9 +178,9 @@ class User extends \Services\AbstractBase
     {
         $userinfo = (new UserModel())->fetchOne([], ['userid' => $userid]);
         if (empty($userinfo)) {
-            YCore::exception(STATUS_SERVER_ERROR, '账号不存在');
+            Core::exception(STATUS_SERVER_ERROR, '账号不存在');
         }
-        $redis = YCache::getRedisClient();
+        $redis = Cache::getRedisClient();
         $errCounterKey  = "login_account_lock_{$userinfo['mobile']}";
         $errDeadlineKey = "login_account_unlock_date_{$userinfo['mobile']}";
         $redis->del($errCounterKey);

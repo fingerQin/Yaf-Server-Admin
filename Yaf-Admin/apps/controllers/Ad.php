@@ -5,7 +5,7 @@
  * @date 2018-08-07
  */
 
-use finger\Utils\YUrl;
+use finger\Url;
 use finger\Paginator;
 use Services\System\Ad;
 use Common\controllers\Admin;
@@ -111,7 +111,7 @@ class AdController extends Admin
             $this->json(true, '添加成功');
         } else {
             $posId = $this->getInt('pos_id');
-            $filesDomainName = YUrl::getFilesDomainName();
+            $filesDomainName = Url::getFilesDomainName();
             $this->assign('terminalDict', Ad::getAdTerminalDict());
             $this->assign('flagDict', Ad::getAdFlagDict());
             $this->assign('files_domain_name', $filesDomainName);
@@ -142,7 +142,7 @@ class AdController extends Admin
         } else {
             $adId   = $this->getInt('ad_id');
             $detail = Ad::getAdDetail($adId);
-            $filesDomainName = YUrl::getFilesDomainName();
+            $filesDomainName = Url::getFilesDomainName();
             $this->assign('terminalDict', Ad::getAdTerminalDict());
             $this->assign('flagDict', Ad::getAdFlagDict());
             $this->assign('files_domain_name', $filesDomainName);

@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
+use finger\Core;
 use Services\AbstractBase;
 use Services\System\Upgrade;
 use Services\System\Advertisement;
@@ -59,11 +59,11 @@ class AppInit extends AbstractBase
     {
         $appServiceCfg = Config::get($cfgKey);
         if (empty($appServiceCfg)) {
-            YCore::exception(STATUS_SERVER_ERROR, '服务中心配置读取失败');
+            Core::exception(STATUS_SERVER_ERROR, '服务中心配置读取失败');
         }
         $cfg = explode(':::', $appServiceCfg);
         if (count($cfg) != 2) {
-            YCore::exception(STATUS_SERVER_ERROR, "{$cfgName}配置设置错误");
+            Core::exception(STATUS_SERVER_ERROR, "{$cfgName}配置设置错误");
         }
         return [
             'txt' => $cfg[0],

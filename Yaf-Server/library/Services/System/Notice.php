@@ -7,7 +7,7 @@
 
 namespace Services\System;
 
-use finger\Utils\YCore;
+use finger\Core;
 use finger\Database\Db;
 use Models\Notice as NoticeModel;
 use Models\NoticeRead;
@@ -72,7 +72,7 @@ class Notice extends \Services\AbstractBase
         ];
         $detail = Db::one($sql, $params);
         if (empty($detail)) {
-            YCore::exception(STATUS_SERVER_ERROR, '公告不存在或已经删除');
+            Core::exception(STATUS_SERVER_ERROR, '公告不存在或已经删除');
         }
         self::markRead($userid);
         return $detail;
@@ -94,7 +94,7 @@ class Notice extends \Services\AbstractBase
         $NoticeModel = new NoticeModel();
         $data        = $NoticeModel->fetchOne($columns, $where, 'noticeid DESC');
         if (empty($data)) {
-            return YCore::getNullObject();
+            return Core::getNullObject();
         } else {
             $data['edition'] = str_pad($data['noticeid'], 10, '0', STR_PAD_RIGHT) . strtotime($data['u_time']);
             unset($data['noticeid'], $data['u_time']);

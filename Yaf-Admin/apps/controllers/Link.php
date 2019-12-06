@@ -5,8 +5,8 @@
  * @date 2017-07-06
  */
 
-use finger\Utils\YCore;
-use finger\Utils\YUrl;
+use finger\Core;
+use finger\Url;
 use finger\Paginator;
 use Services\System\Category;
 use Services\System\Link;
@@ -46,9 +46,9 @@ class LinkController extends \Common\controllers\Admin
         } else {
             $list = Category::list(0, 2);
             if (empty($list)) {
-                YCore::exception(STATUS_ERROR, '请立即创建友情链接分类');
+                Core::exception(STATUS_ERROR, '请立即创建友情链接分类');
             }
-            $filesDomainName = YUrl::getFilesDomainName();
+            $filesDomainName = Url::getFilesDomainName();
             $this->assign('cat_list', $list);
             $this->assign('files_domain_name', $filesDomainName);
         }
@@ -74,9 +74,9 @@ class LinkController extends \Common\controllers\Admin
             $list   = Category::list(0, 2);
             $this->assign('detail', $detail);
             if (empty($list)) {
-                YCore::exception(STATUS_ERROR, '请立即创建友情链接分类');
+                Core::exception(STATUS_ERROR, '请立即创建友情链接分类');
             }
-            $filesDomainName = YUrl::getFilesDomainName();
+            $filesDomainName = Url::getFilesDomainName();
             $this->assign('cat_list', $list);
             $this->assign('files_domain_name', $filesDomainName);
         }

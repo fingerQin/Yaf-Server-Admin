@@ -8,9 +8,8 @@
 
 namespace Services\Monitor;
 
-use finger\Utils\YLog;
-use finger\Utils\YCache;
-use finger\Utils\YCore;
+use finger\App;
+use finger\Cache;
 use Models\Monitor;
 use finger\Database\Db;
 
@@ -47,7 +46,7 @@ class Consumer extends \finger\Thread\Thread
     public function run($threadNum, $num, $startTimeTsp)
     {
         // [1]
-        $redis              = YCache::getRedisClient();
+        $redis              = Cache::getRedisClient();
         $monitorQueueKey    = \Services\Monitor\AbstractBase::MONITOR_QUEUE_KEY;
         $monitorQueueIngKey = "{$monitorQueueKey}-{$num}-ing"; // 如果不加子进程编号，则多个子进程同时处理时会出现多进程同时消费情况。
 
@@ -72,14 +71,14 @@ class Consumer extends \finger\Thread\Thread
                         }
                         $this->runService($arrQueueVal);
                         $redis->lRem($monitorQueueIngKey, $strQueueVal, 1);
-                        YLog::log($arrQueueVal, 'monitor', "{$arrQueueVal['code']}-success");
+                        App::log($arrQueueVal, 'monitor', "{$arrQueueVal['code']}-success");
                     } catch (\Exception $e) {
                         $this->monitorToFail($arrQueueVal['code'], $strQueueVal, $e->getCode(), $e->getMessage());
                         $redis->lRem($monitorQueueIngKey, $strQueueVal, 1);
                     }
                 } else {
                     Db::ping();
-                    YCache::ping();
+                    Cache::ping();
                     $this->monitorToSuccess($batResult);
                 }
                 $this->isExit($startTimeTsp);
@@ -137,7 +136,7 @@ class Consumer extends \finger\Thread\Thread
             'code'  => $errCode,
             'msg'   => $errMsg
         ];
-        YLog::log($log, 'monitor', "{$code}-fail");
+        App::log($log, 'monitor', "{$code}-fail");
         unset($MonitorModel, $updata, $log);
     }
 
@@ -158,7 +157,7 @@ class Consumer extends \finger\Thread\Thread
             'code'  => $errCode,
             'msg'   => $errMsg
         ];
-        YLog::log($log, 'monitor', "{$code}-error");
+        App::log($log, 'monitor', "{$code}-error");
         $datetime = date('Y-m-d H:i:s', time());
         exit("ErrorTime:{$datetime}\nErrorMsg:{$errMsg}\n");
     }

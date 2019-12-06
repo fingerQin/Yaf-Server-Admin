@@ -8,10 +8,10 @@
 namespace Services\Sms;
 
 use finger\App;
+use finger\Cache;
+use finger\Core;
+use finger\Ip;
 use finger\Validator;
-use finger\Utils\YCore;
-use finger\Utils\YLog;
-use finger\Utils\YCache;
 use Models\SmsTpl;
 use Models\SmsSendLog;
 
@@ -33,10 +33,10 @@ class Sms extends \Services\Sms\AbstractBase
     public static function send($mobile, $smsType, $sendIp = '', $platform = 0, $replaceArr = [])
     {
         // [1]
-        $sendIp = (strlen($sendIp) > 0) ? $sendIp : YCore::ip();
-        YLog::log(['sendIp' => $sendIp, 'smsType' => $smsType, 'mobile' => $mobile], 'sms', 'sendLog');
+        $sendIp = (strlen($sendIp) > 0) ? $sendIp : Ip::ip();
+        App::log(['sendIp' => $sendIp, 'smsType' => $smsType, 'mobile' => $mobile], 'sms', 'sendLog');
         if (!Validator::is_mobilephone($mobile)) {
-            YCore::exception(STATUS_SERVER_ERROR, '手机号码不正确!');
+            Core::exception(STATUS_SERVER_ERROR, '手机号码不正确!');
         }
         // [2] 内部手机号码不做发送限制。
         $isInsideMobile = Verify::isInsideMobile($mobile);
@@ -45,7 +45,7 @@ class Sms extends \Services\Sms\AbstractBase
             Verify::checkDayIpTimes($sendIp);
             Verify::checkSendInterval($mobile, $smsType);
             if (Verify::isBlacklistMobile($mobile)) {
-                YCore::exception(STATUS_SERVER_ERROR, '您的手机号码暂时无法接收短信');
+                Core::exception(STATUS_SERVER_ERROR, '您的手机号码暂时无法接收短信');
             }
         }
         // [3] 开发机码验证码为 123456.
@@ -72,8 +72,8 @@ class Sms extends \Services\Sms\AbstractBase
         ];
         $id = $MSmsSendLog->insert($data);
         if (!$id) {
-            YLog::log($data, 'sms', 'error');
-            YCore::exception(STATUS_SERVER_ERROR, '短信发送失败');
+            App::log($data, 'sms', 'error');
+            Core::exception(STATUS_SERVER_ERROR, '短信发送失败');
         }
         self::clearVerifyTimesKey($mobile, $smsType);
         $queueData = [
@@ -98,8 +98,8 @@ class Sms extends \Services\Sms\AbstractBase
      */
     public static function sendSystem($mobile, $smsType, $sendIp = '', $platform, $replaceArr = [])
     {
-        $sendIp = (strlen($sendIp) > 0) ? $sendIp : YCore::ip();
-        YLog::log(['sendIp' => $sendIp, 'smsType' => $smsType, 'mobile' => $mobile], 'sms', 'sendSystemLog');
+        $sendIp = (strlen($sendIp) > 0) ? $sendIp : Ip::ip();
+        App::log(['sendIp' => $sendIp, 'smsType' => $smsType, 'mobile' => $mobile], 'sms', 'sendSystemLog');
         $result = self::getReplaceContent($smsType, $mobile, '', $replaceArr);
         // 创建短信日志。
         $datetime    = date('Y-m-d H:i:s', time());
@@ -116,8 +116,8 @@ class Sms extends \Services\Sms\AbstractBase
         ];
         $id = $MSmsSendLog->insert($data);
         if (!$id) {
-            YLog::log($data, 'sms', 'error');
-            YCore::exception(STATUS_SERVER_ERROR, '短信发送失败');
+            App::log($data, 'sms', 'error');
+            Core::exception(STATUS_SERVER_ERROR, '短信发送失败');
         }
         // 短信入队列服务
         $queueData = [
@@ -175,40 +175,40 @@ class Sms extends \Services\Sms\AbstractBase
     public static function verify($mobile, $code, $smsType, $isDestroy = 1, $ip = '')
     {
         if (empty($code) || strlen($code) == 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '短信验证码不能为空');
+            Core::exception(STATUS_SERVER_ERROR, '短信验证码不能为空');
         }
         if (empty($smsType) || strlen($smsType) == 0) {
-            YCore::exception(STATUS_SERVER_ERROR, '短信模板标识不能为空');
+            Core::exception(STATUS_SERVER_ERROR, '短信模板标识不能为空');
         }
-        $ip          = strlen($ip) > 0 ? $ip : YCore::ip();
+        $ip          = strlen($ip) > 0 ? $ip : Ip::ip();
         $templet     = self::getTemplet($smsType);
         $MSmsSendLog = new SmsSendLog();
         $smsLog      = $MSmsSendLog->fetchOne([], ['tpl_id' => $templet['id'], 'mobile' => $mobile], 'id DESC');
         if (empty($smsLog)) {
-            YCore::exception(STATUS_SERVER_ERROR, '您的验证码不正确');
+            Core::exception(STATUS_SERVER_ERROR, '您的验证码不正确');
         }
         $expireTime = strtotime('+10minutes', strtotime($smsLog['c_time']));
         if (($smsLog['cksms'] == SmsSendLog::STATUS_USED) && (strtotime('now') > $expireTime)) {
-            YCore::exception(STATUS_SERVER_ERROR, '请重新获取验证码');
+            Core::exception(STATUS_SERVER_ERROR, '请重新获取验证码');
         }
         if ($smsLog['cksms'] == SmsSendLog::STATUS_USED) {
-            YCore::exception(STATUS_SERVER_ERROR, '验证码已使用');
+            Core::exception(STATUS_SERVER_ERROR, '验证码已使用');
         }
         if ($smsLog['cksms'] == SmsSendLog::STATUS_INVALID) {
-            YCore::exception(STATUS_SERVER_ERROR, '验证码已失效');
+            Core::exception(STATUS_SERVER_ERROR, '验证码已失效');
         }
         if (strtotime('now') > $expireTime) {
-            YCore::exception(STATUS_SERVER_ERROR, '您的验证码已失效,请重新获取!');
+            Core::exception(STATUS_SERVER_ERROR, '您的验证码已失效,请重新获取!');
         }
         if ($ip != $smsLog['ip']) {
-            YCore::exception(STATUS_SERVER_ERROR, '您的 IP 位置异常');
+            Core::exception(STATUS_SERVER_ERROR, '您的 IP 位置异常');
         }
         if ($smsLog['verify_code'] != $code) {
             $status = self::verifyTimes($mobile, $smsType);
             if (!$status) {
                 $MSmsSendLog->update(['cksms' => SmsSendLog::STATUS_INVALID], ['id' => $smsLog['id']]);
             }
-            YCore::exception(STATUS_SMS_CODE_ERROR, '您的验证码不正确');
+            Core::exception(STATUS_SMS_CODE_ERROR, '您的验证码不正确');
         }
         if ($isDestroy) {
             $MSmsSendLog->update(['cksms' => SmsSendLog::STATUS_USED], ['id' => $smsLog['id']]);
@@ -227,15 +227,15 @@ class Sms extends \Services\Sms\AbstractBase
     {
         $verifyTimes = App::getConfig('sms.verify_times');
         $cacheKey    = "sms:{$smsType}-times:{$mobile}";
-        $times       = YCache::get($cacheKey);
+        $times       = Cache::get($cacheKey);
         if ($times > 0 && $times >= $verifyTimes) {
             self::clearVerifyTimesKey($mobile, $smsType);
             return false;
         } else {
             if ($times) { // 存在则自增1
-                YCache::incr($cacheKey, 1);
+                Cache::incr($cacheKey, 1);
             } else {
-                YCache::set($cacheKey, 2, 60);
+                Cache::set($cacheKey, 2, 60);
             }
             return true;
         }
@@ -251,7 +251,7 @@ class Sms extends \Services\Sms\AbstractBase
     private static function clearVerifyTimesKey($mobile, $smsType)
     {
         $cacheKey = "sms:{$smsType}-times:{$mobile}";
-        YCache::delete($cacheKey);
+        Cache::delete($cacheKey);
     }
 
     /**
@@ -264,7 +264,7 @@ class Sms extends \Services\Sms\AbstractBase
     {
         $result = (new SmsTpl())->fetchOne([], ['send_key' => $smsType]);
         if (empty($result)) {
-            YCore::exception(STATUS_SERVER_ERROR, '短信模板不存在');
+            Core::exception(STATUS_SERVER_ERROR, '短信模板不存在');
         }
         return ['content' => $result['sms_body'], 'id' => $result['id'], 'send_key' => $result['send_key']];
     }

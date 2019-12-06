@@ -7,7 +7,7 @@
 
 namespace Apis\app\v100\Sms;
 
-use finger\Utils\YCore;
+use finger\Ip;
 use Apis\AbstractApi;
 use Services\Sms\Sms;
 
@@ -24,7 +24,7 @@ class SmsSendApi extends AbstractApi
         $mobile   = $this->getString('mobile', '');
         $key      = $this->getString('key', '');
         $platform = $this->getString('platform');
-        $ip       = YCore::ip();
+        $ip       = Ip::ip();
         $result   = Sms::send($mobile, $key, $ip, $platform);
         $this->render(STATUS_SUCCESS, '发送成功', $result);
     }
