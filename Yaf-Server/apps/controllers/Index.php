@@ -6,6 +6,7 @@
  */
 
 use Apis\Factory;
+use finger\Log;
 
 class IndexController extends \Common\controllers\Api
 {
@@ -28,7 +29,7 @@ class IndexController extends \Common\controllers\Api
         $apiObj = Factory::factory($params);
         $result = $apiObj->getResult();
         // [4] 记录响应日志。
-        \finger\Utils\YLog::writeApiResponseLog($result);
+        Log::writeApiResponseLog($result);
         // [5] 输出结果。
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
         // [6]

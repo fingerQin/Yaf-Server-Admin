@@ -31,7 +31,7 @@ class Bootstrap extends \Yaf_Bootstrap_Abstract
      */
     public function _initError()
     {
-        ini_set('display_errors', 1);
+        ini_set('display_errors', 0);
         set_error_handler(['\finger\Core', 'errorHandler']);
         register_shutdown_function(['\finger\Core', 'registerShutdownFunction']);
     }

@@ -1,0 +1,63 @@
+Array
+(
+    [ErrorTime] => 2019-12-06 18:09:43
+    [0] =>  SELECT `app_title`,`app_v`,`app_desc`,`url`,`upgrade_way`,`dialog_repeat` FROM `finger_app_upgrade` WHERE  1 AND 1  AND `app_type` = :app_type  AND `app_v` = :app_v  AND `app_status` = :app_status    LIMIT 1
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-06 18:09:43
+    [0] =>  SELECT `app_title`,`app_v`,`app_desc`,`url`,`upgrade_way`,`dialog_repeat` FROM `finger_app_upgrade` WHERE  1 AND 1  AND `app_type` = :app_type  AND `app_status` = :app_status  AND `app_v` > :app_v   ORDER BY app_v DESC,id DESC LIMIT 1
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-06 18:09:43
+    [0] =>  SELECT  *  FROM `finger_ad_position` WHERE  1 AND 1  AND `pos_code` = :pos_code  AND `status` = :status    LIMIT 1
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-06 18:09:43
+    [0] =>  SELECT `noticeid`,`title`,`summary`,`u_time` FROM `finger_notice` WHERE  1 AND 1  AND `is_dialog` = :is_dialog  AND `dialog_end_time` >= :dialog_end_time   ORDER BY noticeid DESC LIMIT 1
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-06 18:10:52
+    [0] =>  SELECT COUNT(1) AS count FROM `finger_sms_sendlog` WHERE `mobile` = :mobile  AND `c_time` > :c_time LIMIT 1
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-06 18:10:52
+    [0] =>  SELECT  *  FROM `finger_sms_tpl` WHERE  1 AND 1  AND `send_key` = :send_key    LIMIT 1
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-06 18:10:52
+    [0] => INSERT INTO `finger_sms_sendlog` (`mobile`,`content`,`tpl_id`,`verify_code`,`ip`,`c_time`,`s_time`,`sms_status`,`sms_type`,`platform`) VALUES('18575202691','验证码：123456，请您10分钟内完成验证。【Yaf-Server-Admin】','3','123456','127.0.0.1','2019-12-06 18:10:52','2019-12-06 18:10:52','1','1','5') 
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-06 18:10:55
+    [0] =>  SELECT  *  FROM `finger_sms_tpl` WHERE  1 AND 1  AND `send_key` = :send_key    LIMIT 1
+)
+
+
+Array
+(
+    [ErrorTime] => 2019-12-06 18:10:55
+    [0] =>  SELECT  *  FROM `finger_sms_sendlog` WHERE  1 AND 1  AND `tpl_id` = :tpl_id  AND `mobile` = :mobile   ORDER BY id DESC LIMIT 1
+)
+
+

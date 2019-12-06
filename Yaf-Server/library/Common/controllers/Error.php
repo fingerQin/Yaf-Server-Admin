@@ -8,8 +8,8 @@
 namespace Common\controllers;
 
 use finger\App;
+use finger\Log;
 use finger\Exception\FingerException;
-use finger\Utils\YLog;
 use finger\Exception\ServiceException;
 
 class Error extends \Common\controllers\Common
@@ -29,9 +29,9 @@ class Error extends \Common\controllers\Common
                 // ...... 不记录日志 ......
             } else {
                 if ($errCode == STATUS_ERROR) {
-                    YLog::log($exception->__toString(), 'errors', 'log');
+                    App::log($exception->__toString(), 'errors', 'log');
                 } else {
-                    YLog::log($exception->__toString(), 'serviceErr', 'log');
+                    App::log($exception->__toString(), 'serviceErr', 'log');
                 }
             }
         } else {
@@ -40,13 +40,13 @@ class Error extends \Common\controllers\Common
             $logContent = $exception->getMessage() . "\n" . $exception->getTraceAsString();
 
             if ($exception instanceof \RedisException) { // Redis 的错误写一篇 Redis 特定的目录文件。
-                YLog::log($logContent, 'redis', 'log');
+                App::log($logContent, 'redis', 'log');
             } elseif ($exception instanceof \PDOException) { // MySQL PDO 报错。
-                YLog::log($logContent, 'pdo', 'log');
+                App::log($logContent, 'pdo', 'log');
             } else if ($exception instanceof FingerException) {
-                YLog::log($logContent, 'yaflib', 'log');
+                App::log($logContent, 'yaflib', 'log');
             } else {
-                YLog::log($logContent, 'errors', 'log');
+                App::log($logContent, 'errors', 'log');
             }
         }
 
@@ -56,7 +56,7 @@ class Error extends \Common\controllers\Common
                 'code' => $errCode,
                 'msg'  => $errMsg
             ];
-            YLog::writeApiResponseLog($data);
+            Log::writeApiResponseLog($data);
             echo json_encode($data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
             $this->end();
         } else if ($this->_request->isCli()) {
