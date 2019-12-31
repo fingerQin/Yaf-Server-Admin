@@ -20,7 +20,7 @@ class Cli extends Common
     {
         parent::init();
         $this->end();
-        if (App::isCli()) { // 非 CLI 模式运行则报错。
+        if (!App::isCli()) { // 非 CLI 模式运行则报错。
             Core::exception(STATUS_SERVER_ERROR, '不是 Cli 模式');
         }
     }
