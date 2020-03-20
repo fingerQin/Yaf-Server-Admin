@@ -359,7 +359,7 @@ class Ad extends \Services\AbstractBase
             'u_by'         => $adminId,
             'u_time'       => date('Y-m-d H:i:s', TIMESTAMP)
         ];
-        $ok = $AdPosModel->update($data, $where);
+        $ok = $AdPosModel->update($data, ['pos_id' => $posId]);
         if (!$ok) {
             Core::exception(STATUS_ERROR, '服务器繁忙,请稍候重试');
         }

@@ -56,7 +56,7 @@ class Advertisement extends \Services\AbstractBase
             Core::exception(STATUS_SERVER_ERROR, '该广告不存在或已经下线');
         }
         $bitVal = self::getUserBitConditionVal($userid);
-        $count  = $adPosDetail['pos_ad_count'] > self::MAX_COUNT ? MAX_COUNT : $adPosDetail['pos_ad_count'];
+        $count  = $adPosDetail['pos_ad_count'] > self::MAX_COUNT ? self::MAX_COUNT : $adPosDetail['pos_ad_count'];
         $sql    = 'SELECT ad_id,ad_name,ad_image_url,ad_ipx_image_url, ad_url FROM finger_ad '
                 . 'WHERE pos_id = :pos_id AND status = :status AND display = :display '
                 . 'AND start_time <= :start_time AND end_time >= :end_time '
