@@ -2,3 +2,4 @@
 /Yaf-Server/.env
 /Yaf-Admin/composer.lock
 /Yaf-Server/composer.lock
+/logs
