@@ -7,6 +7,7 @@
 
 use Apis\Factory;
 use finger\Log;
+use Services\System\Filter;
 
 class IndexController extends \Common\controllers\Api
 {
@@ -29,7 +30,8 @@ class IndexController extends \Common\controllers\Api
         $apiObj = Factory::factory($params);
         $result = $apiObj->getResult();
         // [4] 记录响应日志。
-        Log::writeApiResponseLog($result);
+        $filterRes = Filter::specialValueEncrypt($result);
+        Log::writeApiResponseLog($filterRes);
         // [5] 输出结果。
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
         // [6]

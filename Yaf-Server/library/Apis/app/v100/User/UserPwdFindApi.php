@@ -22,7 +22,7 @@ class UserPwdFindApi extends AbstractApi
     protected function runService()
     {
         $mobile   = $this->getString('mobile', '');
-        $code     = $this->getString('code', '');
+        $code     = $this->getString('sms_code', '');
         $password = $this->getstring('password', '');
         Password::find($mobile, $code, $password);
         $this->render(STATUS_SUCCESS, '密码找回成功');

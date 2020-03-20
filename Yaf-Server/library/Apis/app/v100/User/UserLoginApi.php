@@ -23,7 +23,7 @@ class UserLoginApi extends AbstractApi
     {
         $mobile      = $this->getString('mobile');
         $loginType   = $this->getInt('login_type');
-        $code        = $this->getString('code');
+        $code        = $this->getString('sms_code');
         $deviceToken = $this->getString('device_token', '');
         $platform    = $this->getString('platform', 0);
         $appV        = $this->getString('app_v', '');

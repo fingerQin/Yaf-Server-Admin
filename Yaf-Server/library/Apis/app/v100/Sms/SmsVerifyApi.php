@@ -23,7 +23,7 @@ class SmsVerifyApi extends AbstractApi
         $this->isAllowAccessApi(0);
         $mobile    = $this->getString('mobile', '');
         $key       = $this->getString('key', '');
-        $code      = $this->getString('code', '');
+        $code      = $this->getString('sms_code', '');
         $isDestroy = $this->getInt('is_destroy', 0);
         $ip        = Ip::ip();
         $result    = Sms::verify($mobile, $code, $key, $isDestroy, $ip);

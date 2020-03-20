@@ -26,7 +26,7 @@ class UserMobileChangeApi extends AbstractApi
         $userinfo = Auth::checkAuth($token);
         $password = $this->getString('password', '');
         $mobile   = $this->getString('mobile', '');
-        $code     = $this->getString('code', '');
+        $code     = $this->getString('sms_code', '');
         User::changeMobile($userinfo['userid'], $password, $mobile, $code);
         $this->render(STATUS_SUCCESS, '手机号更改成功');
     }

@@ -117,7 +117,7 @@ class Files extends AbstractBase
      * @param  int  $fileId  文件ID。
      * @return bool
      */
-    public function delete($fileId)
+    public function del($fileId)
     {
         $data = [
             'status' => Files::STATUS_DELETED

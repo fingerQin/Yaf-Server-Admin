@@ -70,3 +70,17 @@ define('API_MUST_FORBID_IP_LIST', [
   'sms.send',
   'user.pwd.find'
 ]);
+
+/**
+ * API 接口当中有一些特殊的敏感信息需要进行过滤(加密)之后保存。
+ */
+define('API_SAFETY_FILTER', [
+  'oriJson',    // API 接口中的原始请求数据。
+  'password',   // 密码。
+  'old_pwd',    // 旧密码。
+  'new_pwd',    // 新密码。
+  'token',      // TOKEN 会话令牌。
+  'mobile',     // 手机号。
+  'sms_code',   // 短信验证码。
+  'realname',   // 收货人姓名/真实姓名。
+]);

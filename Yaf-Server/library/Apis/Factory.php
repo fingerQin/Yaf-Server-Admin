@@ -13,6 +13,7 @@ use finger\DataInput;
 use finger\Ip;
 use finger\Log;
 use Services\System\ApiAuth;
+use Services\System\Filter;
 
 class Factory
 {
@@ -99,6 +100,7 @@ class Factory
             '_datetime' => date('Y-m-d H:i:s', TIMESTAMP)
         ];
         $reqLog = array_merge($reqLog, $params);
+        $reqLog = Filter::specialValueEncrypt($reqLog);
         Log::writeApiRequestLog($reqLog);
     }
 

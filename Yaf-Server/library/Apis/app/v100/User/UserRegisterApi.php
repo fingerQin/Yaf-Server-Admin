@@ -22,7 +22,7 @@ class UserRegisterApi extends AbstractApi
     protected function runService()
     {
         $mobile      = $this->getString('mobile');
-        $code        = $this->getString('code', '');
+        $code        = $this->getString('sms_code', '');
         $password    = $this->getString('password', '');
         $platform    = $this->getString('platform', 0);
         $channel     = $this->getString('channel', '');
