@@ -24,28 +24,46 @@ class Error extends \Common\controllers\Common
 
         // [1] 参数验证错误
         if ($exception instanceof ServiceException) {
-            // 排除正式环境不需要记录日志的错误码。
-            if (!in_array($errCode, NO_RECORD_API_LIST) && App::getConfig('app.env') == ENV_PRO) {
-                // ...... 不记录日志 ......
+            // 正式环境且在忽略的错误码列表中的错误不记录日志。
+            if (App::getConfig('app.env') == ENV_PRO && in_array($errCode, NO_RECORD_API_LIST)) { 
+                // 不记录日志。
             } else {
-                if ($errCode == STATUS_ERROR) {
-                    App::log($exception->__toString(), 'errors', 'log');
-                } else {
-                    App::log($exception->__toString(), 'serviceErr', 'log');
-                }
+                $source     = ['source' => 'service'];
+                $logContent = $exception->__toArray();
+                $logContent = array_merge($source, $logContent);
+                App::log($exception->__toString(), 'errors', 'log');
             }
         } else {
             $errCode    = STATUS_ERROR;
             $errMsg     = '服务器繁忙,请稍候重试';
-            $logContent = $exception->getMessage() . "\n" . $exception->getTraceAsString();
 
             if ($exception instanceof \RedisException) { // Redis 的错误写一篇 Redis 特定的目录文件。
-                App::log($logContent, 'redis', 'log');
+                $logContent = [
+                    'source'      => 'redis',
+                    'err_code'    => $exception->getCode(),
+                    'err_msg'     => $exception->getMessage(),
+                    'stack_trace' => $exception->getTraceAsString()
+                ];
+                App::log($logContent, 'errors', 'log');
             } elseif ($exception instanceof \PDOException) { // MySQL PDO 报错。
-                App::log($logContent, 'pdo', 'log');
+                $logContent = [
+                    'source'      => 'pdo',
+                    'err_code'    => $exception->getCode(),
+                    'err_msg'     => $exception->getMessage(),
+                    'stack_trace' => $exception->getTraceAsString()
+                ];
+                App::log($logContent, 'errors', 'log');
             } else if ($exception instanceof FingerException) {
-                App::log($logContent, 'yaflib', 'log');
+                $logContent = $exception->__toArray();
+                $logContent = array_merge(['source' => 'yaflib'], $logContent);
+                App::log($logContent, 'errors', 'log');
             } else {
+                $logContent = [
+                    'source'      => 'other',
+                    'err_code'    => $exception->getCode(),
+                    'err_msg'     => $exception->getMessage(),
+                    'stack_trace' => $exception->getTraceAsString()
+                ];
                 App::log($logContent, 'errors', 'log');
             }
         }
