@@ -28,11 +28,7 @@ class Error extends \Common\controllers\Common
             if (App::isDebug()) { // 调试模式会输出具体的错误。
                 $errMsg = ($errCode != STATUS_ERROR) ? $errMsg : $exception->__toString();
             }
-            if ($errCode == STATUS_ERROR) {
-                App::log($trace, 'errors', 'log');
-            } else {
-                App::log($trace, 'serviceErr', 'log');
-            }
+            App::log($trace, 'errors', 'log');
         } else {
             $errCode = STATUS_ERROR;
             $errMsg  = '服务器繁忙,请稍候重试';
