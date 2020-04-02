@@ -85,7 +85,7 @@ class Notice extends \Services\AbstractBase
             'body'            => '公告内容|require|len:1:50000:1',
             'terminal'        => '所属终端|require|len:1:10:0',
             'is_dialog'       => '是否弹框|require|integer|number_between:0:1',
-            'dialog_end_time' => '弹框截止时间|datetime'
+            'dialog_end_time' => '弹框截止时间|date'
         ];
         $data = [
             'title'           => $title,
@@ -133,7 +133,7 @@ class Notice extends \Services\AbstractBase
             'body'            => '公告内容|require|len:1:50000:1',
             'terminal'        => '所属终端|require|len:1:10:0',
             'is_dialog'       => '是否弹框|require|integer|number_between:0:1',
-            'dialog_end_time' => '弹框截止时间|datetime'
+            'dialog_end_time' => '弹框截止时间|date'
         ];
         $data = [
             'title'           => $title,
