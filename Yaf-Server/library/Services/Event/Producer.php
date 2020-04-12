@@ -92,7 +92,7 @@ class Producer extends \Services\Event\AbstractBase
             'mobile'      => '手机号|require|mobilephone',
             'platform'    => '平台标识|require|number_between:1:6',
             'v'           => 'API 版本号|require',
-            'reg_time'    => '注册时间|require|datetime',
+            'reg_time'    => '注册时间|require|date',
             'activity_id' => '活动ID|len:0:50:0'
         ];
         Validator::valido($data, $rules);
@@ -124,7 +124,7 @@ class Producer extends \Services\Event\AbstractBase
             'mobile'     => '手机号|require|mobilephone',
             'platform'   => '平台标识|require|number_between:1:6',
             'v'          => 'API 版本号|require',
-            'login_time' => '登录时间|require|datetime'
+            'login_time' => '登录时间|require|date'
         ];
         Validator::valido($data, $rules);
     }
