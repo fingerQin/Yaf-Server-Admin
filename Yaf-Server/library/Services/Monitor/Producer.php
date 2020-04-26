@@ -105,7 +105,7 @@ class Producer extends \Services\Monitor\AbstractBase
         $rules = [
             'code'     => 'CODE|require',
             'ip'       => 'IP 地址|require|ip',
-            'datetime' => '触发时间|require|datetime',
+            'datetime' => '触发时间|require|date',
         ];
         Validator::valido($data, $rules);
     }

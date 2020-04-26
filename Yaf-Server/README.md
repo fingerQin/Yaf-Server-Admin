@@ -1015,7 +1015,7 @@ $rules = [
     'username' => '用户名|require|len:6:20:0|alpha',
     'password' => '密码|require|alpha_dash|len:6:20:0',
     'email'    => '邮箱|email',
-    'birthday' => '生日|date:0'
+    'birthday' => '生日|date'
 ];
 
 \finger\Validator::valido($data, $rules);

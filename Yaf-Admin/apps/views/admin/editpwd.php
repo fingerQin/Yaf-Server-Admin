@@ -63,11 +63,11 @@
                 $.ajax({
                     type: 'post',
                     data:fromData,
-                    url: "{{'admin/editPwd'|url}}",
+                    url: "{{'Admin/editPwd'|url}}",
                     dataType: 'json',
                     success: function(rsp) {
                         if (rsp.code == 200) {
-                            success(rsp.msg, 2, "{{'public/login'|url}}");
+                            success(rsp.msg, 2, "{{'Public/login'|url}}");
                         } else {
                             fail(rsp.msg, 3);
                         }
