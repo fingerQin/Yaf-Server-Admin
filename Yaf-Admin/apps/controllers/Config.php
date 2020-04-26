@@ -19,7 +19,7 @@ class ConfigController extends \Common\controllers\Admin
         $page      = $this->getInt('page', 1);
         $list      = Config::list($keywords, $page, 20);
         $paginator = new Paginator($list['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('pageHtml', $pageHtml);
         $this->assign('keywords', $keywords);
         $this->assign('list', $list['list']);

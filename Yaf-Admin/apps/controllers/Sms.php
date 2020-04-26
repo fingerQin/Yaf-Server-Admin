@@ -27,7 +27,7 @@ class SmsController extends \Common\controllers\Admin
         $page      = $this->getInt('page', 1);
         $result    = Log::lists($mobile, $status, $tplId, $channelId, $startTime, $endTime, $page, 20);
         $paginator = new Paginator($result['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('result', $result);
         $this->assign('mobile', $mobile);
         $this->assign('status', $status);
@@ -50,7 +50,7 @@ class SmsController extends \Common\controllers\Admin
         $page      = $this->getInt('page', 1);
         $result    = Blacklist::lists($mobile, $page, 20);
         $paginator = new Paginator($result['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('result', $result);
         $this->assign('mobile', $mobile);
         $this->assign('list', $result['list']);

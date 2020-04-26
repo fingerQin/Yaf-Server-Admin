@@ -23,7 +23,7 @@ class LinkController extends \Common\controllers\Admin
         $page      = $this->getInt('page', 1);
         $list      = Link::list($keywords, $catId, $page, 20);
         $paginator = new Paginator($list['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('pageHtml', $pageHtml);
         $this->assign('keywords', $keywords);
         $this->assign('cat_id', $catId);

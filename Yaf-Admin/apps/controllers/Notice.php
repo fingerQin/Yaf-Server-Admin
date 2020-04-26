@@ -21,7 +21,7 @@ class NoticeController extends \Common\controllers\Admin
         $page      = $this->getInt('page', 1);
         $result    = Notice::lists($title, $status, $page, 20);
         $Paginator = new Paginator($result['total'], 20);
-        $pageHtml  = $Paginator->backendPageShow();
+        $pageHtml  = $Paginator->pageShow();
         $this->assign('list', $result['list']);
         $this->assign('pageHtml', $pageHtml);
         $this->assign('status', $status);

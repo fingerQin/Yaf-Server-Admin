@@ -20,7 +20,7 @@ class AdminController extends \Common\controllers\Admin
         $page      = $this->getString('page', 1);
         $result    = AdminUser::list($keywords, $page, 10);
         $paginator = new Paginator($result['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('pageHtml', $pageHtml);
         $this->assign('keywords', $keywords);
         $this->assign('list', $result['list']);

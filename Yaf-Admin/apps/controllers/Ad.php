@@ -21,7 +21,7 @@ class AdController extends Admin
         $page      = $this->getInt('page', 1);
         $list      = Ad::getAdPostionList($keywords, $page, 20);
         $paginator = new Paginator($list['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('pageHtml', $pageHtml);
         $this->assign('keywords', $keywords);
         $this->assign('list', $list['list']);
@@ -81,7 +81,7 @@ class AdController extends Admin
         $page      = $this->getInt('page', 1);
         $list      = Ad::getAdList($posId, $adName, $display, $page, 10);
         $paginator = new Paginator($list['total'], 10);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('pageHtml', $pageHtml);
         $this->assign('ad_name', $adName);
         $this->assign('display', $display);

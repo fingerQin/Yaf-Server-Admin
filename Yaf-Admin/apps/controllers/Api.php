@@ -19,7 +19,7 @@ class ApiController extends \Common\controllers\Admin
         $page      = $this->getInt(App::getConfig('pager'), 1);
         $list      = ApiAuth::list($page, 10);
         $paginator = new Paginator($list['total'], 10);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('pageHtml', $pageHtml);
         $this->assign('list', $list['list']);
     }

@@ -19,7 +19,7 @@ class SmsTplController extends \Common\controllers\Admin
         $page      = $this->getInt('page', 1);
         $result    = Tpl::lists($sendKey, $page, 20);
         $paginator = new Paginator($result['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('send_key', $sendKey);
         $this->assign('list', $result['list']);
         $this->assign('pageHtml', $pageHtml);

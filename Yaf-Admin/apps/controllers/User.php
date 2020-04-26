@@ -21,7 +21,7 @@ class UserController extends \Common\controllers\Admin
         $page      = $this->getInt('page', 1);
         $list      = User::list($mobile, $starttime, $endtime, $page, 20);
         $paginator = new Paginator($list['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('pageHtml', $pageHtml);
         $this->assign('list', $list['list']);
         $this->assign('mobile', $mobile);

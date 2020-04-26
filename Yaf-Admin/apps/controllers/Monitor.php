@@ -21,7 +21,7 @@ class MonitorController extends \Common\controllers\Admin
         $endTime   = $this->getString('start_time', '');
         $result    = MonitorService::lists($code, $startTime, $endTime, $page, 20);
         $paginator = new Paginator($result['total'], 20);
-        $pageHtml  = $paginator->backendPageShow();
+        $pageHtml  = $paginator->pageShow();
         $this->assign('pageHtml', $pageHtml);
         $this->assign('result', $result);
         $this->assign('code', $code);
